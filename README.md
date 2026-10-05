@@ -68,25 +68,81 @@ The website lets a new visitor:
 
 ### Design decisions that depart from common UX guidance
 
-`TODO:` list and justify any deliberate departures (required for Distinction).
+Colour palette: the original palette failed WCAG AA contrast and was revised. See [4.3 Colour contrast and the palette change](#43-colour-contrast-and-the-palette-change).
+
+`TODO:` list and justify any other deliberate departures (required for Distinction).
 
 ---
 
 ## 4. Design System
 
-`TODO:` complete in Step 1.2 once the CSS tokens exist.
+All visual values are stored as CSS custom properties (design tokens) in `:root` at the top of `assets/css/styles.css`. Changing the brand later means editing one line.
+
+### 4.1 Colour tokens
 
 | Token | Value | Purpose |
 |---|---|---|
 | `--bg-page` | `#ffffff` | Page background |
 | `--bg-card` | `#fbf6ee` | Cards and panels |
-| `--accent` | `#c98a4b` | Buttons and highlights |
-| `--text-main` | `#3b2416` | Body text |
+| `--accent` | `#c98a4b` | Button and badge backgrounds (never text) |
+| `--accent-hover` | `#d9a06a` | Hover state for accent backgrounds |
+| `--accent-text` | `#8a5420` | Accent-coloured text such as prices and active links |
+| `--text-main` | `#3b2416` | Body text and text on accent backgrounds |
+| `--text-muted` | `#6b5242` | Secondary text |
+| `--border-color` | `#e5d9cc` | Decorative dividers and card borders |
 | `--error-color` | `#b91c1c` | Error messages |
+| `--success-color` | `#15803d` | Success messages |
 
-`TODO:` record measured WCAG contrast ratios for each text and background pairing.
+### 4.2 Other tokens
+
+| Group | Tokens |
+|---|---|
+| Typography | `--font-body` (Inter, then system fonts), `--line-height-body` (1.6), `--line-height-heading` (1.2) |
+| Spacing | `--space-xs` (0.25rem) to `--space-xxl` (4rem) |
+| Shape and layout | `--radius-sm` (6px), `--radius-md` (8px), `--content-max-width` (1200px) |
 
 **Typography:** Inter (400, 600, 700) with a system font fallback.
+
+### 4.3 Colour contrast and the palette change
+
+**Decision:** the original palette was changed during accessibility testing because it failed WCAG 2.1 AA contrast requirements.
+
+**What failed:** the original design used white text on the tan accent `#c98a4b` for buttons and the cart badge, and tan text for prices. Both fall well below the 4.5:1 minimum for normal text.
+
+**What changed:**
+
+1. Text on accent backgrounds is now dark brown (`--text-main`) instead of white.
+2. Accent-coloured text now uses a new, darker token (`--accent-text`) instead of `--accent`.
+3. The accent hover colour is now lighter rather than darker, so dark text stays readable on hover.
+
+The brand colour itself (`#c98a4b`) is unchanged. It is now used for backgrounds and decoration only.
+
+**Measured contrast ratios** (calculated with the WCAG 2.1 relative luminance formula):
+
+| Pairing | Ratio | Requirement | Result |
+|---|---|---|---|
+| White text on `--accent` (original buttons) | 2.91:1 | 4.5:1 | Fail (replaced) |
+| `--accent` text on `--bg-page` (original prices) | 2.91:1 | 4.5:1 | Fail (replaced) |
+| `--accent` text on `--bg-card` (original prices) | 2.70:1 | 4.5:1 | Fail (replaced) |
+| `--text-main` on `--accent` (new buttons) | 4.98:1 | 4.5:1 | Pass |
+| `--text-main` on `--accent-hover` | 6.34:1 | 4.5:1 | Pass |
+| `--accent-text` on `--bg-page` | 6.23:1 | 4.5:1 | Pass |
+| `--accent-text` on `--bg-card` | 5.79:1 | 4.5:1 | Pass |
+| `--text-main` on `--bg-page` | 14.48:1 | 4.5:1 | Pass |
+| `--text-main` on `--bg-card` | 13.46:1 | 4.5:1 | Pass |
+| `--text-muted` on `--bg-page` | 7.21:1 | 4.5:1 | Pass |
+| `--text-muted` on `--bg-card` | 6.71:1 | 4.5:1 | Pass |
+| `--error-color` on `--bg-page` | 6.47:1 | 4.5:1 | Pass |
+| `--error-color` on `--bg-card` | 6.01:1 | 4.5:1 | Pass |
+| `--success-color` on `--bg-page` | 5.02:1 | 4.5:1 | Pass |
+| `--success-color` on `--bg-card` | 4.66:1 | 4.5:1 | Pass |
+
+**Known limits:**
+
+- `--text-main` on `--accent` (4.98:1) and `--success-color` on `--bg-card` (4.66:1) pass with little margin, so these colours should not be lightened.
+- `--border-color` against white is only 1.39:1. That is acceptable for decorative card borders, but form input borders must meet the 3:1 minimum for UI components (WCAG 1.4.11). `TODO:` add a darker `--input-border` token when the form is styled, and record it here.
+
+`TODO:` re-check every pairing with the WebAIM Contrast Checker, save a screenshot in `docs/screenshots/`, and link it from [TESTING.md](TESTING.md). Add the original palette failure to the bug log as B1.
 
 ---
 
@@ -138,6 +194,8 @@ paperbag-hobbies/
 ├── index.html
 ├── README.md
 ├── TESTING.md
+├── docs/
+│   └── screenshots/
 └── assets/
     ├── css/
     │   └── styles.css
@@ -201,3 +259,4 @@ Example: `feat: add HTML5 boilerplate shell with head metadata and linked assets
 | Product images | `TODO: state source and licence` | Product cards |
 
 `TODO:` add any code snippets or tutorials used, and ensure each has a matching comment above the code.
+let
