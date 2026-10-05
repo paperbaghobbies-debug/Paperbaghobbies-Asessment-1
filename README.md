@@ -178,7 +178,31 @@ The brand colour itself (`#c98a4b`) is unchanged. It is now used for backgrounds
 
 **Deferred:** Open Graph tags need an absolute image URL, so they are added after the GitHub Pages address is known.
 
-### 6.2 Architecture
+### 6.2 CSS reset (`styles.css`)
+
+A small, targeted reset sits directly below the design tokens. It removes browser inconsistencies without wiping every default style.
+
+| Rule | Reason |
+|---|---|
+| `box-sizing: border-box` on all elements | Padding and borders no longer add to an element's width, which prevents overflow on small screens (criterion 2.6). |
+| Margin reset on `body`, headings, `p`, `figure` and lists | Browser default margins vary. Spacing is applied deliberately with the spacing tokens instead. |
+| Padding reset on `ul` and `ol` | Removes the default list indentation so navigation lists can be laid out cleanly. |
+| `img` and `svg` set to `display: block` with `max-width: 100%` | Removes the stray gap under inline images and stops media overflowing narrow screens. |
+| `height: auto` on `img` | Keeps the aspect ratio so images are never stretched (criterion 2.4). |
+| `font: inherit` and `color: inherit` on form controls | Browsers give buttons and inputs their own font, which would ignore Inter. |
+| `color: inherit` on links, underlines kept | Link colour follows the surrounding text, and underlines stay so links are identifiable without relying on colour alone. |
+| `[hidden] { display: none !important; }` | The site relies on the `hidden` attribute for modals and view switching, and a later `display` rule must never override it. |
+
+**Justified use of `!important`:** the `[hidden]` rule is the only place it appears. Without it, a component rule such as `display: flex` would silently reveal an element that is meant to be hidden, which would break the modal and the page-view switching.
+
+**Deliberately left out:**
+
+- `scroll-behavior: smooth` is added later inside a `prefers-reduced-motion` check, so users who request less motion are not forced into smooth scrolling.
+- Vendor prefixes such as `-webkit-appearance` are avoided, because they are non-standard and likely to cause CSS validator warnings.
+
+**Validation:** passed the W3C CSS validator (Jigsaw) with no errors or warnings. Evidence is in [TESTING.md](TESTING.md), section 1.2.
+
+### 6.3 Architecture
 
 The site is built in two stages:
 
@@ -187,7 +211,7 @@ The site is built in two stages:
 
 `TODO:` document why this order was chosen and what was learned during the refactor.
 
-### 6.3 Folder structure
+### 6.4 Folder structure
 
 ```text
 paperbag-hobbies/
