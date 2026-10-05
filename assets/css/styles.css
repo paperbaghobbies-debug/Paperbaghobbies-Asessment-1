@@ -32,3 +32,66 @@
   --radius-md: 8px;
   --content-max-width: 1200px;
 }
+
+
+/* ==========================================================================
+   2. CSS RESET
+   ========================================================================== */
+
+/* Include padding and border in element widths so layouts do not overflow */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default outer spacing; spacing is applied deliberately with tokens */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+ul,
+ol {
+  margin: 0;
+}
+
+/* Remove default list indentation */
+ul,
+ol {
+  padding: 0;
+}
+
+/* Media: block display removes the stray gap under images, and
+   max-width stops images overflowing small screens */
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+/* Form controls do not inherit fonts by default */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* Links inherit their surrounding colour. Underlines are left alone
+   on purpose so links stay identifiable without relying on colour. */
+a {
+  color: inherit;
+}
+
+/* Make the hidden attribute always win over other display rules */
+[hidden] {
+  display: none !important;
+}
