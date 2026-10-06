@@ -18,6 +18,7 @@ Back to [README](README.md).
 |---|---|---|---|---|
 | 05/10/2026 | `assets/css/styles.css` | Step 1.2 Part A: design tokens | Pass | No errors or warnings. |
 | 05/10/2026 | `assets/css/styles.css` | Step 1.2 Part B: CSS reset | Pass | No errors or warnings. |
+| 05/10/2026 | `assets/css/styles.css` | Step 1.2 Part C: global typography | Pass | No errors or warnings. |
 
 Part A: design tokens
 
@@ -26,6 +27,10 @@ Part A: design tokens
 Part B: CSS reset
 
 ![Jigsaw CSS validator result for styles.css after adding the CSS reset, showing no errors](docs/screenshots/validator-styles-css-step-1-2-b.png)
+
+**Part C: global typography**
+
+![Jigsaw CSS validator result for styles.css after adding global typography, showing no errors](docs/screenshots/validator-styles-css-step-1-2-c.png)
 
 ### 1.3 JavaScript linter
 
@@ -47,6 +52,22 @@ Contrast ratios were calculated for every text and background pairing using the 
 | `#8a5420` on `#ffffff` (revised accent text) | 6.23:1 | 4.5:1 | Pass |
 
 `TODO:` confirm these with the WebAIM Contrast Checker and add a screenshot.
+
+### 2.2 Typography check (browser developer tools)
+
+| Check | Expected | Result |
+|---|---|---|
+| Typography rules applied to `h1` | `font-size: 2rem`, `font-weight: 700`, `line-height: 1.2` come from `styles.css`, and browser defaults are overridden | Pass |
+| Margins removed by reset | Computed margin of `0` on `h1` | Pass |
+| Design tokens resolve | All `:root` custom properties listed with correct values | Pass |
+| Google Font loaded | Inter `@font-face` served from `fonts.gstatic.com` | Pass |
+| Heading renders in Inter | Computed tab, Rendered Fonts shows Inter | `TODO: confirm` |
+
+![DevTools showing the h1 typography rules applied from styles.css](docs/screenshots/devtools-h1-styles-step-1-2-c.png)
+
+![DevTools showing the Inter font-face loaded from Google Fonts](docs/screenshots/devtools-font-face-step-1-2-c.png)
+
+![DevTools Computed tab showing Inter as the rendered font](docs/screenshots/devtools-rendered-font-step-1-2-c.png)
 
 ## 3. Browser and device matrix
 
