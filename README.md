@@ -234,6 +234,24 @@ paperbag-hobbies/
 
 ---
 
+### 6.5 Global typography (`styles.css`)
+
+| Rule | Reason |
+|---|---|
+| `font-family: var(--font-body)` on `body` | Applies Inter site-wide, with system fonts as a fallback if the Google Font fails to load. |
+| `font-size: 1rem` on `body` | Respects the user's own browser text size setting. |
+| `line-height: 1.6` for body text | Comfortable reading spacing. WCAG recommends at least 1.5. |
+| `line-height: 1.2` for headings | Large text looks too loose at body spacing, so headings are tightened. |
+| Heading sizes in `rem` (h1 2rem, h2 1.5rem, h3 1.25rem) | Sizes scale with user preferences instead of being fixed in pixels. |
+| Only `h1` to `h3` styled | The design uses nothing deeper, so there is no unused CSS. |
+| Text and background colour set on `body` | Uses the design tokens. `--text-main` on `--bg-page` measures 14.48:1. |
+
+**Verification:** browser developer tools confirmed that the typography rules apply and override the default browser styles. The `h1` renders at 2rem with a 1.2 line-height, which gives a computed height of about 38.4px. Evidence is in [TESTING.md](TESTING.md), section 2.2.
+
+**Responsive note:** these sizes are the small-screen base. The `h1` is enlarged for wider screens with a media query when the hero section is built.
+
+---
+
 ## 7. Testing
 
 Full testing evidence is recorded in [TESTING.md](TESTING.md).
