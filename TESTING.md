@@ -61,13 +61,23 @@ Contrast ratios were calculated for every text and background pairing using the 
 | Margins removed by reset | Computed margin of `0` on `h1` | Pass |
 | Design tokens resolve | All `:root` custom properties listed with correct values | Pass |
 | Google Font loaded | Inter `@font-face` served from `fonts.gstatic.com` | Pass |
-| Heading renders in Inter | Computed tab, Rendered Fonts shows Inter | `TODO: confirm` |
+| Heading renders in Inter | Computed tab, Rendered Fonts shows Inter | Pass. Family Inter, PostScript name Inter-Bold, origin Network resource. |
 
 ![DevTools showing the h1 typography rules applied from styles.css](docs/screenshots/devtools-h1-styles-step-1-2-c.png)
 
 ![DevTools showing the Inter font-face loaded from Google Fonts](docs/screenshots/devtools-font-face-step-1-2-c.png)
 
 ![DevTools Computed tab showing Inter as the rendered font](docs/screenshots/devtools-rendered-font-step-1-2-c.png)
+
+**Computed values for the `h1`:**
+
+| Property | Computed value | Source |
+|---|---|---|
+| `font-size` | 32px | `2rem` |
+| `font-weight` | 700 | Heading rule |
+| `line-height` | 38.4px | 32px × 1.2 (`--line-height-heading`) |
+| `color` | `rgb(59, 36, 22)` | `#3b2416` (`--text-main`) |
+| Margins | `0px` | CSS reset |
 
 ## 3. Browser and device matrix
 
