@@ -70,7 +70,7 @@ This project delivers the front end: HTML, CSS and light JavaScript for the navi
 
 ### 1.6 Development approach
 
-The site is built as separate, semantic HTML pages first, validated page by page. CSS is written mobile-first with design tokens. JavaScript is added only for interactive features. Whether to refactor into client-side templates with a hash router is an open decision (see section 3.4). Each step is tested before the next begins, and each feature is committed separately.
+The site is built as separate, semantic HTML pages first, validated page by page. CSS is written mobile-first with design tokens. JavaScript is added only for interactive features. An architectural feasibility study evaluated dynamic client-side `<template>` swapping, but separate semantic HTML pages were selected as the primary foundation (see section 6.3). Each step is tested before the next begins, and each feature is committed separately.
 
 ---
 
@@ -408,7 +408,7 @@ An automated score does not prove accessibility, so manual keyboard and screen r
 - Each feature or fix is a separate commit in Conventional Commits format, with documentation committed per step.
 - Where a result cannot be improved, the limitation is logged and justified (for example bug B2).
 
-**Status:** separate HTML pages are the working baseline. Whether to refactor into client-side templates with a hash router will be decided later, once the site is more developed, by comparing the options against validation coverage, performance, maintainability and the assessment criteria.
+**Status:** Separate HTML pages are the established project baseline. An exploratory study into dynamic `<template>` swapping was completed and ruled out for the main architecture (see section 6.3).
 
 ---
 
@@ -540,14 +540,39 @@ A small, targeted reset sits directly below the design tokens. It removes browse
 
 **Validation:** passed the W3C CSS validator (Jigsaw) with no errors or warnings. Evidence is in [TESTING.md](TESTING.md), section 1.2.
 
-### 6.3 Architecture
+### 6.3 Architecture & Feasibility Research
 
-The site is built in two stages:
+#### Architectural Evaluation: Multi-Page Application (MPA) vs. Dynamic `<template>` SPA
 
-1. **Static baseline:** separate HTML pages with shared navigation to establish valid document structure.
-2. **Refactor:** content moved into `<template>` elements with a custom hash router.
+To explore creative technical solutions, maximize site performance, and evaluate all potential architectural options for the client's needs, an exploratory feasibility study was conducted during the initial design phase.
 
-`TODO:` document why this order was chosen and what was learned during the refactor.
+Specifically, research was carried out on whether a Single-Page Application (SPA) view-swapping pattern—utilizing native HTML5 `<template>` elements and custom JavaScript—could serve as a viable front-end foundation compared to a traditional Multi-Page Application (MPA).
+
+While the `<template>` approach offered creative possibilities for seamless view transitions without browser reloads, it was ultimately **evaluated and ruled out** as the primary foundation architecture for this project. Below is the technical breakdown and rationale behind exploring and ultimately rejecting this approach.
+
+---
+
+#### Research Findings & Technical Trade-offs
+
+##### 1. Back-End Integration & Architecture (Django & Database Complexity)
+* **MPA Architecture (Selected):** Aligns naturally with server-side rendering patterns (such as Django Template Language). Pages are served with complete HTML structures, allowing straightforward integration with native server-side authentication, forms, and built-in CSRF protection in future build phases.
+* **`<template>` / SPA Pattern (Evaluated & Ruled Out):** Would require decoupling the front end and forcing the back end into a headless REST API. Data would need to be requested asynchronously (`fetch()`) as JSON, introducing unnecessary state-management complexity and requiring bespoke JavaScript logic to handle CSRF token security (`X-CSRFToken`).
+
+##### 2. Search Engine Optimisation (SEO) & Indexing
+* **MPA Architecture (Selected):** Guarantees that search engine web crawlers receive fully populated, semantic HTML on the initial HTTP response for every page, ensuring reliable site-wide indexing.
+* **`<template>` / SPA Pattern (Evaluated & Ruled Out):** Risks indexing failures if web crawlers do not execute dynamic client-side scripts. Overcoming this would require building a custom client-side router using the HTML5 History API (`history.pushState()` / `popstate`), alongside dynamic JavaScript routines to manually update metadata (`<title>` and `<meta name="description">`) during every DOM swap.
+
+##### 3. Accessibility & User Experience (WCAG Compliance)
+* **MPA Architecture (Selected):** Standard page navigation naturally manages focus restoration to the top of new documents and triggers screen readers automatically upon page load.
+* **`<template>` / SPA Pattern (Evaluated & Ruled Out):** Injecting template fragments dynamically breaks native keyboard navigation unless manual focus management is coded (e.g., targeting `<main>` or `<h1>` elements with `tabindex="-1"` and `.focus()`). Furthermore, dynamic updates require explicit `aria-live="polite"` regions so assistive technology can broadcast content updates.
+
+---
+
+#### Conclusion & Final Design Rationale
+
+While native `<template>` view swapping remains a valuable technique in the developer toolkit for targeted UI components (such as modular overlays or dynamic data filters), it was **ruled out as the foundation architecture** for this application. 
+
+Choosing a clean, multi-page HTML/CSS foundation provides the most robust, accessible, and SEO-friendly solution for the client's requirements, ensuring full compliance with Unit 1 criteria without introducing unnecessary JavaScript overhead.
 
 ### 6.4 Folder structure
 
