@@ -274,7 +274,9 @@ Colour palette: the original palette failed WCAG AA contrast and was revised. Se
 - **Date and tools:** all testing was done on 06/10/2026 in Chrome DevTools, on each site's homepage only.
 - **Views:** a desktop view and a 375px mobile view (device toolbar, iPhone SE profile).
 - **Measures:** Lighthouse (mobile) for performance, accessibility, best practices and SEO; the Network tab with cache disabled for requests and data transferred; the Elements tab and console queries for page structure; hover inspection for control sizes; and direct observation for hero movement.
-- **Rules:** facts are recorded before opinions. Anything not checked is marked "Not tested". Lighthouse scores vary between runs, so each is reported with its run conditions. Console error counts are not used, because browser extensions and blocked third-party requests inflate them. No images, code or text were copied. Supporting screenshots are held privately and can be shown on request.
+- **Rules:** facts are recorded before opinions. Anything not checked is marked "Not tested". Lighthouse scores vary between runs, so each is reported with its run conditions. Console error counts are not used, because browser extensions and blocked third-party requests inflate them. No images, code or text were copied. Supporting screenshots are held privately in `docs/private/` and can be shown on request.
+
+> **Visual Evidence:** Supporting research captures (including desktop layouts, mobile 375px viewports, Lighthouse audits, console queries, and network profiles for all three competitors) are held in `docs/private/` and can be provided upon request.
 
 | Site | Address | What it appears to sell |
 |---|---|---|
@@ -337,6 +339,17 @@ A Largest Contentful Paint of 2.5 s or less is rated good by Lighthouse. All thr
 **Adapted:** the "NEW" badge becomes a text label with a stated end date for promotions; the announcement line is static text and does not rotate; the idea of a payment strip is held back until PayPal is actually connected.
 
 Ideas that depend on business decisions (delivery information, categories, creator listings, loyalty schemes and similar) have been put to the owner in a separate proposals document. Their outcomes will be recorded here once agreed.
+
+#### 3.2.1 Measured Competitor Findings vs. Engineering Responses ("So What?" Analysis)
+
+To ensure Paperbag Hobbies avoids the performance bottlenecks and accessibility barriers identified during competitor audits, each finding directly dictates an architectural requirement:
+
+| Competitor Finding | Measured Impact | Direct Design Response ("So What?") | Rationale & Traceability |
+|---|---|---|---|
+| **Piper Makes** | LCP 7.3s; three separate `<h1>` elements on homepage | Set strict asset budget (<1.5 MB), native image lazy-loading, enforce a single `<h1>` per document | Prevents render-blocking resource queues and maintains an unambiguous document outline for screen readers (D9, D10). |
+| **Gear Guts Mek Shop** | 309 network requests; 10.0 MB total payload on initial load | Zero third-party ad/tracking scripts; modular vanilla JS; single custom CSS stylesheet | Eliminates third-party script latency and bandwidth bloat, securing fast initial loads on mobile networks (D11). |
+| **Archie's Forge** | Cookie consent banner obscures ~25% of the mobile viewport (375px) | Non-modal top announcement bar; deferred non-essential storage | Preserves immediate content visibility without forcing disruptive modal overlays on landing (D6). |
+| **Industry-wide** | Links missing discernible names; touch targets < 44px (e.g., 28×28px menu buttons) | Enforce minimum 44×44px hit areas and explicit `aria-label` text on all icon controls | Ensures full WCAG 2.1 AA compliance for touch navigation and screen reader users (D12, D13). |
 
 ### 3.3 Design decisions
 
