@@ -22,6 +22,7 @@ Built for the Gateway Qualifications Level 5 Diploma in Web Application Developm
 10. [Attribution](#10-attribution)
 
 ---
+
 ## 1. Purpose
 
 Paperbag Hobbies is a real, independently run online shop that sells proxy miniatures made by a range of third-party creators, for tabletop wargaming and role-playing games. The range covers two settings: the grimdark far future and medieval fantasy. This website is the shop front for the business, and the owner is the client for this project.
@@ -132,20 +133,130 @@ The project follows a lightweight Scrum-style process, adapted for a single deve
 
 Further user stories are added after each sprint review and after user testing, with the date added.
 
+---
 
 ## 3. UX Design and Rationale
 
-`TODO:` cover the five UX principles from the unit specification:
+This project follows Jesse James Garrett’s **Five Planes of User Experience** methodology, moving systematically from abstract business and user goals down to concrete surface implementation:
 
-- **Information hierarchy:** clear headings, priority-based layout
-- **User control:** no autoplay media, no unrequested pop-ups
-- **Consistency:** shared header, footer and component styles
-- **Confirmation:** visible feedback after every user action
-- **Accessibility:** contrast, alt text, keyboard support, focus management
+1. **Strategy:** Balances business goals (establishing an online storefront for Paperbag Hobbies and consolidating proxy miniature lines) with user goals (finding specific setting models, verifying scale and price, and inspecting model details).
+2. **Scope & Phasing:** Defines the Phase 1 MVP features (responsive layout, accessible lightbox, user-controlled hero slideshow, and category filtering) while establishing a clear roadmap for Phase 2 back-end integration (live PayPal payment processing, account management, and dynamic inventory sync).
+3. **Structure:** Information architecture built around a plain 4-link navigation structure, logical setting classifications (Grimdark Future vs. Medieval Fantasy), and predictable focus/interaction models.
+4. **Skeleton:** Mobile-first single-column layout transitioning to multi-column CSS Grid cards, 44×44px minimum touch targets, and visual hierarchy prioritizing key calls to action.
+5. **Surface:** Custom CSS design tokens, scalable typography (Inter), and strict WCAG 2.1 AA contrast compliance across all visual elements.
 
-### Wireframes
+### 3.0 Wireframes
 
-`TODO:` add wireframe images (desktop, mobile, modal) and explain the reasoning behind each.
+#### Desktop wireframe (1024 px+)
+
+```text
++-------------------------------------------------------------------------------------+
+| [Skip to content]                                                                   |  ← visually hidden until focused
++-------------------------------------------------------------------------------------+
+| [Logo] Paperbag Hobbies          Home   Shop   About          [Cart 0]              |  ← sticky header
++-------------------------------------------------------------------------------------+
+|                                                                                     |
+|  +-------------------------------------------------------------------------------+  |
+|  |  HERO (solid panel over image or plain background)                            |  |
+|  |  Headline: clear statement of what the shop sells                             |  |
+|  |  One supporting sentence                                                      |  |
+|  |  [ Browse Shop ]                                                              |  |
+|  |  ◀  ●  ●  ●  ▶   (user-controlled slideshow controls only)                   |  |
+|  +-------------------------------------------------------------------------------+  |
+|                                                                                     |
+|  Featured models                                                                 |  |
+|  +-------------+  +-------------+  +-------------+  +-------------+              |  |
+|  |   Image     |  |   Image     |  |   Image     |  |   Image     |              |  |
+|  |   Title     |  |   Title     |  |   Title     |  |   Title     |              |  |
+|  |   Price     |  |   Price     |  |   Price     |  |   Price     |              |  |
+|  | [View]      |  | [View]      |  | [View]      |  | [View]      |              |  |
+|  +-------------+  +-------------+  +-------------+  +-------------+              |  |
+|                                                                                     |
++-------------------------------------------------------------------------------------+
+|  Footer: Shipping · Contact · Non-affiliation notice · © Paperbag Hobbies           |
++-------------------------------------------------------------------------------------+
+```
+
+##### Rationale (desktop)
+
+- Sticky header keeps navigation and cart always available (supports US03, US05).
+- Hero sits on a solid or overlay panel so text contrast is guaranteed (D15).
+- Slideshow is strictly user-controlled (no autoplay) to satisfy WCAG 2.2.2 and US02.
+- Product cards are image-led with real text labels (D3, D5).
+- Single `<h1>` in the hero; everything else is `<h2>` / `<h3>`.
+
+#### Mobile wireframe (320 px – 768 px)
+
+```text
++---------------------------------------------------------------+
+| [Skip to content]                                             |
++---------------------------------------------------------------+
+| [Logo] Paperbag Hobbies              [≡]  [Cart 0]            |  ← 44×44 px targets
++---------------------------------------------------------------+
+| MOBILE MENU (hidden until opened)                             |
+|  • Home                                                       |
+|  • Shop                                                       |
+|  • About                                                      |
++---------------------------------------------------------------+
+|                                                               |
+|  HERO                                                         |
+|  Headline                                                     |
+|  Supporting sentence                                          |
+|  [ Browse Shop ]                                              |
+|  ◀ ● ● ● ▶                                                   |
+|                                                               |
+|  Featured models                                              |
+|  +---------------------------------------------------------+  |
+|  | Image                                                   |  |
+|  | Title                                                   |  |
+|  | Price                                                   |  |
+|  | [View]                                                  |  |
+|  +---------------------------------------------------------+  |
+|  (one card per row)                                           |
+|                                                               |
++---------------------------------------------------------------+
+|  Footer (stacked links)                                       |
++---------------------------------------------------------------+
+```
+
+##### Rationale (mobile)
+
+- Hamburger and cart icons are minimum 44 × 44 px (D13).
+- Menu is a simple disclosure list — no icon-only links without accessible names (D12).
+- Hero and cards stack to a single column; no horizontal scroll (US06).
+- Skip link remains the first focusable element on every viewport (D7).
+
+#### Accessible lightbox / product detail wireframe
+
+```text
++---------------------------------------------------------------------+
+|  BACKDROP (semi-transparent, click closes)                          |
+|                                                                     |
+|     +----------------------------------------------------------+    |
+|     |  role="dialog"  aria-modal="true"  aria-labelledby=...   |    |
+|     |                                              [ Close ✕]  |    |
+|     |                                                          |    |
+|     |  +----------------------------------------------------+  |    |
+|     |  |              Product image                         |  |    |
+|     |  +----------------------------------------------------+  |    |
+|     |                                                          |    |
+|     |  Product title  (id referenced by aria-labelledby)       |    |
+|     |  Price                                                   |    |
+|     |  Short description                                       |    |
+|     |                                                          |    |
+|     |  [ Buy – online checkout coming soon ]                   |    |
+|     |                                                          |    |
+|     +----------------------------------------------------------+    |
+|                                                                     |
++---------------------------------------------------------------------+
+```
+
+##### Rationale (lightbox)
+
+- Native dialog semantics + focus trap + Escape to close (US04, US07).
+- Focus is returned to the triggering image/button when the lightbox closes.
+- “Buy” button is honest about scope (US05) — no fake checkout.
+- All text is real HTML, never part of the image (D5).
 
 ### Design decisions that depart from common UX guidance
 
@@ -187,8 +298,8 @@ All three appear to be built on a hosted shop platform (Shopify), judging by ele
 | Requests and data transferred, cache disabled | 159 requests, 4.0 MB | 309 requests, 10.0 MB | 530 requests, 5.6 MB |
 | Menu button at 375px | 28 × 28px | Not measured | 40 × 65.6px |
 
-(a) Lighthouse warned that the page loaded too slowly and results may be incomplete.
-(b) Lighthouse warned that browser extensions affected the run.
+*(a) Lighthouse warned that the page loaded too slowly and results may be incomplete.*  
+*(b) Lighthouse warned that browser extensions affected the run.*
 
 A Largest Contentful Paint of 2.5 s or less is rated good by Lighthouse. All three sites are well above it.
 
@@ -298,7 +409,6 @@ An automated score does not prove accessibility, so manual keyboard and screen r
 - Where a result cannot be improved, the limitation is logged and justified (for example bug B2).
 
 **Status:** separate HTML pages are the working baseline. Whether to refactor into client-side templates with a hash router will be decided later, once the site is more developed, by comparing the options against validation coverage, performance, maintainability and the assessment criteria.
-
 
 ---
 
@@ -460,8 +570,6 @@ paperbag-hobbies/
 
 `TODO:` update as pages are added. All file and folder names are lowercase with hyphens and no spaces for cross-platform compatibility.
 
----
-
 ### 6.5 Global typography (`styles.css`)
 
 | Rule | Reason |
@@ -529,4 +637,3 @@ Example: `feat: add HTML5 boilerplate shell with head metadata and linked assets
 | Product images | `TODO: state source and licence` | Product cards |
 
 `TODO:` add any code snippets or tutorials used, and ensure each has a matching comment above the code.
-let
