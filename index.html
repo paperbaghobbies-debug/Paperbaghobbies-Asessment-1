@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Paperbag Hobbies | Custom 3D Printing and Miniatures</title>
+  <title>Paperbag Hobbies | 3D Printing and Miniatures</title>
   <meta name="description" content="High-precision resin 3D printing, custom tabletop terrain, and proxy miniatures crafted for tabletop gaming enthusiasts.">
   <meta name="theme-color" content="#c98a4b">
   <link rel="icon" type="image/png" href="assets/images/logo/paperbag-logo.png">
 
-  <!-- Google Fonts: Inter (https://fonts.google.com/specimen/Inter), licensed under the SIL Open Font License -->
+  <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
@@ -17,10 +17,86 @@
   <script src="assets/js/main.js" defer></script>
 </head>
 <body>
+  <!-- Accessible Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
+  <!-- Top Announcement Bar (Delivery & Lead Times) -->
+  <div class="announcement-bar" role="region" aria-label="Store announcement">
+    <p class="announcement-text">
+      Handcrafted 3D Proxy Miniatures • Standard dispatch 3–5 working days
+    </p>
+  </div>
+
+  <!-- Global Site Header (Centered Stacked Layout) -->
+  <header class="site-header">
+    <!-- Top Row: Centered Brand Identity -->
+    <div class="header-brand-row">
+      <a class="logo-link" href="index.html" aria-label="Paperbag Hobbies - Home">
+        <img class="header-logo" src="assets/images/logo/pbm-logo.png" alt="Paperbag Hobbies Crest Logo" width="51" height="48">
+      </a>
+    </div>
+
+    <!-- Bottom Row: Navigation, Social Links & Cart -->
+    <div class="header-nav-row">
+      <!-- Mobile Disclosure Button -->
+      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="primary-nav-list" aria-label="Toggle navigation menu">
+        <span class="nav-toggle-icon" aria-hidden="true">☰</span>
+        <span class="nav-toggle-label">Menu</span>
+      </button>
+
+      <!-- Primary Navigation -->
+      <nav class="primary-nav" aria-label="Main navigation">
+        <ul id="primary-nav-list" class="nav-list">
+          <li class="nav-item"><a href="index.html" class="nav-link nav-link-active" aria-current="page">Home</a></li>
+          <li class="nav-item"><a href="shop.html" class="nav-link">Shop</a></li>
+          <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+          <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Community Social Links -->
+      <div class="header-socials" aria-label="Social media channels">
+        <a href="https://instagram.com" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Paperbag Hobbies on Instagram (opens in new tab)">IG</a>
+        <a href="https://facebook.com" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Paperbag Hobbies on Facebook (opens in new tab)">FB</a>
+        <a href="https://discord.com" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Paperbag Hobbies on Discord (opens in new tab)">DC</a>
+      </div>
+
+      <!-- Header Cart Link -->
+      <a href="cart.html" class="cart-link" aria-label="Shopping Cart, 0 items">
+        <span class="cart-icon" aria-hidden="true">🛒</span>
+        <span class="cart-text">Cart</span>
+        <span class="cart-badge" aria-hidden="true">0</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Primary Main Landmark -->
   <main id="main-content">
     <h1>Paperbag Hobbies</h1>
   </main>
 
+  <!-- Global Site Footer (Refined E-Commerce Style) -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-column footer-shipping">
+        <h3>Shipping & Dispatch</h3>
+        <p>Standard dispatch within 3–5 working days. Securely packaged in protective resin-safe casing.</p>
+      </div>
+
+      <div class="footer-column footer-contact">
+        <h3>Support & Contact</h3>
+        <p>Email: workshop@paperbaghobbies.example</p>
+        <p>Based in Nottingham, United Kingdom</p>
+      </div>
+
+      <div class="footer-column footer-disclaimer">
+        <h3>Disclaimer</h3>
+        <p>Independent proxy miniature workshop. Not endorsed by or affiliated with Games Workshop.</p>
+      </div>
+    </div>
+    <div class="footer-bottom" style="text-align: center; margin-top: var(--space-md); font-size: 0.85rem;">
+      <p>© 2026 Paperbag Hobbies. All rights reserved.</p>
+    </div>
+  </footer>
 </body>
 </html>
