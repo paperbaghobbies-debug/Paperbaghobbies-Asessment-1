@@ -1,3 +1,27 @@
+# Paperbag Hobbies
+
+A responsive front-end website for Paperbag Hobbies, an independent online shop selling proxy miniatures from third-party creators for tabletop wargaming and role-playing games.
+
+Built for the Gateway Qualifications Level 5 Diploma in Web Application Development, Unit 1: User Centric Front End Development (Y/650/3525).
+
+> **Status:** work in progress. Sections marked `TODO` are completed as each build phase finishes.
+
+---
+
+## Contents
+
+1. [Purpose](#1-purpose)
+2. [Target Audience and User Stories](#2-target-audience-and-user-stories)
+3. [UX Design and Rationale](#3-ux-design-and-rationale)
+4. [Design System](#4-design-system)
+5. [Technology Stack](#5-technology-stack)
+6. [Development Decisions](#6-development-decisions)
+7. [Testing](#7-testing)
+8. [Version Control](#8-version-control)
+9. [Deployment](#9-deployment)
+10. [Attribution](#10-attribution)
+
+---
 ## 1. Purpose
 
 Paperbag Hobbies is a real, independently run online shop that sells proxy miniatures made by a range of third-party creators, for tabletop wargaming and role-playing games. The range covers two settings: the grimdark far future and medieval fantasy. This website is the shop front for the business, and the owner is the client for this project.
