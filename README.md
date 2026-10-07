@@ -4,7 +4,7 @@ A responsive front-end website for Paperbag Hobbies, an independent online shop 
 
 Built for the Gateway Qualifications Level 5 Diploma in Web Application Development, Unit 1: User Centric Front End Development (Y/650/3525).
 
-> **Status:** work in progress. Sections marked `TODO` are completed as each build phase finishes.
+> **Status:** Work in progress. Sections marked `TODO` are completed as each build phase finishes.
 
 ---
 
@@ -145,6 +145,53 @@ This project follows Jesse James Garrett’s **Five Planes of User Experience** 
 4. **Skeleton:** Mobile-first single-column layout transitioning to multi-column CSS Grid cards, 44×44px minimum touch targets, and visual hierarchy prioritizing key calls to action.
 5. **Surface:** Custom CSS design tokens, scalable typography (Inter), and strict WCAG 2.1 AA contrast compliance across all visual elements.
 
+1. **Strategy:** Balances business goals (establishing an online storefront for Paperbag Hobbies and consolidating proxy miniature lines) with user goals (finding specific setting models, verifying scale and price, and inspecting model details).
+2. **Scope & Phasing:** Defines the Phase 1 MVP features (responsive layout, accessible lightbox, user-controlled hero slideshow, and category filtering) while establishing a clear roadmap for Phase 2 back-end integration (live PayPal payment processing, account management, and dynamic inventory sync).
+3. **Structure:** Information architecture built around a plain 4-link navigation structure, logical setting classifications (Grimdark Future vs. Medieval Fantasy), and predictable focus/interaction models.
+4. **Skeleton:** Mobile-first single-column layout transitioning to multi-column CSS Grid cards, 44×44px minimum touch targets, and visual hierarchy prioritizing key calls to action.
+5. **Surface:** Custom CSS design tokens, scalable typography (Inter), and strict WCAG 2.1 AA contrast compliance across all visual elements.
+
+### 3.0 Five UX principles
+
+The unit specification requires explicit coverage of five core UX principles. Each principle is mapped below to concrete decisions already made in this project.
+
+| Principle | How it is applied in Paperbag Hobbies | Evidence |
+|---|---|---|
+| **Information hierarchy** | One clear `<h1>` states the offer; supporting content uses `<h2>` / `<h3>`. The hero and primary call-to-action appear above the fold on both mobile and desktop. Product cards lead with image → title → price → action. | D1, D9, wireframes 3.1 & 3.2 |
+| **User control** | No autoplay media. The hero slideshow moves only when the user presses previous/next. The lightbox opens and closes only on explicit user action (click, keyboard or Escape). Nothing is forced on the visitor. | D4, US02, US04, WCAG 2.2.2 |
+| **Consistency** | Shared header, footer and landmark structure on every page. Design tokens control colour, spacing and type. All interactive controls meet the same 44 × 44 px minimum and carry visible text names. | A3, A7, A8, D12, D13 |
+| **Confirmation** | Every meaningful action will give visible feedback (button state change, lightbox open/close, filter result count, form success/error message). Until those features are built, the principle is recorded as a design requirement. | US05, planned form and filter feedback |
+| **Accessibility** | Skip link is the first focusable element. Colour contrast meets WCAG 2.1 AA (bug B1 fixed before any components used the palette). Focus is visible and managed in the lightbox. Images will carry meaningful `alt` text. Touch targets are ≥ 44 px. | D7, D13, D15, D18, section 4.3, US07 |
+
+These five principles sit inside the broader Five Planes framework already described above: Strategy and Scope define *what* must be achieved; Structure, Skeleton and Surface are the means by which the principles are delivered.
+
+```mermaid
+flowchart TD
+    subgraph Planes["Five Planes of UX"]
+        Strategy --> Scope
+        Scope --> Structure
+        Structure --> Skeleton
+        Skeleton --> Surface
+    end
+
+    subgraph Principles["Five UX Principles"]
+        IH[Information hierarchy]
+        UC[User control]
+        CO[Consistency]
+        CF[Confirmation]
+        AC[Accessibility]
+    end
+
+    Structure --> IH
+    Structure --> UC
+    Skeleton --> CO
+    Skeleton --> CF
+    Surface --> AC
+    Surface --> IH
+```
+**Figure 1 – Relationship between the Five Planes and the five UX principles.**  
+Strategy and Scope define the project goals. The three lower planes (Structure, Skeleton, Surface) are the layers in which the five UX principles are actually delivered. Information hierarchy and user control are shaped mainly at Structure level; consistency and confirmation at Skeleton level; accessibility is realised most visibly at Surface level, while still being constrained by decisions made higher up.
+
 ### 3.0 Wireframes
 
 #### Desktop wireframe (1024 px+)
@@ -258,14 +305,6 @@ This project follows Jesse James Garrett’s **Five Planes of User Experience** 
 - “Buy” button is honest about scope (US05) — no fake checkout.
 - All text is real HTML, never part of the image (D5).
 
-### Design decisions that depart from common UX guidance
-
-Colour palette: the original palette failed WCAG AA contrast and was revised. See [4.3 Colour contrast and the palette change](#43-colour-contrast-and-the-palette-change).
-
-`TODO:` list and justify any other deliberate departures (required for Distinction).
-
----
-
 ### 3.1 Competitor review
 
 **Method**
@@ -366,7 +405,7 @@ These are standards the developer applies. They are traced to evidence and to us
 | D7 | A skip link is the first focusable element on every page. | Piper Makes provides one. | US07 |
 | D8 | Native HTML elements come first, with no redundant ARIA (for example no `role="main"` on `<main>`). | Piper Makes repeats the main role. | US07 |
 | D9 | One `<h1>` per page, with `<h2>` and `<h3>` below it. | Piper Makes has three `<h1>` elements on its homepage. | US07 |
-| D10 | Every image has `width` and `height`, is compressed, and is lazy-loaded when below the fold. | Lighthouse flags Piper Makes for missing dimensions and possible image savings. All three have a Largest Contentful Paint of 6.5 s or more. | US06 |
+| D10 | Every image has `width` and `height`, is compressed, and is lazy-loaded below the fold. | Lighthouse flags Piper Makes for missing dimensions and possible image savings. All three have a Largest Contentful Paint of 6.5 s or more. | US06 |
 | D11 | Pages stay light, with few requests and no heavy third-party scripts at this stage. | The competitors make 159, 309 and 530 requests and transfer 4.0, 10.0 and 5.6 MB on one load. | US06 |
 | D12 | Every icon-only link or button has a text name. | Lighthouse reports links without a discernible name on all three sites. | US07 |
 | D13 | Controls are at least 44 × 44px, including icon buttons. | Piper Makes' menu button measures 28 × 28px and Archie's Forge's is 40px wide. | US06, US07 |
