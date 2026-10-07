@@ -254,6 +254,8 @@ An automated score does not prove accessibility, so manual keyboard and screen r
 - Each feature or fix is a separate commit in Conventional Commits format, with documentation committed per step.
 - Where a result cannot be improved, the limitation is logged and justified (for example bug B2).
 
+**Status:** separate HTML pages are the working baseline. Whether to refactor into client-side templates with a hash router will be decided later, once the site is more developed, by comparing the options against validation coverage, performance, maintainability and the assessment criteria.
+
 
 ---
 
