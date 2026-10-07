@@ -1,39 +1,14 @@
-# Paperbag Hobbies
-
-A responsive front-end website for a small business that sells 3D-printed tabletop miniatures, sci-fi proxy terrain and custom CAD commissions.
-
-Built for the Gateway Qualifications Level 5 Diploma in Web Application Development, Unit 1: User Centric Front End Development (Y/650/3525).
-
-> **Status:** work in progress. Sections marked `TODO` are completed as each build phase finishes.
-
----
-
-## Contents
-
-1. [Purpose](#1-purpose)
-2. [Target Audience and User Stories](#2-target-audience-and-user-stories)
-3. [UX Design and Rationale](#3-ux-design-and-rationale)
-4. [Design System](#4-design-system)
-5. [Technology Stack](#5-technology-stack)
-6. [Development Decisions](#6-development-decisions)
-7. [Testing](#7-testing)
-8. [Version Control](#8-version-control)
-9. [Deployment](#9-deployment)
-10. [Attribution](#10-attribution)
-
----
-
 ## 1. Purpose
 
-Paperbag Hobbies is a real, independently run online shop that sells Warhammer-compatible proxy miniatures made by a range of third-party creators. The range covers two settings: the grimdark far future and medieval fantasy. This website is the shop front for the business, and the owner is the client for this project.
+Paperbag Hobbies is a real, independently run online shop that sells proxy miniatures made by a range of third-party creators, for tabletop wargaming and role-playing games. The range covers two settings: the grimdark far future and medieval fantasy. This website is the shop front for the business, and the owner is the client for this project.
 
 ### 1.1 The problem
 
-Proxy models come from many independent creators, so hobbyists often have to search several places to find what they need. One storefront that gathers a range of models and groups them by setting makes them quicker to find and to buy. `[CLIENT-CONFIRM]`
+Proxy models come from many independent creators, so hobbyists often have to search several places to find what they need. One storefront that gathers a range of models and groups them by setting makes them quicker to find and to buy.
 
 ### 1.2 Client requirements
 
-The owner supplied the colour palette, the visual style and the requirements below. `[CLIENT-CONFIRM: add the date and how they were agreed]`
+The owner supplied the colour palette, the visual style and the requirements below during planning.
 
 | Requirement | Source | How the site addresses it |
 |---|---|---|
@@ -52,7 +27,7 @@ The age ranges are working estimates based on general tabletop hobby demographic
 | Audience | Est. age | Needs | Design response |
 |---|---|---|---|
 | Core wargamers (primary) | 25 to 44 | Find models for their armies quickly, with clear prices and scale information | Filtering by setting, detailed product information |
-| D&D and tabletop RPG players | 18 to 40 | Find single character and monster models | Strong product images, easy browsing |
+| Role-playing game players | 18 to 40 | Find single character and monster models | Strong product images, easy browsing |
 | Newer and younger hobbyists | 16 to 24 | A fast, phone-friendly experience | Mobile-first layout, 44px touch targets |
 | Returning and older hobbyists | 45 to 60+ | Readable, simple pages | High contrast, resizable text, plain navigation |
 | Gift buyers (secondary) | 30 to 60 | Understand the range without jargon | Plain category names, an obvious route to buy |
@@ -66,29 +41,73 @@ The age ranges are working estimates based on general tabletop hobby demographic
 
 ### 1.5 Scope
 
-This project delivers the front end: HTML, CSS and light JavaScript for the navigation, slideshow and lightbox. PayPal payment, accounts and order handling need a back end and are planned for later projects. No form data is sent anywhere at this stage, and the site says so wherever a form appears.
+This project delivers the front end: HTML, CSS and light JavaScript for the navigation, slideshow and lightbox. PayPal payment, accounts and order handling need a back end and are planned for later projects. No data is sent anywhere at this stage, and the site says so wherever a form or checkout appears. Delivery, returns, privacy and contact pages are planned for a later sprint (see the product backlog in section 2.2), and links to them are added only once the pages exist.
 
 ### 1.6 Development approach
 
-The site is built as separate, semantic HTML pages first, validated page by page. CSS is written mobile-first with design tokens. JavaScript is then added only for interactive features. Each step is tested before the next begins, and each feature is committed separately.
+The site is built as separate, semantic HTML pages first, validated page by page. CSS is written mobile-first with design tokens. JavaScript is added only for interactive features. Whether to refactor into client-side templates with a hash router is an open decision (see section 3.4). Each step is tested before the next begins, and each feature is committed separately.
 
 ---
 
-## 2. User Stories
+## 2. Target Audience and User Stories
 
 | ID | User story | Acceptance criteria |
 |---|---|---|
-| US01 | As a first-time visitor, I want to see straight away that the site sells Warhammer-compatible proxy models, so I can decide if it is for me. | The headline and one supporting sentence state the offer. A link to the shop is visible without scrolling at 375px and 1280px. |
+| US01 | As a first-time visitor, I want to see straight away what the site sells, so I can decide if it is for me. | The headline and one supporting sentence state the offer. A link to the shop is visible without scrolling at 375px and 1280px. |
 | US02 | As a returning customer, I want to see current promotions on the homepage, so I can spot deals. | A hero slideshow shows featured models. Previous and next controls work by mouse, touch and keyboard. Nothing moves unless the user acts. |
 | US03 | As a wargamer, I want to browse by setting and category, so I can find models for my army. | Models are grouped by grimdark future and fantasy medieval. A filter shows only matching products. |
 | US04 | As a shopper, I want to enlarge product images, so I can check the detail before buying. | A lightbox opens from a product image. `Escape` closes it, focus stays inside while open, and focus returns to the image on close. |
-| US05 | As a shopper, I want a clear way to buy a model, so I can complete a purchase. | Each product shows its price and a purchase action. Payment is described as coming soon until PayPal is added. |
+| US05 | As a shopper, I want a clear purchase action on each product, so I know how to buy it. | Each product shows its price and a clear buy button. Until PayPal is added, the button explains that online checkout is coming soon. |
 | US06 | As a mobile user, I want a layout that fits my screen, so I can browse comfortably. | No horizontal scrolling from 320px to 1440px. Links and buttons are at least 44px tall. |
-| US07 | As a keyboard or screen reader user, I want to navigate every page independently. | A skip link is the first focusable item. Focus is always visible. Images have meaningful alt text. Text meets WCAG AA contrast. |
-| US08 | As a customer, I want to find delivery, returns and contact details, so I can get help. `[CLIENT-CONFIRM]` | These details are reachable from the footer of every page. |
+| US07 | As a keyboard or screen reader user, I want to navigate every page independently, so I can use the site without a mouse. | A skip link is the first focusable item. Focus is always visible. Images have meaningful alt text. Text meets WCAG AA contrast. |
 
 Each story's acceptance criteria become tests in [TESTING.md](TESTING.md), and each test names its story ID.
----
+
+### 2.1 Agile approach
+
+The project follows a lightweight Scrum-style process, adapted for a single developer.
+
+| Scrum element | How it is applied |
+|---|---|
+| Product backlog | User stories in section 2.2, ordered by MoSCoW priority. New stories are added as they emerge. |
+| Sprint | Each roadmap phase is one sprint with its own goal. |
+| Sprint backlog | The numbered steps inside the phase, each tested and committed separately. |
+| Sprint review | At the end of each sprint, the result is checked against the acceptance criteria and recorded in [TESTING.md](TESTING.md). |
+| Retrospective | Short notes at the end of each sprint on what worked and what to change. |
+
+**Definition of done** for every step:
+
+- The code is saved and committed with a Conventional Commit message.
+- The browser console shows no errors.
+- HTML and CSS pass the W3C validators (known exception: bug B2).
+- Manual tests for the step are written, run and evidenced.
+- Keyboard and responsive checks are done at 375px, 768px and 1280px.
+- README and TESTING.md are updated at the end of the step.
+
+**Sprint 1 retrospective (Phase 1, foundations)**
+
+- *Worked:* testing before committing caught a WCAG contrast failure in the original palette (B1) before any component used it. Researching three similar shops before building gave evidence for each design decision (section 3).
+- *Changed:* screenshots and documentation are now committed once per step instead of one at a time, and git commands are run singly so a failed command is seen.
+
+### 2.2 Product backlog
+
+| ID | Story | Priority | Sprint | Status |
+|---|---|---|---|---|
+| US01 | First-time visitor sees what the shop sells | Must | TBC | Backlog |
+| US02 | Homepage hero slideshow of promotions | Must | TBC | Backlog |
+| US03 | Browse by setting and category | Must | TBC | Backlog |
+| US04 | Enlarge images in a lightbox | Must | TBC | Backlog |
+| US05 | Clear purchase action on each product | Should | TBC | Backlog |
+| US06 | Responsive layout on all devices | Must | Every sprint | In progress |
+| US07 | Keyboard and screen reader access | Must | Every sprint | In progress |
+| US08 | As a customer, I want to find delivery, returns, privacy and contact information, so I can get help and understand how my data is used. | Should | Next release | Backlog |
+| US09 | As a customer, I want to pay securely with PayPal, so I can complete my purchase. | Won't (this release) | Later project | Backlog |
+| US10 | As a shopper, I want to search by name or keyword, so I can find a specific model quickly. | Could | Next release | Backlog |
+| US11 | As a shopper, I want to see which creator made each model, so I can follow and credit them. | Should | TBC | Backlog |
+| US12 | As the shop owner, I want to test the site with real gamers, so I can fix usability problems. | Should | After Sprint 3 | Backlog |
+
+Further user stories are added after each sprint review and after user testing, with the date added.
+
 
 ## 3. UX Design and Rationale
 
