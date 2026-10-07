@@ -70,7 +70,7 @@ This project delivers the front end: HTML, CSS and light JavaScript for the navi
 
 ### 1.6 Development approach
 
-The site is built as separate, semantic HTML pages first, validated page by page. CSS is written mobile-first with design tokens. JavaScript is added only for interactive features. An architectural feasibility study evaluated dynamic client-side `<template>` swapping, but separate semantic HTML pages were selected as the primary foundation (see section 6.3). Each step is tested before the next begins, and each feature is committed separately.
+The site is built as separate, semantic HTML pages first, validated page by page. CSS is written mobile-first with design tokens. JavaScript is added only for interactive features. I looked at a dynamic `<template>` approach early on, but chose separate semantic HTML pages as the foundation (see section 6.3). Each step is tested before the next begins, and each feature is committed separately.
 
 ---
 
@@ -137,19 +137,81 @@ Further user stories are added after each sprint review and after user testing, 
 
 ## 3. UX Design and Rationale
 
-This project follows Jesse James Garrett’s **Five Planes of User Experience** methodology, moving systematically from abstract business and user goals down to concrete surface implementation:
+This project follows Jesse James Garrett’s **Five Planes of User Experience** methodology, moving from abstract goals down to the concrete interface the visitor sees. Each plane answers a different set of questions.
 
-1. **Strategy:** Balances business goals (establishing an online storefront for Paperbag Hobbies and consolidating proxy miniature lines) with user goals (finding specific setting models, verifying scale and price, and inspecting model details).
-2. **Scope & Phasing:** Defines the Phase 1 MVP features (responsive layout, accessible lightbox, user-controlled hero slideshow, and category filtering) while establishing a clear roadmap for Phase 2 back-end integration (live PayPal payment processing, account management, and dynamic inventory sync).
-3. **Structure:** Information architecture built around a plain 4-link navigation structure, logical setting classifications (Grimdark Future vs. Medieval Fantasy), and predictable focus/interaction models.
-4. **Skeleton:** Mobile-first single-column layout transitioning to multi-column CSS Grid cards, 44×44px minimum touch targets, and visual hierarchy prioritizing key calls to action.
-5. **Surface:** Custom CSS design tokens, scalable typography (Inter), and strict WCAG 2.1 AA contrast compliance across all visual elements.
+#### Strategy (what is worth doing, what we are creating, and the value it provides)
 
-1. **Strategy:** Balances business goals (establishing an online storefront for Paperbag Hobbies and consolidating proxy miniature lines) with user goals (finding specific setting models, verifying scale and price, and inspecting model details).
-2. **Scope & Phasing:** Defines the Phase 1 MVP features (responsive layout, accessible lightbox, user-controlled hero slideshow, and category filtering) while establishing a clear roadmap for Phase 2 back-end integration (live PayPal payment processing, account management, and dynamic inventory sync).
-3. **Structure:** Information architecture built around a plain 4-link navigation structure, logical setting classifications (Grimdark Future vs. Medieval Fantasy), and predictable focus/interaction models.
-4. **Skeleton:** Mobile-first single-column layout transitioning to multi-column CSS Grid cards, 44×44px minimum touch targets, and visual hierarchy prioritizing key calls to action.
-5. **Surface:** Custom CSS design tokens, scalable typography (Inter), and strict WCAG 2.1 AA contrast compliance across all visual elements.
+**Focus – what is worth doing?**  
+Paperbag Hobbies currently has no dedicated online storefront. Proxy models are scattered across many independent creators, so hobbyists have to hunt in several places. Building a single, brand-led shop front that gathers models by setting is worth doing because it solves that fragmentation for the owner and for the customer.
+
+**Definition – what are we creating?**  
+A responsive front-end website (HTML, CSS and light JavaScript) that acts as the public face of the shop. It is not a full e-commerce platform yet — PayPal, accounts and order handling are deferred to later projects — but it must clearly show what the shop sells, let visitors browse by setting, enlarge product images, and understand how to buy.
+
+**Value**  
+- *For the owner:* a professional online presence that consolidates the range, reduces the need for customers to search elsewhere, and can later accept payments.  
+- *For visitors:* they can tell what the shop sells within seconds, find models for their army or character by setting, check fine detail in a lightbox, and see honest pricing and purchase information. Different audience groups (core wargamers, RPG players, newer hobbyists, gift buyers) each get a clear path to the models that matter to them.
+
+#### Scope (features and content)
+
+At Scope level the strategy is turned into concrete requirements.
+
+**Functional features (Phase 1 MVP)**  
+- Responsive layout that works from 320 px to 1440 px  
+- User-controlled hero slideshow of featured models (no autoplay)  
+- Product browsing with setting/category filters  
+- Accessible lightbox for enlarged product images  
+- Clear purchase action on each product (honest “online checkout coming soon” until PayPal is added)  
+- Skip link, visible focus and keyboard operability  
+
+**Content requirements**  
+- Plain-language headline and supporting sentence that state what the shop sells  
+- Product cards with image, title, price and short description  
+- Setting labels (Grimdark Future / Medieval Fantasy)  
+- Non-affiliation notice and basic trust information in the footer  
+- Alt text on all content images  
+
+Each item is justified by the owner brief, a user story, or a finding from the competitor review. Phase 2 (PayPal, accounts, live inventory) is deliberately out of scope for this unit.
+
+#### Structure (interaction design and information architecture)
+
+Structure decides the relationships between pieces of information and the order in which a visitor should encounter them.
+
+**Priority order for a first-time visitor (homepage)**  
+1. What the shop sells (headline + one supporting sentence + primary “Browse Shop” action)  
+2. Current promotions (user-controlled hero slideshow)  
+3. A sample of models the visitor can explore immediately (featured product cards)  
+4. Persistent way to reach Shop, About and (later) support pages (header navigation)  
+5. Trust and legal information (footer)  
+
+**Information relationships**  
+- Personal/brand identity (logo + shop name) sits with the main navigation so the visitor always knows where they are.  
+- Product image, title, price and action are kept together on every card so the decision to look closer or buy is never separated from the item.  
+- Setting filters live with the product list on the Shop page, not in a separate menu, so filtering feels part of browsing rather than a detour.  
+
+Navigation order mirrors the same priority: Home → Shop → About, with Cart available but not competing with the primary tasks.
+
+#### Skeleton (interface design, navigation design and layout patterns)
+
+Skeleton turns the structure into concrete layout and interaction patterns.
+
+- **Mobile-first single column** that expands into a multi-column CSS Grid for product cards on wider screens.  
+- **Repeated layout patterns** for consistency: the same sticky header, the same footer structure, and the same card anatomy (image → title → price → action) appear on every page. Once a visitor has seen the pattern on the homepage they can predict it on the Shop page.  
+- **44 × 44 px minimum touch targets** and visible text labels on every control.  
+- **Low-fidelity wireframes** (section 3.1) tested the arrangement of these elements before any CSS was written.  
+
+The repeated header/footer and card pattern is intentional — it reduces the amount a visitor has to re-learn when they move between pages.
+
+#### Surface (visual design)
+
+Surface is the most concrete plane — colour, type, imagery and the final visual hierarchy the visitor actually sees.
+
+- Custom CSS design tokens keep colour, spacing and radii consistent.  
+- Inter (400/600/700) with a system-font fallback.  
+- Strict WCAG 2.1 AA contrast (the original palette failed and was corrected — see section 4.3 and bug B1).  
+- Hero text sits on a solid or overlay panel so contrast is guaranteed even when a photographic background is used.  
+- Product imagery is local, compressed, and given explicit width/height to avoid layout shift.  
+
+Surface decisions reinforce the meaning established on the planes above rather than introducing new information.
 
 ### 3.0 Five UX principles
 
@@ -192,7 +254,7 @@ flowchart TD
 **Figure 1 – Relationship between the Five Planes and the five UX principles.**  
 Strategy and Scope define the project goals. The three lower planes (Structure, Skeleton, Surface) are the layers in which the five UX principles are actually delivered. Information hierarchy and user control are shaped mainly at Structure level; consistency and confirmation at Skeleton level; accessibility is realised most visibly at Surface level, while still being constrained by decisions made higher up.
 
-### 3.0 Wireframes
+### 3.1 Wireframes
 
 #### Desktop wireframe (1024 px+)
 
@@ -307,15 +369,17 @@ Strategy and Scope define the project goals. The three lower planes (Structure, 
 
 ### 3.1 Competitor review
 
-**Method**
+I wanted to understand how existing independent miniature shops present themselves before I designed my own layout. I chose three shops that sell similar products and examined their homepages on 06/10/2026 using Chrome DevTools.
 
-- **Selection:** three independent shops in the same hobby area were chosen for comparison.
-- **Date and tools:** all testing was done on 06/10/2026 in Chrome DevTools, on each site's homepage only.
-- **Views:** a desktop view and a 375px mobile view (device toolbar, iPhone SE profile).
-- **Measures:** Lighthouse (mobile) for performance, accessibility, best practices and SEO; the Network tab with cache disabled for requests and data transferred; the Elements tab and console queries for page structure; hover inspection for control sizes; and direct observation for hero movement.
-- **Rules:** facts are recorded before opinions. Anything not checked is marked "Not tested". Lighthouse scores vary between runs, so each is reported with its run conditions. Console error counts are not used, because browser extensions and blocked third-party requests inflate them. No images, code or text were copied. Supporting screenshots are held privately in `docs/private/` and can be shown on request.
+**How I worked**
+- I looked at each site on desktop and at 375 px (iPhone SE profile).
+- I ran Lighthouse (mobile) for performance, accessibility, best practices and SEO.
+- I checked the Network tab with cache disabled to see how many requests and how much data each page transferred.
+- I used the Elements panel and a few console queries to count headings, landmarks and images missing alt text.
+- I measured the size of the mobile menu buttons by hovering them in DevTools.
+- I only recorded what I could see or measure. Anything I did not check is marked “Not tested”.
 
-> **Visual Evidence:** Supporting research captures (including desktop layouts, mobile 375px viewports, Lighthouse audits, console queries, and network profiles for all three competitors) are held in `docs/private/` and can be provided upon request.
+Supporting screenshots are kept in `docs/private/` and can be shown on request.
 
 | Site | Address | What it appears to sell |
 |---|---|---|
@@ -323,9 +387,9 @@ Strategy and Scope define the project goals. The three lower planes (Structure, 
 | Gear Guts Mek Shop | https://geargutsmekshop.com | Made-to-order miniatures and digital files from several named ranges (from the homepage banners) |
 | Archie's Forge | https://www.archiesforge.co.uk | Miniatures, terrain, bases and hobby supplies (from the navigation labels) |
 
-All three appear to be built on a hosted shop platform (Shopify), judging by element ids and request names.
+All three look as if they are built on Shopify, judging by the element IDs and request names.
 
-**Measured comparison (mobile)**
+**What the numbers showed (mobile)**
 
 | Measure | Piper Makes | Gear Guts Mek Shop | Archie's Forge |
 |---|---|---|---|
@@ -337,28 +401,28 @@ All three appear to be built on a hosted shop platform (Shopify), judging by ele
 | Total Blocking Time | 230 ms (first run) | 250 ms | 1,620 ms |
 | Layout shift | 0 | 0 | 0.002 |
 | Requests and data transferred, cache disabled | 159 requests, 4.0 MB | 309 requests, 10.0 MB | 530 requests, 5.6 MB |
-| Menu button at 375px | 28 × 28px | Not measured | 40 × 65.6px |
+| Menu button at 375 px | 28 × 28 px | Not measured | 40 × 65.6 px |
 
 *(a) Lighthouse warned that the page loaded too slowly and results may be incomplete.*  
 *(b) Lighthouse warned that browser extensions affected the run.*
 
-A Largest Contentful Paint of 2.5 s or less is rated good by Lighthouse. All three sites are well above it.
+A Largest Contentful Paint of 2.5 s or less is rated good. All three sites were well above that.
 
-**Findings**
+**What I noticed and the decisions I took**
 
-| Aspect | Piper Makes | Gear Guts Mek Shop | Archie's Forge | Decision |
+| Aspect | Piper Makes | Gear Guts Mek Shop | Archie's Forge | My decision |
 |---|---|---|---|---|
-| First impression | Hero headline names the current product release but does not say in plain words what the business is. | Banner shows the shop name and a made-to-order notice, so the purpose is clear, but the page is dense with competing banners. | Hero advertises one product (custom name plates). The wider range is explained only by the menu labels. | D1 |
-| Navigation and categories | Three top-level links, one with a dropdown. At 375px these collapse into a hamburger menu beside search and cart icons. The button is named "Menu" and is keyboard-focusable. | On desktop, a left column of image links leads to named ranges, with no text menu. At 375px the menu collapses to a three-line icon placed below the banner, with search and cart icons above. The icon's own button size was not measured. | Ten text links grouped by army type, terrain, scale and supplies, plus wishlist, rewards and help. At 375px the menu collapses to a button named "Show menu" (keyboard-focusable) beside search, a centred logo, and account and cart icons. | D2 |
-| Promotions | Announcement bar with a discount code, wrapping to two lines on mobile. No hero movement was observed, so the hero is static. | Three static image banners stacked on the homepage: a Patreon invitation, a sale with discounts and stated exclusions, and a bases question. No end date visible in the capture. Hero movement not tested. | Delivery announcement bar, whose text is cut off at 375px (movement not confirmed), and one hero banner with a button. A "New releases" and "Best sellers" switch sits below. Hero movement not tested. | D4, D16, D17 |
-| Product cards and images | One large hero image beside a headline and a single button. Lighthouse flags images without explicit width and height. | A "New Releases" section follows the banners, shown as a two-column thumbnail grid at 375px. Detail is not legible in the capture. Image click behaviour not tested. | Image-led grid, four columns on desktop and two at 375px, with text "NEW" badges on most cards. Price and creator details not visible in the captures. Lighthouse reports images without alt attributes. | D3, D10, D18 |
-| Buying flow | Not tested | Not tested | Not tested | Backlog |
-| Trust signals | Not tested | Lead time (4 to 6 weeks) and sale exclusions are stated openly. The footer lists About, an affiliate programme, Shipping and Contact, with payment icons (including PayPal) and a copyright line. No returns or privacy link and no non-affiliation wording seen in the captured part of the footer. | Delivery notice that mentions duties, plus help, rewards and wishlist links. A cookie consent bar covers about a quarter of the screen at 375px (visual estimate). Footer not tested. | D6, client proposal |
-| Mobile and accessibility | Skip link first, with header, nav, main and footer landmarks. No images missing alt text, and 4 of 8 have empty alt. No horizontal scroll at 375px. Three `<h1>` elements on the homepage. Lighthouse reports links without a discernible name and role conflicts. | The footer is exposed as a contentinfo landmark. Lighthouse reports frames without titles and links without a discernible name. Banner headlines and labels appear to be images, and alt text was not checked. Other landmarks and the `<h1>` count not tested. | Lighthouse reports images without alt attributes, links without a discernible name, prohibited ARIA attributes, and links that rely on colour to be distinguished. The desktop hero headline sits directly over busy imagery (contrast not measured). Landmarks, `<h1>` count and skip link not tested. | D5, D7, D8, D9, D12, D13, D14, D15, D18, D19, D20 |
-| Performance | See the measured comparison. Lighthouse flags missing image dimensions and possible image savings. | See the measured comparison. Lighthouse also reports 32 third-party cookies. | See the measured comparison. | D10, D11 |
-| Visual style and IP | Dark charcoal and slate palette, minimal. Non-affiliation wording not tested. | Bold yellow and purple theme with a strong identity, consistent across banners but very busy. Partner names appear in image links. | Black header and white text, with photography doing most of the work. Category labels use setting-specific terms. Non-affiliation wording not tested. | Section 4 |
+| First impression | Hero names a product release but does not clearly say what the business is. | Banner states the shop name and a made-to-order notice, so the purpose is clear, but the page feels crowded. | Hero advertises one product. The wider range only appears in the menu. | D1 |
+| Navigation | Three top-level links. On mobile they collapse into a hamburger. The button is labelled “Menu” and is keyboard-focusable. | Desktop uses a column of image links. On mobile the menu becomes a three-line icon. | Ten text links. On mobile it becomes a “Show menu” button. | D2 |
+| Promotions | Discount code in an announcement bar. Hero is static. | Three stacked banners. No end date visible on the sale. | Delivery notice and one hero banner. | D4, D16, D17 |
+| Product cards | Large hero image plus one button. Lighthouse flagged missing width/height on images. | Thumbnail grid under the banners. | Image-led grid with “NEW” text badges. Some images missing alt text. | D3, D10, D18 |
+| Mobile & accessibility | Skip link present. Three `<h1>` elements on the homepage. Menu button only 28 px wide. | Frames without titles. Some links lack discernible names. | Images without alt, links that rely on colour, prohibited ARIA attributes. | D5, D7–D9, D12–D15, D18–D20 |
+| Performance | 159 requests / 4 MB. LCP 7.3 s. | 309 requests / 10 MB. | 530 requests / 5.6 MB. LCP 7.5 s. | D10, D11 |
 
-**Limitations:** the review covers each site's homepage on a single date, using one device profile. Lighthouse run conditions varied: the Gear Guts report warned of incomplete results and the Archie's Forge report warned that extensions affected it, so those two scores are indicative only. Cells marked "not tested" were outside the scope of this review. The three sites also differ from Paperbag Hobbies, which resells models from several third-party creators, so the lessons concern layout, accessibility and performance and not business model. The findings informed design decisions and are not a full audit.
+**Limitations**  
+I only looked at each homepage on one day and one device profile. Two of the Lighthouse runs carried warnings, so those scores are indicative only. The three shops also differ from Paperbag Hobbies (they are not multi-creator proxy stores), so the lessons are about layout, accessibility and performance rather than business model.
+
+The findings above shaped the design decisions listed in section 3.3.
 
 ### 3.2 What the review taught us
 
@@ -460,7 +524,7 @@ An automated score does not prove accessibility, so manual keyboard and screen r
 - Each feature or fix is a separate commit in Conventional Commits format, with documentation committed per step.
 - Where a result cannot be improved, the limitation is logged and justified (for example bug B2).
 
-**Status:** Separate HTML pages are the established project baseline. An exploratory study into dynamic `<template>` swapping was completed and ruled out for the main architecture (see section 6.3).
+**Status:** Separate HTML pages are the established project baseline. I explored a `<template>`-based approach and decided against it for the main architecture (see section 6.3).
 
 ---
 
@@ -592,39 +656,29 @@ A small, targeted reset sits directly below the design tokens. It removes browse
 
 **Validation:** passed the W3C CSS validator (Jigsaw) with no errors or warnings. Evidence is in [TESTING.md](TESTING.md), section 1.2.
 
-### 6.3 Architecture & Feasibility Research
+### 6.3 Architecture & feasibility research
 
-#### Architectural Evaluation: Multi-Page Application (MPA) vs. Dynamic `<template>` SPA
+Early in the project I looked at two possible ways to build the front end:
 
-To explore creative technical solutions, maximize site performance, and evaluate all potential architectural options for the client's needs, an exploratory feasibility study was conducted during the initial design phase.
+1. A traditional multi-page site (separate HTML files linked by ordinary links).
+2. A single-page approach that swaps content using native HTML `<template>` elements and a small amount of JavaScript.
 
-Specifically, research was carried out on whether a Single-Page Application (SPA) view-swapping pattern—utilizing native HTML5 `<template>` elements and custom JavaScript—could serve as a viable front-end foundation compared to a traditional Multi-Page Application (MPA).
+I wanted to see whether the template-swapping idea would give smoother navigation and still meet the unit criteria for accessibility, validation and future expansion.
 
-While the `<template>` approach offered creative possibilities for seamless view transitions without browser reloads, it was ultimately **evaluated and ruled out** as the primary foundation architecture for this project. Below is the technical breakdown and rationale behind exploring and ultimately rejecting this approach.
+**What I discovered**
 
----
+| Concern | Multi-page (chosen) | `<template>` SPA approach |
+|---|---|---|
+| Future back-end (Django) | Works naturally with server-rendered pages and built-in CSRF protection. | Would force the front end into a headless API and require extra JavaScript to handle CSRF tokens. |
+| Search engines | Every page arrives as complete HTML, so crawlers can index it reliably. | Risk that crawlers miss content if they do not run JavaScript. Would need a custom History API router and manual updates to `<title>` and meta description. |
+| Accessibility | Browser handles focus and screen-reader announcements on each new page load. | Dynamic injection breaks native focus unless I manually move focus and add `aria-live` regions. |
+| Validation | Each file can be checked on its own with the W3C validator. | Only the initial shell validates easily; content injected later is harder to test by file upload. |
 
-#### Research Findings & Technical Trade-offs
+**Decision**  
+I decided against using `<template>` swapping as the main architecture. A clean multi-page foundation is more robust for accessibility, SEO and the later Django work the client will need. I still keep the `<template>` technique available for smaller UI pieces (lightbox, filter results, etc.) where it is useful.
 
-##### 1. Back-End Integration & Architecture (Django & Database Complexity)
-* **MPA Architecture (Selected):** Aligns naturally with server-side rendering patterns (such as Django Template Language). Pages are served with complete HTML structures, allowing straightforward integration with native server-side authentication, forms, and built-in CSRF protection in future build phases.
-* **`<template>` / SPA Pattern (Evaluated & Ruled Out):** Would require decoupling the front end and forcing the back end into a headless REST API. Data would need to be requested asynchronously (`fetch()`) as JSON, introducing unnecessary state-management complexity and requiring bespoke JavaScript logic to handle CSRF token security (`X-CSRFToken`).
+This choice is recorded as architecture decision A1 in section 3.4.
 
-##### 2. Search Engine Optimisation (SEO) & Indexing
-* **MPA Architecture (Selected):** Guarantees that search engine web crawlers receive fully populated, semantic HTML on the initial HTTP response for every page, ensuring reliable site-wide indexing.
-* **`<template>` / SPA Pattern (Evaluated & Ruled Out):** Risks indexing failures if web crawlers do not execute dynamic client-side scripts. Overcoming this would require building a custom client-side router using the HTML5 History API (`history.pushState()` / `popstate`), alongside dynamic JavaScript routines to manually update metadata (`<title>` and `<meta name="description">`) during every DOM swap.
-
-##### 3. Accessibility & User Experience (WCAG Compliance)
-* **MPA Architecture (Selected):** Standard page navigation naturally manages focus restoration to the top of new documents and triggers screen readers automatically upon page load.
-* **`<template>` / SPA Pattern (Evaluated & Ruled Out):** Injecting template fragments dynamically breaks native keyboard navigation unless manual focus management is coded (e.g., targeting `<main>` or `<h1>` elements with `tabindex="-1"` and `.focus()`). Furthermore, dynamic updates require explicit `aria-live="polite"` regions so assistive technology can broadcast content updates.
-
----
-
-#### Conclusion & Final Design Rationale
-
-While native `<template>` view swapping remains a valuable technique in the developer toolkit for targeted UI components (such as modular overlays or dynamic data filters), it was **ruled out as the foundation architecture** for this application. 
-
-Choosing a clean, multi-page HTML/CSS foundation provides the most robust, accessible, and SEO-friendly solution for the client's requirements, ensuring full compliance with Unit 1 criteria without introducing unnecessary JavaScript overhead.
 
 ### 6.4 Folder structure
 
@@ -713,4 +767,4 @@ Example: `feat: add HTML5 boilerplate shell with head metadata and linked assets
 | Logo and mascot artwork | `TODO: state who created them` | Branding and About page |
 | Product images | `TODO: state source and licence` | Product cards |
 
-`TODO:` add any code snippets or tutorials used, and ensure each has a matching comment above the code.
+`TODO:` add any code snippets or tutorials used, and ensure each has a matching comment above the code.S
