@@ -111,3 +111,41 @@ Contrast ratios were calculated for every text and background pairing using the 
 
 2. **Footer Column Horizontal Compression**
    * **Issue:** Footer columns (`Shipping & Dispatch`, `Support & Contact`, `Disclaimer`) remained arranged in a horizontal row on mobile screens below `768px`,
+
+   ### 2.4 Feature Testing: US04 - Product Lightbox Quick View Modal
+
+* **Date:** 08/10/2026
+* **User Story:** US04 - Enlarge images in a lightbox
+* **Viewports Tested:** Desktop (`1200px+`), iPhone SE (`375px × 667px`)
+
+#### Feature Test Results
+
+| Test Case | Step / Action | Expected Result | Result | Notes |
+|---|---|---|---|---|
+| **Modal Launch** | Click product card body or image | Lightbox `<dialog>` opens with dark backdrop, rendering correct image, title, badge, price, and description | Pass | Handled dynamically via `main.js` event delegation |
+| **Backdrop Close** | Click dark overlay outside dialog | Modal closes cleanly | Pass | Native `<dialog>` click boundary check |
+| **Close Button** | Click top-right `✕` button | Modal closes cleanly | Pass | Button dismissed and cleared modal |
+| **CTA Bypass** | Click "Add to Cart" directly on card | Cart action fires without opening lightbox | Pass | Event listener guards against modal invocation |
+| **Keyboard Lock** | Press `Tab` inside open modal | Focus traps inside `<dialog>` between close `✕` and CTA button | Pass | Native dialog focus trapping |
+| **Escape Key** | Press `Escape` while modal is open | Modal closes immediately | Pass | Handled natively by `<dialog>` element |
+| **Focus Restore** | Close modal via button or `Escape` | Focus returns directly to triggering card element | Pass | Preserves keyboard navigation context (US07) |
+| **Mobile Reflow** | Open modal on 375px viewport | Content fits on screen with internal scroll and clear close control | Pass | Fixed height overflow bug (see below) |
+
+#### Visual Evidence & Responsive Fix
+
+##### Issue Identified (Pre-Fix):
+On smaller mobile viewports (e.g., iPhone SE at `375px × 667px`), the modal exceeded screen height, clipping the primary action button off-screen and hiding the close control.
+
+| Bug Identified (Pre-Fix) | Fixed Implementation |
+| :---: | :---: |
+| ![Lightbox height overflow and clipped button on iPhone SE](docs/screenshots/lightbox-overflow-iphone-se-bug.png) | ![Lightbox responsive fix showing scrollable modal and visible close button on iPhone SE](docs/screenshots/lightbox-responsive-iphone-se-fixed.png) |
+
+##### Issues Identified & Resolved:
+
+1. **Lightbox Vertical Content Clipping (iPhone SE)**
+   * **Issue:** Capped pixel dimensions caused the modal content to spill below the bottom viewport fold, obscuring the primary CTA button and preventing access to controls without scrolling the entire page backdrop.
+   * **Fix:** Updated `styles.css` under `.lightbox-dialog` to enforce `max-height: 85vh` and `overflow-y: auto`. Restricted mobile image containers (`.lightbox-image-container`) to `max-height: 200px` to maintain a compact vertical footprint while allowing inner dialog scrolling.
+
+2. **Hidden Close Button Position**
+   * **Issue:** Standard absolute positioning placed the close icon behind card edges on small screens.
+   * **Fix:** Styled `.lightbox-close` as a high-contrast circular button with `position: absolute`, pinned to the top-right corner with a high `z-index: 10` for effortless touch dismissal.
