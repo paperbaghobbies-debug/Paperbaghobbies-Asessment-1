@@ -305,6 +305,25 @@ p, a, span, h1, h2, h3, h4, h5, h6 {
     gap: 0.5rem;
   }
 
+  main,
+  .main-content {
+    padding: var(--space-md) var(--space-sm);
+  }
+
+  .section-title {
+    font-size: 1.35rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-md);
+  }
+
+  .product-card {
+    border-radius: var(--radius-sm);
+  }
+
   .header-brand-row,
   .header-brand,
   .header-actions {
@@ -386,6 +405,25 @@ p, a, span, h1, h2, h3, h4, h5, h6 {
   .footer-column {
     width: 100% !important;
     flex: 1 1 100% !important;
+  }
+}
+/* ==========================================================================
+   7.1TABLET VIEWPORTS
+   ========================================================================== */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .header-container {
+    padding: 0.875rem 1rem;
+  }
+
+  .primary-navigation ul,
+  .primary-nav ul,
+  .nav-list {
+    gap: 1.5rem;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-lg);
   }
 }
 

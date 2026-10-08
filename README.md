@@ -121,10 +121,10 @@ The project follows a lightweight Scrum-style process, adapted for a single deve
 | US01 | First-time visitor sees what the shop sells | Must | TBC | Backlog |
 | US02 | Homepage hero slideshow of promotions | Must | TBC | Backlog |
 | US03 | Browse by setting and category | Must | TBC | Backlog |
-| US04 | Enlarge images in a lightbox | Must | Sprint 1 | Complete |
+| US04 | Enlarge images in a lightbox | Must | Sprint 1 | Complete |Native `<dialog>` element with backdrop blur and focus trap. |
 | US05 | Clear purchase action on each product | Should | TBC | Backlog |
-| US06 | Responsive layout on all devices | Must | Every sprint | In progress |
-| US07 | Keyboard and screen reader access | Must | Every sprint | In progress |
+| US06 | Responsive layout on all devices | Must | Every sprint | Complete | Fluid grid and media query breakpoints (375px, 768px, 1024px). |
+| US07 | Keyboard and screen reader access | Must | Sprint 1 | Complete | Skip link, focus rings (`:focus-visible`), and WCAG contrast compliance. |
 | US08 | As a customer, I want to find delivery, returns, privacy and contact information, so I can get help and understand how my data is used. | Should | Next release | Backlog |
 | US09 | As a customer, I want to pay securely with PayPal, so I can complete my purchase. | Won't (this release) | Later project | Backlog |
 | US10 | As a shopper, I want to search by name or keyword, so I can find a specific model quickly. | Could | Next release | Backlog |
@@ -760,12 +760,13 @@ For full manual test procedures, accessibility traces, and screen reader verific
 * **Lighthouse Audit:** Scored 100/100 across Performance, Best Practices, and SEO.
 
 ### 7.2 Core Feature Testing Progress
+
 | Feature / Flow | Expected Outcome | Status |
 |---|---|---|
 | Lightbox Modal | "Quick View" opens modal with focus trapped inside; `Esc` or close button dismisses and restores focus. | **PASS** |
 | Hero Slideshow | Fully interactive with manual controls; no un-pausable automated timers. | **PASS** |
-| Responsive Layout | Layout adjusts across desktop, tablet, and mobile viewports. | **In Progress** |
-| Accessibility & Keyboard Navigation | Visible focus indicators (`:focus-visible`), skip link, and complete screen reader semantics across all viewports. | **In Progress** |
+| Responsive Layout | Layout adjusts cleanly across mobile, tablet, and desktop viewports without horizontal overflow. | **PASS** |
+| Accessibility & Keyboard Navigation | Visible focus indicators (`:focus-visible`), skip link (`#main-content`), and screen reader semantics across all viewports. | **PASS** |
 ---
 
 ## 8. Version Control
