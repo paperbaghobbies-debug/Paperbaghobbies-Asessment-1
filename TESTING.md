@@ -110,25 +110,4 @@ Contrast ratios were calculated for every text and background pairing using the 
    * **Fix:** Applied `white-space: nowrap`, `flex-shrink: 0`, and adjusted internal button padding (`0.4rem 0.6rem`) on `.nav-toggle` within `@media (max-width: 768px)` to enforce single-line label rendering.
 
 2. **Footer Column Horizontal Compression**
-   * **Issue:** Footer columns (`Shipping & Dispatch`, `Support & Contact`, `Disclaimer`) remained arranged in a horizontal row on mobile screens below `768px`, resulting in narrow text columns and forced word breaking.
-   * **Fix:** Enforced `flex-direction: column !important` on `.footer-container` and `width: 100% !important` on `.footer-column` inside the `@media (max-width: 768px)` query to stack all footer sections vertically.
-
-## 3. Browser and device matrix
-
-| Device / Browser | Viewport Size | Type | Result | Notes |
-|---|---|---|---|---|
-| Desktop (Chrome / Firefox) | `1200px`+ | Desktop | Pass | Clean layout, header nav items centered, design tokens render as expected. |
-| Google Pixel 10 | `412px × 924px` | Mobile | Pass | Verified responsive header toggle and stacked footer layout after fixes (B2, B3). |
-| iPhone XR | `414px × 896px` | Mobile | Pass | Verified responsive header toggle and stacked footer layout after fixes (B2, B3). |
-
-## 4. Bug log
-
-| # | Bug found | Cause | Fix | Status |
-|---|---|---|---|---|
-| B1 | Original palette failed WCAG 2.1 AA contrast. White text on the accent `#c98a4b` measured 2.91:1, and accent-coloured text measured 2.91:1 on white and 2.70:1 on the card background. All are below the 4.5:1 minimum. | The accent colour is too light to carry white text or to be used as text. | Text on accent backgrounds is now dark brown (`--text-main`, 4.98:1). Accent-coloured text uses a new darker token (`--accent-text`, 6.23:1 on white). The hover colour is lighter so dark text stays readable. See README section 4.3. | Fixed in design tokens (commit `c96b0a0`). To be re-verified once buttons and prices are styled. |
-| B2 | Mobile menu button text wrapped to two lines ("Men u") on Pixel 10 / iPhone XR screens. | Narrow viewports and default flex compression allowed the text inside `.nav-toggle` to wrap. | Added `white-space: nowrap`, `flex-shrink: 0`, and reduced mobile button padding to `0.4rem 0.6rem` in `@media (max-width: 768px)`. | Fixed in CSS (`styles.css`). |
-| B3 | Footer columns remained side-by-side in a 3-column row on mobile viewports below 768px. | Missing full-width flex column breakdown rule in mobile media queries. | Added `flex-direction: column !important` to `.footer-container` and `width: 100% !important` to `.footer-column` in `@media (max-width: 768px)`. | Fixed in CSS (`styles.css`). |
-
-### Bugs left unfixed
-
-None at this stage.
+   * **Issue:** Footer columns (`Shipping & Dispatch`, `Support & Contact`, `Disclaimer`) remained arranged in a horizontal row on mobile screens below `768px`,
