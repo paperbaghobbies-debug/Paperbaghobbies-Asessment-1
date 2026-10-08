@@ -111,7 +111,7 @@ The project follows a lightweight Scrum-style process, adapted for a single deve
 
 **Sprint 1 retrospective (Phase 1, foundations)**
 
-- *Worked:* testing before committing caught a WCAG contrast failure in the original palette (B1) before any component used it. Researching three similar shops before building gave evidence for each design decision (section 3).
+- *Worked:* testing before committing caught a WCAG contrast failure in the original palette (B1) before any component used it. Researching three similar shops before building gave evidence for each design decision (section 3). Using native `<dialog>` for the US04 lightbox delivered built-in keyboard accessibility and focus restoration without extra library overhead.
 - *Changed:* screenshots and documentation are now committed once per step instead of one at a time, and git commands are run singly so a failed command is seen.
 
 ### 2.2 Product backlog
@@ -121,7 +121,7 @@ The project follows a lightweight Scrum-style process, adapted for a single deve
 | US01 | First-time visitor sees what the shop sells | Must | TBC | Backlog |
 | US02 | Homepage hero slideshow of promotions | Must | TBC | Backlog |
 | US03 | Browse by setting and category | Must | TBC | Backlog |
-| US04 | Enlarge images in a lightbox | Must | TBC | Backlog |
+| US04 | Enlarge images in a lightbox | Must | Sprint 1 | Complete |
 | US05 | Clear purchase action on each product | Should | TBC | Backlog |
 | US06 | Responsive layout on all devices | Must | Every sprint | In progress |
 | US07 | Keyboard and screen reader access | Must | Every sprint | In progress |
@@ -375,7 +375,7 @@ Strategy and Scope define the project goals. The three lower planes (Structure, 
 - “Buy” button is honest about scope (US05) — no fake checkout.
 - All text is real HTML, never part of the image (D5).
 
-### 3.1 Competitor review
+### 3.2 Competitor review
 
 I wanted to understand how existing independent miniature shops present themselves before I designed my own layout. I chose three shops that sell similar products and examined their homepages on 06/10/2026 using Chrome DevTools.
 
@@ -432,7 +432,7 @@ I only looked at each homepage on one day and one device profile. Two of the Lig
 
 The findings above shaped the design decisions listed in section 3.3.
 
-### 3.2 What the review taught us
+### 3.3 What the review taught us
 
 1. **Basic accessibility is widely missed.** Lighthouse reports links without a discernible name on all three sites. Archie's Forge also has images without alt text, prohibited ARIA attributes and links that rely on colour, Gear Guts has frames without titles, and Piper Makes has three `<h1>` elements and a 28px menu button. Getting these basics right is achievable and directly supports the accessibility criteria.
 2. **Performance is weak across the board.** Largest Contentful Paint ranged from 6.5 to 7.5 s, and a single load needed 159 to 530 requests and 4.0 to 10.0 MB. Hosted shop platforms load many scripts. A hand-built static site can avoid most of that overhead, so a performance budget (section 3.4) is a realistic advantage. This is a hypothesis to be confirmed by measuring our own pages with the same method.
@@ -451,7 +451,7 @@ The findings above shaped the design decisions listed in section 3.3.
 
 Ideas that depend on business decisions (delivery information, categories, creator listings, loyalty schemes and similar) have been put to the owner in a separate proposals document. Their outcomes will be recorded here once agreed.
 
-#### 3.2.1 Measured Competitor Findings vs. Engineering Responses ("So What?" Analysis)
+#### 3.3.1 Measured Competitor Findings vs. Engineering Responses ("So What?" Analysis)
 
 To ensure Paperbag Hobbies avoids the performance bottlenecks and accessibility barriers identified during competitor audits, each finding directly dictates an architectural requirement:
 
@@ -462,7 +462,7 @@ To ensure Paperbag Hobbies avoids the performance bottlenecks and accessibility 
 | **Archie's Forge** | Cookie consent banner obscures ~25% of the mobile viewport (375px) | Non-modal top announcement bar; deferred non-essential storage | Preserves immediate content visibility without forcing disruptive modal overlays on landing (D6). |
 | **Industry-wide** | Links missing discernible names; touch targets < 44px (e.g., 28×28px menu buttons) | Enforce minimum 44×44px hit areas and explicit `aria-label` text on all icon controls | Ensures full WCAG 2.1 AA compliance for touch navigation and screen reader users (D12, D13). |
 
-### 3.3 Design decisions
+### 3.4 Design decisions
 
 These are standards the developer applies. They are traced to evidence and to user stories (section 2).
 
@@ -489,7 +489,7 @@ These are standards the developer applies. They are traced to evidence and to us
 | D19 | Links in running text are underlined or otherwise distinguishable without colour. | Lighthouse reports links that rely on colour on Archie's Forge. | US07 |
 | D20 | Any embedded frame (for example a map or video) has a title, and none is added without a reason. | Lighthouse reports frames without titles on Gear Guts. | US06, US07 |
 
-### 3.4 Architecture and methodology rationale
+### 3.5 Architecture and methodology rationale
 
 The structure of the site follows from the client requirements (section 1.2), the assessment criteria and the evidence in sections 3.1 to 3.3.
 
@@ -733,6 +733,18 @@ paperbag-hobbies/
 | `.site-header` | Sticky positioning (`position: sticky`, `top: 0`, `z-index: 1000`) so navigation remains accessible while scrolling. |
 | Stacked Layout | Separated into `.header-brand-row` (centered brand/logo) and `.header-nav-row` (space-between navigation and actions) for clean scaling. |
 | Mobile Navigation Toggle | Uses a hidden-by-default toggle (`.nav-toggle`) that appears at max-width 768px, controlling the mobile drawer state (`.is-open`). |
+
+
+
+### 6.7 Lightbox Quick View Modal (`main.js` & `styles.css`)
+
+| Aspect | Decision and reason |
+|---|---|
+| Native `<dialog>` Element | Implemented the product lightbox using the native HTML5 `<dialog>` element to leverage built-in accessibility features, including focus trapping, native `Escape` key dismissal, and semi-transparent `::backdrop` styling (US04, US07). |
+| Dynamic Data Extraction | Utilised dynamic event delegation in `main.js` across all `.product-card` triggers to read image sources, titles, prices, badges, and descriptions on the fly, rendering them inside a single modal instance (US04). |
+| Focus Restoration | Recorded `document.activeElement` upon modal invocation, restoring focus precisely to the originating product card or button when closed to preserve keyboard navigation context (US07). |
+| Direct Action Guard | Intercepted click events to bypass lightbox activation when the "Add to Cart" button is clicked directly on a card, avoiding unnecessary modal open states during quick purchase actions (US05). |
+| ARIA Binding | Explicitly bound `aria-labelledby` on the `<dialog>` container to the lightbox title heading (`#lightbox-title`), ensuring screen readers announce the modal context immediately upon opening (US07). |
 
 
 

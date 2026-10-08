@@ -66,10 +66,70 @@
   </div>
 </header>
 
-  <!-- Primary Main Landmark -->
-  <main id="main-content">
-    <h1>Paperbag Hobbies</h1>
-  </main>
+<!-- MAIN CONTENT / PRODUCT CATALOG -->
+<main class="main-content">
+  <section class="catalog-section">
+    <div class="container">
+      <h2 class="section-title">Featured Prints & Miniatures</h2>
+      
+      <div class="product-grid">
+        <!-- Product Card 1 -->
+        <article class="product-card">
+          <div class="product-image-wrapper">
+            <img src="assets/images/placeholder.png" alt="Custom 3D printed miniature proxy" class="product-image" loading="lazy">
+            <span class="product-badge">Resin Print</span>
+          </div>
+          <div class="product-content">
+            <h3 class="product-title">Grimdark Sci-Fi Squad Commander</h3>
+            <p class="product-description">High-detail 28mm scale resin miniature. Cleaned, cured, and ready for priming.</p>
+            <div class="product-footer">
+              <span class="product-price">£12.50</span>
+              <button type="button" class="btn btn-primary add-to-cart-btn" data-id="1" data-name="Grimdark Squad Commander" data-price="12.50">
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Product Card 2 -->
+        <article class="product-card">
+          <div class="product-image-wrapper">
+            <img src="assets/images/placeholder.png" alt="Modular terrain scatter piece" class="product-image" loading="lazy">
+            <span class="product-badge">PLA Terrain</span>
+          </div>
+          <div class="product-content">
+            <h3 class="product-title">Gothic Ruins Scatter Terrain Set</h3>
+            <p class="product-description">Modular 3D printed terrain set designed for 28mm/32mm tabletop wargaming.</p>
+            <div class="product-footer">
+              <span class="product-price">£24.00</span>
+              <button type="button" class="btn btn-primary add-to-cart-btn" data-id="2" data-name="Gothic Ruins Terrain Set" data-price="24.00">
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Product Card 3 -->
+        <article class="product-card">
+          <div class="product-image-wrapper">
+            <img src="assets/images/placeholder.png" alt="Custom dice tower" class="product-image" loading="lazy">
+            <span class="product-badge">Custom Order</span>
+          </div>
+          <div class="product-content">
+            <h3 class="product-title">Overgrown Citadel Dice Tower</h3>
+            <p class="product-description">Detailed dice tower engineered for smooth rolls with standard D20 and D6 sets.</p>
+            <div class="product-footer">
+              <span class="product-price">£18.00</span>
+              <button type="button" class="btn btn-primary add-to-cart-btn" data-id="3" data-name="Overgrown Citadel Dice Tower" data-price="18.00">
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
 
   <!-- Global Site Footer (Refined E-Commerce Style) -->
   <footer class="site-footer">
@@ -94,5 +154,24 @@
       <p>© 2026 Paperbag Hobbies. All rights reserved.</p>
     </div>
   </footer>
+
+  <!-- Lightbox / Product Modal -->
+<dialog id="product-lightbox" class="lightbox-dialog" aria-labelledby="lightbox-title">
+  <div class="lightbox-content">
+    <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close details">✕</button>
+    <div class="lightbox-body">
+  <div class="lightbox-image-container">
+    <span id="lightbox-badge" class="product-badge"></span>
+    <img id="lightbox-img" src="" alt="" class="lightbox-image">
+  </div>
+  <div class="lightbox-info">
+    <h2 id="lightbox-title" class="lightbox-title"></h2>
+    <p id="lightbox-price" class="product-price"></p>
+    <p id="lightbox-description" class="lightbox-description"></p>
+    <button type="button" class="btn-primary">Add to Cart</button>
+  </div>
+</div>
+  </div>
+</dialog>
 </body>
 </html>
