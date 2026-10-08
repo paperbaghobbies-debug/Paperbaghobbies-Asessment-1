@@ -28,13 +28,13 @@ I tested my CSS stylesheet (`assets/css/styles.css`) incrementally through the W
 | 05/10/2026 | `assets/css/styles.css` | Step 1.2 Part B: CSS Reset | Pass | Zero errors or warnings. Verified reset rules and `box-sizing` bounds. |
 | 05/10/2026 | `assets/css/styles.css` | Step 1.2 Part C: Global Typography | Pass | Zero errors or warnings. Verified `rem` scaling and font imports. |
 
-##### Part A: Design Tokens Verification
+#### Part A: Design Tokens Verification
 ![Jigsaw CSS validator result for styles.css after adding design tokens, showing no errors](docs/screenshots/validator-styles-css-step-1-2-a.png)
 
-##### Part B: CSS Reset Verification
+#### Part B: CSS Reset Verification
 ![Jigsaw CSS validator result for styles.css after adding the CSS reset, showing no errors](docs/screenshots/validator-styles-css-step-1-2-b.png)
 
-##### Part C: Global Typography Verification
+#### Part C: Global Typography Verification
 ![Jigsaw CSS validator result for styles.css after adding global typography, showing no errors](docs/screenshots/validator-styles-css-step-1-2-c.png)
 
 ---
@@ -58,7 +58,7 @@ I audited the homepage (`index.html`) using Google Lighthouse in Chrome DevTools
 
 ---
 
-## 2. Manual & Technical Testing
+## 2. Accessibility & Design Foundations (US07)
 
 ---
 
@@ -98,7 +98,7 @@ I inspected my rendered typography using Chrome DevTools to verify that custom p
 | **Network Font Fetch** | Inter `@font-face` fetched from `fonts.gstatic.com` | `200 OK` network fetch verified. | Pass |
 | **Rendered Font Family** | Primary fallback or Inter network font rendered | Computed tab shows Inter (PostScript name Inter-Bold). | Pass |
 
-##### DevTools Screenshots (Typography Inspection):
+#### DevTools Screenshots (Typography Inspection)
 
 ![DevTools showing the h1 typography rules applied from styles.css](docs/screenshots/devtools-h1-styles-step-1-2-c.png)
 
@@ -106,7 +106,7 @@ I inspected my rendered typography using Chrome DevTools to verify that custom p
 
 ![DevTools Computed tab showing Inter as the rendered font](docs/screenshots/devtools-rendered-font-step-1-2-c.png)
 
-##### Recorded Computed Values for `h1`:
+#### Recorded Computed Values for `h1`
 
 | Property | Computed Value | Source Rule / Token |
 |---|---|---|
@@ -118,17 +118,36 @@ I inspected my rendered typography using Chrome DevTools to verify that custom p
 
 ---
 
-### 2.3 Device & Responsive Testing Methodology
+## 3. Responsive Layout & Device Testing (US06)
 
-I conducted responsive testing across mobile and desktop viewports using Chrome DevTools device mode. I focused on real-world mobile displays including the Google Pixel 10 (`412px × 924px`), iPhone XR (`414px × 896px`), and iPhone SE (`375px × 667px`) to identify layout bugs before finalizing the layout.
+---
 
-* **Date:** October 2026
+### 3.1 Viewport & Breakpoint Testing Strategy
+
+I conducted responsive testing across mobile, tablet, and desktop viewports using Chrome DevTools device mode. I focused on real-world displays including the iPhone SE (`375px × 667px`), iPad (`769px × 1024px`), and desktop (`1200px+`) to eliminate layout bugs, prevent unwanted horizontal scrollbars, and ensure proper flexbox and CSS grid scaling.
+
+* **Date:** 08/10/2026
+* **User Story:** US06 - Responsive Layout
 * **Target Viewports:** 
-  * Google Pixel 10 (`412px × 924px`)
-  * iPhone XR (`414px × 896px`)
-  * iPhone SE (`375px × 667px`)
+  * Mobile: iPhone SE (`375px × 667px`), Google Pixel 10 (`412px × 924px`), iPhone XR (`414px × 896px`)
+  * Tablet: iPad / Mid-tier screens (`769px × 1024px`)
+  * Desktop: High-resolution displays (`1200px+`)
 
-#### Mobile Header & Footer Layout Audit
+---
+
+### 3.2 Responsive Layout Verification & Screenshots
+
+| Viewport / Device | Breakpoint | Tested Element & Flow | Result | Visual Evidence |
+|---|---|---|---|---|
+| **Mobile (iPhone SE)** | `375px` | Vertical header layout, collapsible navigation drawer (`.nav-toggle`), single-column catalog grid. | **PASS** | ![Mobile Viewport Navigation Drawer on iPhone SE](docs/screenshots/responsive-mobile-375px.png) |
+| **Tablet (iPad)** | `769px` | Single-row inline header navigation, balanced brand logo alignment, 2-column catalog card grid. | **PASS** | ![Tablet Responsive Layout on iPad](docs/screenshots/responsive-tablet-769px.png) |
+| **Desktop** | `1200px+` | Full 3-column CSS product grid layout, inline top navigation, non-wrapping header banner. | **PASS** | Verified via browser DevTools inspection. |
+
+---
+
+### 3.3 Mobile Defect Diagnostics & Engineering Fixes
+
+#### Mobile Header & Footer Layout Defect Analysis
 
 ##### Visual Evidence (Pre-Fix Layout Defects):
 
@@ -148,27 +167,31 @@ I conducted responsive testing across mobile and desktop viewports using Chrome 
 
 ---
 
-### 2.4 Feature & Accessibility Testing: US04 - Product Lightbox Quick View Modal
+## 4. Component Feature & Accessibility Audits
+
+---
+
+### 4.1 Product Lightbox Quick View Modal (US04)
 
 To test **User Story US04** (enlarging product images in an accessible modal), I combined manual interaction testing with keyboard-only navigation checks and mobile viewport stress testing.
 
 * **Date:** 08/10/2026
 * **User Story:** US04 - Enlarge images in a lightbox
 * **Target Compliance:** WCAG 2.1 AA (Keyboard Focus Trapping, Escape Dismissal, Focus Restoration)
-* **Viewports Tested:** Desktop (`1200px+`), iPhone SE (`375px × 667px`)
+* **Viewports Tested:** Desktop (`1200px+`), iPad (`769px × 1024px`), iPhone SE (`375px × 667px`)
 
 #### Detailed Test Execution & Results
 
-| Test Objective | Interaction Steps | Expected Outcome | Result | Technical Explanation |
-|---|---|---|---|---|
-| **Modal Launch** | Click product card image or body container | Lightbox `<dialog>` opens over dark backdrop, rendering correct product image, title, price, and description | Pass | Handled via dynamic event delegation in `main.js` which populates the modal template |
-| **Backdrop Dismissal** | Click dark overlay background outside modal | Modal closes cleanly and resets page state | Pass | Evaluates click event coordinates against the `<dialog>` bounding rectangle |
-| **Close Button Dismissal** | Click top-right `✕` button | Modal closes cleanly | Pass | Explicit click event listener triggers native `.close()` method |
-| **Direct CTA Isolation** | Click "Add to Cart" directly on product card | Cart action fires without opening lightbox | Pass | Event propagation handled with `e.stopPropagation()` on card CTA buttons |
-| **Keyboard Focus Lock** | Press `Tab` continuously while modal is open | Focus stays trapped inside dialog between close button and CTA | Pass | Handled natively by HTML5 `<dialog>` element |
-| **Escape Key Dismissal** | Press `Escape` key while modal is active | Modal closes immediately | Pass | Natively captured by browser `<dialog>` `cancel` event |
-| **Focus Restoration** | Dismiss modal via `Escape` or close control | Keyboard focus returns directly to triggering card element | Pass | Saved `document.activeElement` prior to opening and re-focused it on close (WCAG SC 2.4.3) |
-| **Mobile Reflow** | Open modal on `375px × 667px` viewport | Content fits within viewport with internal scroll bar and clear close control | Pass | Refactored dialog height limits and overflow rules |
+| Test Objective | Interaction Steps | Expected Outcome | Result | Technical Explanation | Visual Evidence |
+|---|---|---|---|---|---|
+| **Modal Launch** | Click product card image or body container | Lightbox `<dialog>` opens over dark backdrop, rendering correct product image, title, price, and description. | **PASS** | Handled via dynamic event delegation in `main.js` which populates the modal template. | ![Lightbox Modal Centered View](docs/screenshots/lightbox-modal-open.png) |
+| **Backdrop Dismissal** | Click dark overlay background outside modal | Modal closes cleanly and resets page state. | **PASS** | Evaluates click event coordinates against the `<dialog>` bounding rectangle. | Verified |
+| **Close Button Dismissal** | Click top-right `✕` button | Modal closes cleanly. | **PASS** | Explicit click event listener triggers native `.close()` method. | Verified |
+| **Direct CTA Isolation** | Click "Add to Cart" directly on product card | Cart action fires without opening lightbox. | **PASS** | Event propagation handled with `e.stopPropagation()` on card CTA buttons. | Verified |
+| **Keyboard Focus Lock** | Press `Tab` continuously while modal is open | Focus stays trapped inside dialog between close button and CTA. | **PASS** | Handled natively by HTML5 `<dialog>` element. | Verified |
+| **Escape Key Dismissal** | Press `Escape` key while modal is active | Modal closes immediately. | **PASS** | Natively captured by browser `<dialog>` `cancel` event. | Verified |
+| **Focus Restoration** | Dismiss modal via `Escape` or close control | Keyboard focus returns directly to triggering card element. | **PASS** | Saved `document.activeElement` prior to opening and re-focused it on close (WCAG SC 2.4.3). | Verified |
+| **Mobile Reflow** | Open modal on `375px × 667px` viewport | Content fits within viewport with internal scroll bar and clear close control. | **PASS** | Refactored dialog height limits and overflow rules. | Verified |
 
 #### Mobile Lightbox Defect & Engineering Fix
 
@@ -187,3 +210,26 @@ To test **User Story US04** (enlarging product images in an accessible modal), I
 2. **Hidden Close Button Overlay**
    * **Root Cause:** Standard absolute positioning placed the close icon (`✕`) behind adjacent element boundaries on narrow screens.
    * **How I Fixed It:** I styled `.lightbox-close` as an elevated circular button with `position: absolute`, pinned to the top-right corner with a high `z-index: 10` and `36px × 36px` touch dimensions, ensuring quick dismissal across all devices.
+
+---
+
+### 4.2 Keyboard Navigation & Screen Reader Traversal (US07)
+
+To satisfy **WCAG 2.1 SC 2.4.1 (Bypass Blocks)** and **SC 2.4.7 (Focus Visible)**, I completed a complete keyboard navigation audit across all primary interactive paths using `Tab`, `Shift+Tab`, and `Enter` keys.
+
+* **Date:** 08/10/2026
+* **User Story:** US07 - Keyboard & Screen Reader Access
+* **Target Compliance:** WCAG 2.1 Level AA
+
+#### Keyboard Traversal & Focus Audit Results
+
+| Focus Traversal Order | Interactive Element | Trigger / Step | Expected Behavior | Result | Visual Evidence |
+|---|---|---|---|---|---|
+| **1 (First Focus)** | Skip Link (`#main-content`) | `Tab` from browser address bar | "Skip to main content" button slides into view at top-left with high-contrast ring (`--accent`). Pressing `Enter` shifts focus directly to `#main-content`. | **PASS** | ![Skip to main content focus state](docs/screenshots/keyboard-skip-link-focus.png) |
+| **2** | Header Brand Logo | `Tab` | Outline container lights up with distinct `:focus-visible` ring. | **PASS** | Verified |
+| **3** | Navigation Links (`Home`, `Shop`, `About Us`) | `Tab` / `Shift+Tab` | Traverses sequentially across links with prominent focus ring around active text. | **PASS** | Verified |
+| **4** | Cart Badge Button | `Tab` | Focus ring surrounds cart button and count badge cleanly. | **PASS** | Verified |
+| **5** | Product Cards & CTAs | `Tab` through catalog grid | Focus highlights image triggers, title links, and "Add to Cart" buttons in natural document order. | **PASS** | Verified |
+
+---
+
