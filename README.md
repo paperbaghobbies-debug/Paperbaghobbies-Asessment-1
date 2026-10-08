@@ -38,7 +38,7 @@ The owner supplied the colour palette, the visual style and the requirements bel
 | Requirement | Source | How the site addresses it |
 |---|---|---|
 | Eye-catching, brand-led visual style | Owner brief | Owner's palette and mascot artwork, contrast-checked (section 4.3) |
-| Easy to navigate | Owner brief | Persistent header navigation, clear page names and a skip link |
+| Easy to navigate | Owner brief | Persistent single-row site header (.header-container with .primary-nav and .header-actions), announcement bar, mobile hamburger toggle with ARIA disclosure, and a skip link. |
 | Helps customers find and buy models | Owner brief | Browsing by setting and category, clear prices and a clear purchase action |
 | Featured promotional models in a homepage hero slideshow | Owner brief | Hero slideshow with user-controlled navigation |
 | Lightbox for viewing images | Owner brief | Accessible lightbox for enlarged product images |
@@ -262,7 +262,9 @@ Strategy and Scope define the project goals. The three lower planes (Structure, 
 +-------------------------------------------------------------------------------------+
 | [Skip to content]                                                                   |  ← visually hidden until focused
 +-------------------------------------------------------------------------------------+
-| [Logo] Paperbag Hobbies          Home   Shop   About          [Cart 0]              |  ← sticky header
+| Announcement Bar: Free shipping & store notices                                     |
++-------------------------------------------------------------------------------------+
+| [Logo] Paperbag Hobbies        Home   Shop   About Us                  [Cart 0]     |  ← single-row inline header (sticky)
 +-------------------------------------------------------------------------------------+
 |                                                                                     |
 |  +-------------------------------------------------------------------------------+  |
@@ -288,24 +290,28 @@ Strategy and Scope define the project goals. The three lower planes (Structure, 
 
 ##### Rationale (desktop)
 
-- Sticky header keeps navigation and cart always available (supports US03, US05).
+- Sticky site header keeps navigation and cart always available while scrolling (supports US03, US05).
+- Single-Row Layout: Header elements (.header-brand-row, .primary-nav, and .header-actions) sit inline in a horizontal Flexbox container (.header-container) for clean alignment and scaling.
+- Announcement bar provides high-contrast store notices at the very top.
 - Hero sits on a solid or overlay panel so text contrast is guaranteed (D15).
 - Slideshow is strictly user-controlled (no autoplay) to satisfy WCAG 2.2.2 and US02.
 - Product cards are image-led with real text labels (D3, D5).
-- Single `<h1>` in the hero; everything else is `<h2>` / `<h3>`.
+- Single <h1> in the hero; everything else is <h2> / <h3>.
 
 #### Mobile wireframe (320 px – 768 px)
 
 ```text
 +---------------------------------------------------------------+
-| [Skip to content]                                             |
+| [Skip to content]                                             | ← visually hidden until focused
 +---------------------------------------------------------------+
-| [Logo] Paperbag Hobbies              [≡]  [Cart 0]            |  ← 44×44 px targets
+| Announcement Bar                                              |
 +---------------------------------------------------------------+
-| MOBILE MENU (hidden until opened)                             |
+| [Logo] Paperbag Hobbies       [≡ Menu] (44×44px)   [Cart 0]   |  ← header container (single row)
++---------------------------------------------------------------+
+| PRIMARY NAVIGATION (.primary-nav.is-open)                     |
 |  • Home                                                       |
 |  • Shop                                                       |
-|  • About                                                      |
+|  • About Us                                                   |
 +---------------------------------------------------------------+
 |                                                               |
 |  HERO                                                         |
@@ -330,10 +336,12 @@ Strategy and Scope define the project goals. The three lower planes (Structure, 
 
 ##### Rationale (mobile)
 
-- Hamburger and cart icons are minimum 44 × 44 px (D13).
-- Menu is a simple disclosure list — no icon-only links without accessible names (D12).
-- Hero and cards stack to a single column; no horizontal scroll (US06).
-- Skip link remains the first focusable element on every viewport (D7).
+- Single-row mobile header header container (`.header-container`) aligns logo, hamburger menu button, and cart action inline to optimize vertical screen real estate.
+- Mobile menu toggle (`.nav-toggle`) and cart icon meet the minimum 44 × 44 px touch target rule (D13).
+- Primary navigation uses `.primary-nav` with class `.is-open` dynamically toggled via JavaScript to slide/drop down without pushing main content off-screen.
+- Navigation link text matches the actual site pages (**Home**, **Shop**, **About Us**).
+- Hero and product cards stack vertically into a single column with full-width target areas to avoid horizontal scrolling down to 320px viewports (US06).
+- Skip link remains the first focusable element in DOM order on all viewports (D7).
 
 #### Accessible lightbox / product detail wireframe
 
@@ -716,6 +724,17 @@ paperbag-hobbies/
 **Verification:** browser developer tools confirmed that the typography rules apply and override the default browser styles. The `h1` renders at 2rem with a 1.2 line-height, which gives a computed height of about 38.4px. Evidence is in [TESTING.md](TESTING.md), section 2.2.
 
 **Responsive note:** these sizes are the small-screen base. The `h1` is enlarged for wider screens with a media query when the hero section is built.
+
+### 6.6 Site Header and Announcement Bar (`styles.css`)
+
+| Component | Decision and reason |
+|---|---|
+| `.announcement-bar` | High-contrast notification banner using neutral-900 background and neutral-100 text for store announcements. |
+| `.site-header` | Sticky positioning (`position: sticky`, `top: 0`, `z-index: 1000`) so navigation remains accessible while scrolling. |
+| Stacked Layout | Separated into `.header-brand-row` (centered brand/logo) and `.header-nav-row` (space-between navigation and actions) for clean scaling. |
+| Mobile Navigation Toggle | Uses a hidden-by-default toggle (`.nav-toggle`) that appears at max-width 768px, controlling the mobile drawer state (`.is-open`). |
+
+
 
 ---
 
