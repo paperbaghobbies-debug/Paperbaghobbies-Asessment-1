@@ -20,55 +20,51 @@
   <!-- Accessible Skip Link -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- Top Announcement Bar (Discounts & News) -->
-  <div class="announcement-bar" role="region" aria-label="Store announcement">
-    <p class="announcement-text">
-      Handcrafted 3D Proxy Miniatures • 
-    </p>
+ <!-- Top Announcement / Welcome Bar -->
+<aside class="announcement-bar" aria-label="Announcement">
+  <div class="container announcement-container">
+    <p class="announcement-text">Welcome to the store! Explore our latest custom designs and prints.</p>
   </div>
+</aside>
 
-  <!-- Global Site Header (Centered Stacked Layout) -->
-  <header class="site-header">
-    <!-- Top Row: Centered Brand Identity -->
+<!-- Global Site Header (Single-Row Inline Layout) -->
+<header class="site-header">
+  <div class="header-container">
+    
+    <!-- Brand Identity (Left) -->
     <div class="header-brand-row">
       <a class="logo-link" href="index.html" aria-label="Paperbag Hobbies - Home">
         <img class="header-logo" src="assets/images/logo/pbm-logo.png" alt="Paperbag Hobbies Crest Logo" width="51" height="48">
+        <span class="brand-title">Paperbag Hobbies</span>
       </a>
     </div>
 
-    <!-- Bottom Row: Navigation, Social Links & Cart -->
-    <div class="header-nav-row">
-      <!-- Mobile Disclosure Button -->
-      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="primary-nav-list" aria-label="Toggle navigation menu">
-        <span class="nav-toggle-icon" aria-hidden="true">☰</span>
-        <span class="nav-toggle-label">Menu</span>
-      </button>
+    <!-- Mobile Disclosure Button -->
+    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="primary-nav-list" aria-label="Toggle navigation menu">
+      <span class="nav-toggle-icon" aria-hidden="true">≡</span>
+      <span class="nav-toggle-label">Menu</span>
+    </button>
 
-      <!-- Primary Navigation -->
-      <nav class="primary-nav" aria-label="Main navigation">
-        <ul id="primary-nav-list" class="nav-list">
-          <li class="nav-item"><a href="index.html" class="nav-link nav-link-active" aria-current="page">Home</a></li>
-          <li class="nav-item"><a href="shop.html" class="nav-link">Shop</a></li>
-          <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-          <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
-        </ul>
-      </nav>
+    <!-- Primary Navigation (Center/Inline) -->
+    <nav class="primary-nav" aria-label="Main navigation">
+      <ul id="primary-nav-list" class="nav-list">
+        <li class="nav-item"><a href="index.html" class="nav-link nav-link-active" aria-current="page">Home</a></li>
+        <li class="nav-item"><a href="shop.html" class="nav-link">Shop</a></li>
+        <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
+      </ul>
+    </nav>
 
-      <!-- Community Social Links -->
-      <div class="header-socials" aria-label="Social media channels">
-        <a href="https://instagram.com" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Paperbag Hobbies on Instagram (opens in new tab)">IG</a>
-        <a href="https://facebook.com" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Paperbag Hobbies on Facebook (opens in new tab)">FB</a>
-        <a href="https://discord.com" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Paperbag Hobbies on Discord (opens in new tab)">DC</a>
-      </div>
-
-      <!-- Header Cart Link -->
+    <!-- Header Actions / Cart Link (Right) -->
+    <div class="header-actions">
       <a href="cart.html" class="cart-link" aria-label="Shopping Cart, 0 items">
         <span class="cart-icon" aria-hidden="true">🛒</span>
         <span class="cart-text">Cart</span>
         <span class="cart-badge" aria-hidden="true">0</span>
       </a>
     </div>
-  </header>
+
+  </div>
+</header>
 
   <!-- Primary Main Landmark -->
   <main id="main-content">
@@ -86,7 +82,7 @@
       <div class="footer-column footer-contact">
         <h3>Support & Contact</h3>
         <p>Email: workshop@paperbaghobbies.example</p>
-        <p>Based in Nottingham, United Kingdom</p>
+        <p>Based in Banbury, United Kingdom</p>
       </div>
 
       <div class="footer-column footer-disclaimer">

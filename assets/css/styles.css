@@ -168,7 +168,7 @@ h3 {
 }
 
 /* ===========================================================================
-   SITE HEADER LAYOUT
+   SITE HEADER LAYOUT (Single-Row Inline Alignment)
    ========================================================================== */
 .site-header {
   background-color: var(--color-background, #ffffff);
@@ -178,51 +178,62 @@ h3 {
   z-index: 1000;
 }
 
+/* Flex container arranged in a single row: logo left, navigation center, cart right */
 .header-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  justify-content: space-between;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  gap: 2rem;
 }
 
 /* ===========================================================================
-   BRAND ROW
+   BRAND / LOGO GROUP
    ========================================================================== */
 .header-brand-row {
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin-bottom: 1rem;
 }
 
 .logo-link {
   display: inline-flex;
   align-items: center;
+  gap: 0.75rem;
   text-decoration: none;
 }
 
 .header-logo {
   display: block;
-  height: auto;
+  height: 40px;
+  width: auto;
+}
+
+/* Brand name text styling next to the crest logo */
+.brand-title {
+  font-family: var(--font-heading, serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
 }
 
 /* ===========================================================================
-   NAVIGATION & ACTIONS ROW
+   PRIMARY NAVIGATION & ACTIONS
    ========================================================================== */
-.header-nav-row {
+/* Container wrapping desktop links */
+.primary-navigation {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  position: relative;
 }
 
-/* Primary Navigation Desktop */
-.primary-navigation .nav-list {
+.primary-nav .nav-list {
   display: flex;
+  flex-direction: row;
   list-style: none;
-  gap: 1.5rem;
+  gap: 2rem;
   margin: 0;
   padding: 0;
 }
@@ -231,12 +242,20 @@ h3 {
   color: var(--color-text, #1f2937);
   text-decoration: none;
   font-weight: 500;
+  font-size: 0.95rem;
   transition: color 0.2s ease;
 }
 
 .nav-link:hover,
-.nav-link:focus-visible {
-  color: var(--color-primary, #2563eb);
+.nav-link:focus-visible,
+.nav-link-active {
+  color: var(--accent, #c98a4b);
+}
+
+/* Right-hand header actions wrapper */
+.header-actions {
+  display: flex;
+  align-items: center;
 }
 
 /* Cart Link Styling */
@@ -245,19 +264,34 @@ h3 {
   align-items: center;
   gap: 0.375rem;
   color: var(--color-text, #1f2937);
+  background-color: var(--bg-card, #fbf6ee);
+  border: 1px solid var(--border-color, #e5d9cc);
   text-decoration: none;
   font-weight: 500;
-  padding: 0.5rem;
-  border-radius: 0.375rem;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-sm, 6px);
+  transition: background-color 0.2s ease;
 }
 
 .cart-link:hover {
-  background-color: var(--color-neutral-100, #f3f4f6);
+  background-color: var(--accent-hover, #d9a06a);
+  color: #fff;
+}
+
+.cart-badge {
+  background-color: var(--accent, #c98a4b);
+  color: #ffffff;
+  font-size: 0.75rem;
+  padding: 0.125rem 0.375rem;
+  border-radius: 999px;
+  font-weight: 600;
 }
 
 /* ===========================================================================
    MOBILE MENU TOGGLE & RESPONSIVE STYLES
    ========================================================================== */
+/* Hidden by default on desktop viewports */
 .nav-toggle {
   display: none;
   background: none;
@@ -270,15 +304,22 @@ h3 {
   color: var(--color-text, #1f2937);
 }
 
+/* Tablet and mobile breakpoint */
 @media (max-width: 768px) {
+  .header-container {
+    padding: 0.75rem 1rem;
+  }
+
+  /* Show mobile hamburger button toggle */
   .nav-toggle {
     display: flex;
   }
 
+  /* Transform navigation into a dropdown drawer on smaller screens */
   .primary-navigation {
-    display: none; /* Toggled via JS */
+    display: none; /* Toggled via JS using .is-open class */
     position: absolute;
-    top: calc(100% + 1rem);
+    top: 100%;
     left: 0;
     width: 100%;
     background-color: var(--color-background, #ffffff);
