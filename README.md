@@ -786,12 +786,11 @@ Example: `feat: add HTML5 boilerplate shell with head metadata and linked assets
 
 ---
 
-## 9. Deployment and Live Site
+## 9. Live Deployment
 
-This project is version-controlled and hosted on GitHub. Deployment to **GitHub Pages** will take place after responsive layout testing and remaining accessibility features are finalized.
-
-* **Repository:** [https://github.com/paperbaghobbies-debug/Paperbaghobbies-Asessment-1](https://github.com/paperbaghobbies-debug/Paperbaghobbies-Asessment-1)
-* **Live Site URL:** *TODO: Add published GitHub Pages URL upon final deployment.*
+The application is deployed live on GitHub Pages:
+- **Live Site:** https://paperbaghobbies-debug.github.io/Paperbaghobbies-Asessment-1/
+- **Repository:** https://github.com/paperbaghobbies-debug/Paperbaghobbies-Asessment-1
 
 ---
 
