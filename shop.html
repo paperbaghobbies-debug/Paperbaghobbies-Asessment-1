@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - Paperbag Hobbies</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <script src="assets/js/main.js"></script>
+</head>
+<body>
+ <!-- Accessible Skip Link -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- Top Announcement / Welcome Bar -->
+<aside class="announcement-bar" aria-label="Announcement">
+  <div class="container announcement-container">
+    <p class="announcement-text">Welcome to the store! Explore our latest custom designs and prints.</p>
+  </div>
+</aside>
+
+<!-- Global Site Header (Single-Row Inline Layout) -->
+<header class="site-header">
+  <div class="header-container">
+    
+    <!-- Brand Identity (Left) -->
+    <div class="header-brand-row">
+      <a class="logo-link" href="index.html" aria-label="Paperbag Hobbies - Home">
+        <img class="header-logo" src="assets/images/logo/pbm-logo.png" alt="Paperbag Hobbies Crest Logo" width="51" height="48">
+        <span class="brand-title">Paperbag Hobbies</span>
+      </a>
+    </div>
+
+    <!-- Mobile Disclosure Button -->
+    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="primary-nav-list" aria-label="Toggle navigation menu">
+      <span class="nav-toggle-icon" aria-hidden="true">≡</span>
+      <span class="nav-toggle-label">Menu</span>
+    </button>
+
+    <!-- Primary Navigation (Center/Inline) -->
+    <nav class="primary-nav" aria-label="Main navigation">
+      <ul id="primary-nav-list" class="nav-list">
+        <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+        <li class="nav-item"><a href="shop.html" class="nav-link nav-link-active" aria-current="page">Shop</a></li>
+        <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
+      </ul>
+    </nav>
+
+    <!-- Header Actions / Cart Link (Right) -->
+    <div class="header-actions">
+      <a href="cart.html" class="cart-link" aria-label="Shopping Cart, 0 items">
+        <span class="cart-icon" aria-hidden="true">🛒</span>
+        <span class="cart-text">Cart</span>
+        <span id="cart-count" class="cart-badge" aria-hidden="true">0</span>
+      </a>
+    </div>
+
+  </div>
+</header>
+
+    <main id="main-content" class="main-container">
+        <section class="shop-header">
+            <h1>Hobby Shop Catalog</h1>
+            <p>Browse our collection of miniatures, paints, and tools.</p>
+        </section>
+
+        <!-- Catalog Controls -->
+        <section class="shop-controls" aria-label="Product Catalog Controls">
+            <div class="filter-group">
+                <label for="category-filter">Category:</label>
+                <select id="category-filter" class="form-select">
+                    <option value="all">All Categories</option>
+                    <option value="models">Models & Miniatures</option>
+                    <option value="paints">Paints & Finishes</option>
+                    <option value="tools">Tools & Accessories</option>
+                </select>
+            </div>
+
+            <div class="sort-group">
+                <label for="sort-order">Sort By:</label>
+                <select id="sort-order" class="form-select">
+                    <option value="featured">Featured</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="name-asc">Name: A to Z</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Dynamic Catalog Grid -->
+        <section class="catalog-container">
+            <div id="product-grid" class="product-grid" aria-live="polite">
+                <!-- Dynamically rendered product cards from main.js -->
+            </div>
+        </section>
+    </main>
+
+     <!-- Global Site Footer (Refined E-Commerce Style) -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-column footer-shipping">
+        <h3>Shipping & Dispatch</h3>
+        <p>Standard dispatch within 3–5 working days. Securely packaged in protective bubble wrap.</p>
+      </div>
+
+      <div class="footer-column footer-contact">
+        <h3>Support & Contact</h3>
+        <p>Email: workshop@paperbaghobbies.example</p>
+        <p>Based in Banbury, United Kingdom</p>
+      </div>
+
+      <div class="footer-column footer-disclaimer">
+        <h3>Disclaimer</h3>
+        <p>Independent proxy miniature workshop. Not endorsed by or affiliated with Games Workshop.</p>
+      </div>
+    </div>
+    <div class="footer-bottom" style="text-align: center; margin-top: var(--space-md); font-size: 0.85rem;">
+      <p>© 2026 Paperbag Hobbies. All rights reserved.</p>
+    </div>
+  </footer>
+
+    <!-- Lightbox / Product Modal -->
+<dialog id="product-lightbox" class="lightbox-dialog" aria-labelledby="lightbox-title">
+    <div class="lightbox-content">
+      <button type="button" id="lightbox-close" class="lightbox-close" aria-label="Close dialog">&times;</button>
+      <div class="lightbox-body">
+        <div class="lightbox-image-container">
+          <span id="lightbox-badge" class="product-badge" style="display: none;"></span>
+          <img id="lightbox-img" src="" alt="" class="lightbox-image">
+        </div>
+        <div class="lightbox-details">
+          <h2 id="lightbox-title" class="lightbox-title"></h2>
+          <p id="lightbox-price" class="lightbox-price" style="font-size: 1.5rem; font-weight: 700; color: var(--accent-text); margin: 0.25rem 0;"></p>
+          <p id="lightbox-description" class="lightbox-description"></p>
+          <button type="button" id="lightbox-add-btn" class="btn btn-primary add-to-cart-btn" style="margin-top: 1rem; width: 100%;">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+    
+</body>
+</html>
