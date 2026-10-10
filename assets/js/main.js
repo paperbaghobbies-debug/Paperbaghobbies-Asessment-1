@@ -109,7 +109,80 @@ function updateCartUI() {
   updateCartBadges();
   renderCartView();
   renderCartPopover();
+  updateCartSummaryUI();
 }
+
+// ==========================================
+// CONFIGURATION FOR VAT & SHIPPING (v2.0)
+// ==========================================
+const CONFIG = {
+  VAT_RATE: 0.20,                   // 20% UK Standard VAT Rate
+  SHIPPING_RATES: {
+    standard: 3.95,
+    express: 6.95
+  }
+};
+
+/**
+ * Calculates complete order totals including Net subtotal, VAT, Shipping, and Grand Total.
+ * @param {string} shippingMethod - 'standard' or 'express'
+ */
+function getCartOrderSummary(shippingMethod = 'standard') {
+  let subtotal = 0;
+
+  for (const [productId, quantity] of Object.entries(cartState)) {
+    const product = PRODUCTS.find(p => p.id === productId);
+    if (product) {
+      subtotal += product.price * quantity;
+    }
+  }
+
+  const selectedShippingCost = CONFIG.SHIPPING_RATES[shippingMethod] || CONFIG.SHIPPING_RATES.standard;
+  const vatAmount = subtotal * CONFIG.VAT_RATE;
+  const grandTotal = subtotal + selectedShippingCost + vatAmount;
+
+  return {
+    subtotal: subtotal,
+    vatAmount: vatAmount,
+    shippingCost: selectedShippingCost,
+    grandTotal: grandTotal,
+  };
+}
+
+/**
+ * Updates summary text elements and badges on cart.html
+ */
+function updateCartSummaryUI() {
+  const shippingSelect = document.getElementById('shipping-select');
+  if (!shippingSelect) return; // Exit safely if we're not on cart.html
+
+  const selectedMethod = shippingSelect.value;
+  const summary = getCartOrderSummary(selectedMethod);
+
+  const elSubtotal = document.getElementById('summary-subtotal');
+  const elShipping = document.getElementById('summary-shipping');
+  const elVat = document.getElementById('summary-vat');
+  const elTotal = document.getElementById('summary-total');
+
+  if (elSubtotal) elSubtotal.textContent = `£${summary.subtotal.toFixed(2)}`;
+  if (elVat) elVat.textContent = `£${summary.vatAmount.toFixed(2)}`;
+  
+  if (elShipping) {
+    elShipping.textContent = summary.shippingCost === 0 
+      ? 'FREE' 
+      : `£${summary.shippingCost.toFixed(2)}`;
+  }
+
+  if (elTotal) elTotal.textContent = `£${summary.grandTotal.toFixed(2)}`;
+
+}
+
+// Global event listener to instantly recalculate totals when shipping method changes (with closing brackets!)
+document.addEventListener('change', (e) => {
+  if (e.target.id === 'shipping-select') {
+    updateCartSummaryUI();
+  }
+});
 
 /* ==========================================================================
    3. RENDER ENGINES (Catalog, Cart View, & Popover)
@@ -168,6 +241,7 @@ function renderCartView() {
     return;
   }
 
+  // Render individual cart item cards
   container.innerHTML = entries.map(([id, qty]) => {
     const product = PRODUCTS.find(p => p.id === id);
     if (!product) return '';
@@ -193,13 +267,61 @@ function renderCartView() {
     `;
   }).join('');
 
+  // Render Order Summary Card cleanly using CSS classes
   summaryEl.innerHTML = `
-    <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Total: ${money(getGrandTotal())}</h2>
-    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-      <button type="button" class="btn btn-secondary" data-action="clear-cart">Clear Cart</button>
-      <button type="button" class="btn btn-primary" data-action="checkout">Checkout</button>
-    </div>
+    <section class="cart-summary-card">
+      <h2>Order Summary</h2>
+      
+      <div class="summary-row">
+        <span>Subtotal (excl. tax)</span>
+        <span id="summary-subtotal">£0.00</span>
+      </div>
+
+      <!-- Postcode Estimator Input -->
+      <div class="summary-row">
+        <label for="postcode-input">UK Postcode:</label>
+        <div class="postcode-input-group">
+          <input type="text" id="postcode-input" placeholder="e.g. OX16 1AA">
+          <button type="button" id="estimate-postage-btn" class="btn btn-secondary btn-sm">Calculate</button>
+        </div>
+      </div>
+
+      <!-- Postage Option Selection -->
+      <div class="summary-row">
+        <label for="shipping-select">Delivery Option:</label>
+        <select id="shipping-select">
+          <option value="standard">Standard UK Delivery (3-5 Days) - £3.95</option>
+          <option value="express">Express UK Delivery (1-2 Days) - £6.95</option>
+        </select>
+      </div>
+
+      <!-- Postage & Packaging Cost Line -->
+      <div class="summary-row">
+        <span>Postage & Packaging</span>
+        <span id="summary-shipping">£3.95</span>
+      </div>
+
+      <!-- VAT Line -->
+      <div class="summary-row">
+        <span>VAT (20% UK Standard)</span>
+        <span id="summary-vat">£0.00</span>
+      </div>
+
+      <hr class="summary-divider" />
+
+      <div class="summary-row summary-total">
+        <strong>Grand Total</strong>
+        <strong id="summary-total">£0.00</strong>
+      </div>
+
+      <div class="summary-actions">
+        <button type="button" class="btn btn-secondary" data-action="clear-cart">Clear Cart</button>
+        <button type="button" class="btn btn-primary" data-action="checkout">Checkout</button>
+      </div>
+    </section>
   `;
+
+  updateCartSummaryUI();
 }
 
 function renderCartPopover() {
@@ -413,3 +535,33 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCartView();
   }
 });
+
+// Live UK Postcode Validation using postcodes.io API
+  document.addEventListener('click', async (e) => {
+    if (e.target && e.target.id === 'estimate-postage-btn') {
+      const input = document.getElementById('postcode-input');
+      if (!input) return;
+
+      const postcode = input.value.trim().toUpperCase();
+
+      if (!postcode) {
+        alert('Please enter a UK postcode to calculate postage.');
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode)}/validate`);
+        const data = await response.json();
+
+        if (data.result === true) {
+          alert(`Success! Valid UK postcode verified. Standard shipping rates applied.`);
+          updateCartSummaryUI();
+        } else {
+          alert('That postcode could not be verified. Please check the format (e.g., OX16 1AA).');
+        }
+      } catch (error) {
+        console.error('Postcode verification failed:', error);
+        alert('Network error verifying postcode. Please try again.');
+      }
+    }
+  });
