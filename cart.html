@@ -81,9 +81,52 @@
       <div id="cart-items-container" class="cart-items-container">
         <!-- Rendered dynamically via JavaScript -->
       </div>
-      <div id="cart-summary" class="cart-summary" style="margin-top: 2rem; text-align: right;">
-        <!-- Order total and checkout actions rendered dynamically -->
-      </div>
+    <div id="cart-summary" class="cart-summary" style="margin-top: 2rem;">
+  <section class="cart-summary-card">
+    <h2>Order Summary</h2>
+    
+    <!-- Subtotal before tax and shipping -->
+    <div class="summary-row">
+      <span>Subtotal (excl. tax)</span>
+      <span id="summary-subtotal">£0.00</span>
+    </div>
+
+    <!-- Shipping method selector for dynamic calculation -->
+    <div class="summary-row">
+      <label for="shipping-select">Shipping Method:</label>
+      <select id="shipping-select" class="form-control">
+        <option value="standard">Standard UK Delivery (3-5 Days) - £3.95</option>
+        <option value="express">Express UK Delivery (1-2 Days) - £6.95</option>
+      </select>
+    </div>
+
+    <!-- Active shipping cost display -->
+    <div class="summary-row">
+      <span>Estimated Shipping</span>
+      <span id="summary-shipping">£3.95</span>
+    </div>
+
+    <!-- UK Standard VAT calculation row (20%) -->
+    <div class="summary-row">
+      <span>VAT (20% UK Standard)</span>
+      <span id="summary-vat">£0.00</span>
+    </div>
+
+    <hr class="summary-divider" />
+
+    <!-- Final Grand Total row -->
+    <div class="summary-row summary-total">
+      <strong>Grand Total</strong>
+      <strong id="summary-total">£0.00</strong>
+    </div>
+
+
+    <!-- Checkout trigger button -->
+    <button id="checkout-btn" class="btn btn-primary btn-block">
+      Proceed to Checkout
+    </button>
+  </section>
+</div>
     </section>
   </main>
 
