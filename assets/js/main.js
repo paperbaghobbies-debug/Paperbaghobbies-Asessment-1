@@ -50,7 +50,7 @@ function loadCart() {
   try {
     const saved = localStorage.getItem("paperbag_cart");
     if (saved) cartState = JSON.parse(saved);
-  } catch (e) { 
+  } catch { 
     cartState = {}; 
   }
 }
@@ -58,10 +58,11 @@ function loadCart() {
 function saveCart() {
   try { 
     localStorage.setItem("paperbag_cart", JSON.stringify(cartState)); 
-  } catch (e) {}
+  } catch {
+    // Intentionally left blank
+  }
   updateCartUI();
 }
-
 function addToCart(productId, quantity = 1) {
   const product = PRODUCTS.find(p => p.id === productId);
   if (!product) {
@@ -233,7 +234,7 @@ function renderCartView() {
   const summaryEl = document.getElementById('cart-summary');
   if (!container || !summaryEl) return;
 
-  const entries = Object.entries(cartState).filter(([_, qty]) => qty > 0);
+  const entries = Object.entries(cartState).filter(([, qty]) => qty > 0);
 
   if (entries.length === 0) {
     container.innerHTML = '<p class="empty-cart-msg">Your cart is currently empty. <a href="shop.html">Return to Shop</a></p>';
@@ -330,7 +331,7 @@ function renderCartPopover() {
   if (!container || !subtotalEl) return;
 
   subtotalEl.textContent = money(getGrandTotal());
-  const entries = Object.entries(cartState).filter(([_, qty]) => qty > 0);
+  const entries = Object.entries(cartState).filter(([, qty]) => qty > 0);
 
   if (entries.length === 0) {
     container.innerHTML = '<p class="empty-msg" style="margin:0; font-size:0.85rem; color:var(--text-muted);">Your cart is empty.</p>';
