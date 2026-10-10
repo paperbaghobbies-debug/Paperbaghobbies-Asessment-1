@@ -13,6 +13,7 @@ I validated my core document markup using the W3C Markup Validation Service by d
 | Date | File | Result | Notes |
 |---|---|---|---|
 | 05/10/2026 | `index.html` | Pass | Verified after completing Step 1.1 (HTML Boilerplate). Zero errors, zero warnings. |
+| 10/10/2026 | `index.html`, `shop.html`, `cart.html` | Pass | Final pre-submission re-validation. Zero errors, zero warnings across all core views. |
 
 ![W3C HTML validator result for index.html showing no errors or warnings](docs/screenshots/validator-index-html-step-1-1.png)
 
