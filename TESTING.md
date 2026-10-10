@@ -233,3 +233,33 @@ To satisfy **WCAG 2.1 SC 2.4.1 (Bypass Blocks)** and **SC 2.4.7 (Focus Visible)*
 
 ---
 
+## 5. Cart v2.0 Architecture, Flat-Rate Shipping & Postcode Validation
+
+To ensure strict adherence to UK e-commerce financial standards and robust state management, I implemented and tested the Cart v2.0 architecture, featuring live postcode verification via the `postcodes.io` API, exclusive 20% UK Standard VAT, and tiered flat-rate shipping.
+
+### 5.1 Dictionary State Management & Persistence
+
+| Test Objective | Interaction Steps | Expected Outcome | Result | Visual Evidence |
+|---|---|---|---|---|
+| **Quantity Updates** | Click `+` and `-` quantity buttons in `cart.html`. | Item quantity adjusts dynamically, subtotal recalculates instantly, and global cart badge updates. | **PASS** | Verified via DevTools inspection. |
+| **Item Removal** | Click individual remove trigger (`×`) or **Clear Cart**. | Selected item (or entire cart) clears from DOM and `localStorage` state. | **PASS** | Verified via DevTools inspection. |
+| **Cross-Tab Sync** | Open store in two separate tabs, update cart in one. | `storage` event listener synchronizes cart state across tabs without manual page refresh. | **PASS** | Verified via multi-window testing. |
+
+---
+
+### 5.2 Live Postcode Validation (`postcodes.io` API)
+
+| Test Objective | Interaction Steps | Expected Outcome | Result | Visual Evidence |
+|---|---|---|---|---|
+| **Valid UK Postcode** | Enter a valid UK postcode (e.g., `OX16 1AA`) into the postcode input and click **Calculate**. | API successfully queries `postcodes.io`, validates the format, and unlocks shipping calculations. | **PASS** | ![Valid UK Postcode Verification](docs/screenshots/postcodes-io-validation-pass.png) |
+| **Invalid / Non-UK Postcode** | Enter an invalid string or non-UK format (e.g., `12345` or `INVALID`) and click **Calculate**. | System catches API error / validation failure and presents clear error feedback to the user. | **PASS** | ![Invalid Postcode Error Handling](docs/screenshots/postcodes-io-validation-error.png) |
+
+---
+
+### 5.3 UK Financial Calculations (VAT & Shipping Tiers)
+
+| Test Objective | Interaction Steps | Expected Outcome | Result | Visual Evidence |
+|---|---|---|---|---|
+| **Shipping Tier Toggle** | Switch dropdown selection between Standard UK Delivery (£3.95) and Express UK Delivery (£6.95). | Postage & Packaging line updates immediately, recalculating the final Grand Total. | **PASS** | ![Cart v2.0 Order Summary Breakdown](docs/screenshots/cart-v2-financial-breakdown.png) |
+| **20% UK Standard VAT** | Review cart subtotal calculations with items added. | Exclusive 20% VAT is accurately computed against the taxable subtotal and summed into the Grand Total. | **PASS** | ![Cart v2.0 Order Summary Breakdown](docs/screenshots/cart-v2-financial-breakdown.png) |
+| **Design System Buttons** | Inspect **Calculate** and **Clear Cart** buttons. | Buttons inherit `.btn-secondary` and `.btn-sm` token styles with correct borders, padding, and hover states. | **PASS** | ![Styled Secondary Buttons Inspection](docs/screenshots/cart-v2-secondary-buttons.png) |

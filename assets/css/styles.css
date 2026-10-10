@@ -82,7 +82,7 @@ main,
 /* Prevent long strings/URLs from forcing container overflow */
 p, a, span, h1, h2, h3, h4, h5, h6 {
   overflow-wrap: break-word;
-  word-break: break-word;
+  word-break: normal; /* Prevents aggressive mid-word breaking on mobile */
 }
 
 /* ==========================================================================
@@ -513,9 +513,56 @@ p, a, span, h1, h2, h3, h4, h5, h6 {
     width: 100% !important;
     flex: 1 1 100% !important;
   }
-}
+
+  .cart-item-title, 
+  .product-title, 
+  .popover-item-title {
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    hyphens: auto;
+  }
+
+  .cart-item {
+    display: grid;
+    grid-template-columns: 50px minmax(0, 1fr) auto; /* Slightly tighter image slot for 360px */
+    grid-template-areas: 
+      "img details remove"
+      "img controls price";
+    gap: 0.4rem 0.6rem;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .cart-item-img {
+    grid-area: img;
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+  }
+
+  .cart-item-details {
+    grid-area: details;
+    min-width: 0; /* Prevents flex/grid text squishing */
+  }
+
+  .cart-item-controls {
+    grid-area: controls;
+  }
+
+  .cart-item-price {
+    grid-area: price;
+  }
+
+  .cart-item-remove {
+    grid-area: remove;
+    justify-self: end;
+  }
+} 
+
 /* ==========================================================================
-   7.1TABLET VIEWPORTS
+   7.1 TABLET VIEWPORTS
    ========================================================================== */
 @media (min-width: 769px) and (max-width: 1024px) {
   .header-container {

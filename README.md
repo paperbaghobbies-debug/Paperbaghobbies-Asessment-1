@@ -418,8 +418,17 @@ Strategy and Scope define the project goals. The three lower planes (Structure, 
 |  | [IMG]  Overgrown Citadel Dice Tower         [ - ] 1 [ + ]   £18.00    [ ✕ ]   |  |
 |  +-------------------------------------------------------------------------------+  |
 |                                                                                     |
-|                                                      Total: £54.50                  |
-|                                              [ Clear Cart ]  [ Checkout ]           |
+|  +-------------------------------------------------------------------------------+  |
+|  | Order Summary                                                                 |  |
+|  | Subtotal (excl. tax)                                                 £54.50   |  |
+|  | UK Postcode: [ OX16 1AA ] [ Calculate ]                                       |  |
+|  | Delivery Option: [ Standard UK Delivery (3-5 Days) - £3.95                  ▼ ] |  |
+|  | Postage & Packaging                                                   £3.95   |  |
+|  | VAT (20% UK Standard)                                                £10.90   |  |
+|  -------------------------------------------------------------------------------   |  |
+|  | Grand Total                                                          £69.35   |  |
+|  |                                          [ Clear Cart ]  [ Checkout ]         |  |
+|  +-------------------------------------------------------------------------------+  |
 |                                                                                     |
 +-------------------------------------------------------------------------------------+
 |  Footer: Shipping · Contact · Non-affiliation notice · © Paperbag Hobbies           |
@@ -427,10 +436,11 @@ Strategy and Scope define the project goals. The three lower planes (Structure, 
 ```
 ##### Rationale (Full cart page)
 
--  Dedicated Workspace (cart.html): Gives users a focused environment to manage quantities, remove specific items, or clear the entire cart cleanly.
+-  Dedicated Workspace (cart.html): I designed a focused environment for managing item quantities, removing specific items, or clearing the entire cart.
 -  Dictionary State Mapping: Backed by the robust key-value store (cartState) using localStorage for cross-page persistence and instant subtotal recalculations.
--  Accessible Controls: Quantity increment/decrement buttons and item removal triggers (✕) are styled with clear touch targets and accessible labeling.
--  Consistent Landmark Structure: Shares the identical sticky header, main content wrapper, and footer structure as the rest of the site to maintain design consistency.
+-  UK-Compliant Order Summary Component: I integrated a structured financial summary card featuring exclusive 20% UK Standard VAT calculations and selectable flat-rate shipping tiers (Standard / Express) while     deprecating legacy free-shipping logic.
+-  Live Postcode Validation UI: I added a dedicated input group with a secondary action button (.btn-secondary, .btn-sm) to query the public postcodes.io API in real time for UK postal code verification.
+- Design System Consistency: All form controls, inputs, selects, and action buttons strictly leverage existing CSS design tokens (--bg-card, --border-color, --input-border) to maintain visual harmony with the rest of the storefront.
 
 ### 3.2 Competitor review
 
@@ -813,6 +823,15 @@ paperbag-hobbies/
 | Header Popover Preview | Built an interactive flyout popover preview (triggered via hover/focus) displaying live itemized thumbnails, quantities, unit pricing, and subtotal calculations. |
 | Extended Button Feedback | Tuned interactive button feedback states (changing text to "Added!" with an optimized 1.8-second delay) to deliver tactile, user-friendly purchase confirmation. |
 
+### 6.9 UK-Compliant Cart v2.0 Architecture, Flat-Rate Shipping, and Live Postcode Validation
+
+| Aspect | Decision and reason |
+|---|---|
+| **20% UK Standard VAT (Exclusive)** | I implemented an automated tax calculation that applies a standard 20% rate to the taxable subtotal, itemized clearly in the order summary to meet UK e-commerce presentation standards. |
+| **Tiered Flat-Rate Shipping** | I removed the legacy free-shipping threshold entirely, replacing it with strict flat-rate delivery tiers: **Standard (£3.95)** and **Express (£6.95)**, selectable via a dynamic dropdown. |
+| **Live `postcodes.io` API Integration** | I integrated the public `postcodes.io` REST API to perform real-time, UK-only postcode verification within the order summary card, ensuring delivery location validity before checkout. |
+| **Design System Token & Utility Alignment** | I styled the new postcode inputs, delivery selects, and secondary action buttons (`.btn-secondary`, `.btn-sm`) using existing CSS design tokens (`--bg-card`, `--border-color`, `--input-border`) to maintain visual harmony across the application. |
+
 
 
 ---
@@ -833,10 +852,12 @@ For full manual test procedures, accessibility traces, and screen reader verific
 | Lightbox Modal | "Quick View" opens modal with focus trapped inside; `Esc` or close button dismisses and restores focus. | **PASS** |
 | Hero Slideshow | Fully interactive with manual controls; no un-pausable automated timers. | **PASS** |
 | Responsive Layout | Layout adjusts cleanly across mobile, tablet, and desktop viewports without horizontal overflow. | **PASS** |
-| Accessibility & Keyboard Navigation | Visible focus indicators (`:focus-visible`), skip link (`#main-content`), and screen reader semantics across all viewports. | **PASS** |
-| Dictionary Cart Engine & Mutations | Adding items, adjusting quantities (`+`/`–`), and removing items (`&times;`) instantly recalculate subtotals and update state. | **PASS** |
-| Persistent Storage & Cross-Tab Sync | Cart items persist across page reloads via `localStorage` and sync automatically across multiple open browser tabs. | **PASS** |
-| Header Popover Preview | Hovering or focusing the cart link reveals the drop-down preview with correct item counts, images, and live subtotal totals. | **PASS** |
+| Accessibility & Keyboard Navigation | Visible focus indicators (`:focus-visible`), skip link (`#main-content`), and screen reader semantics across all viewports.[cite: 10] | **PASS** |
+| Dictionary Cart Engine & Mutations | Adding items, adjusting quantities (`+`/`–`), and removing items (`&times;`) instantly recalculate subtotals and update state.[cite: 10] | **PASS** |
+| Persistent Storage & Cross-Tab Sync | Cart items persist across page reloads via `localStorage` and sync automatically across multiple open browser tabs.[cite: 10] | **PASS** |
+| Header Popover Preview | Hovering or focusing the cart link reveals the drop-down preview with correct item counts, images, and live subtotal totals.[cite: 10] | **PASS** |
+| **Live Postcode Validation (`postcodes.io`)** | **Entering a valid UK postcode (e.g., `OX16 1AA`) successfully verifies via the API; invalid formats trigger clear error messaging.** | **PASS** |
+| **UK VAT & Flat-Rate Shipping Tiers** | **Switching between Standard (£3.95) and Express (£6.95) shipping correctly updates totals alongside the 20% exclusive VAT calculation.** | **PASS** |
 ---
 
 ## 8. Version Control
