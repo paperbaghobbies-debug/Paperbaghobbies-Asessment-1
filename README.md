@@ -375,6 +375,63 @@ Strategy and Scope define the project goals. The three lower planes (Structure, 
 - “Buy” button is honest about scope (US05) — no fake checkout.
 - All text is real HTML, never part of the image (D5).
 
+#### Cart popover preview wireframe 
+```text
++-------------------------------------------------------------------------------------+
+| [Logo] Paperbag Hobbies        Home   Shop   About Us                  [Cart 3]     |
+|                                                                 +-----------------+ |
+|                                                                 | Cart Preview    | |
+|                                                                 |                 | |
+|                                                                 | +-----+         | |
+|                                                                 | | IMG | Squad x1| |
+|                                                                 | +-----+ £12.50  | |
+|                                                                 |                 | |
+|                                                                 | Subtotal: £54.50| |
+|                                                                 | [ Full Cart ]   | |
+|                                                                 +-----------------+ |
++-------------------------------------------------------------------------------------+
+```
+##### Rationale (Cart popover preview)
+
+- Hover/Focus Activation: Appears seamlessly when hovering over or focusing the header cart link, allowing users to review items without navigating away from their current page.
+- Compact Itemization: Displays thumbnail images, titles, quantities, and itemized subtotal data for quick visual validation.
+- Direct Navigation: Provides an immediate path to view the full cart page or proceed to checkout.
+- Accessible Interactions: Operates in sync with keyboard focus states and touch interactions.
+
+#### Full Shopping Cart Page Wireframe (cart.html)
+```text
++-------------------------------------------------------------------------------------+
+| [Skip to content]                                                                   |  ← visually hidden until focused
++-------------------------------------------------------------------------------------+
+| Announcement Bar                                                                    |
++-------------------------------------------------------------------------------------+
+| [Logo] Paperbag Hobbies        Home   Shop   About Us                  [Cart 3]     |
++-------------------------------------------------------------------------------------+
+|                                                                                     |
+|  Your Shopping Cart                                                                 |
+|                                                                                     |
+|  +-------------------------------------------------------------------------------+  |
+|  | [IMG]  Grimdark Sci-Fi Squad Commander      [ - ] 1 [ + ]   £12.50    [ ✕ ]   |  |
+|  +-------------------------------------------------------------------------------+  |
+|  | [IMG]  Gothic Ruins Terrain Set             [ - ] 1 [ + ]   £24.00    [ ✕ ]   |  |
+|  +-------------------------------------------------------------------------------+  |
+|  | [IMG]  Overgrown Citadel Dice Tower         [ - ] 1 [ + ]   £18.00    [ ✕ ]   |  |
+|  +-------------------------------------------------------------------------------+  |
+|                                                                                     |
+|                                                      Total: £54.50                  |
+|                                              [ Clear Cart ]  [ Checkout ]           |
+|                                                                                     |
++-------------------------------------------------------------------------------------+
+|  Footer: Shipping · Contact · Non-affiliation notice · © Paperbag Hobbies           |
++-------------------------------------------------------------------------------------+
+```
+##### Rationale (Full cart page)
+
+-  Dedicated Workspace (cart.html): Gives users a focused environment to manage quantities, remove specific items, or clear the entire cart cleanly.
+-  Dictionary State Mapping: Backed by the robust key-value store (cartState) using localStorage for cross-page persistence and instant subtotal recalculations.
+-  Accessible Controls: Quantity increment/decrement buttons and item removal triggers (✕) are styled with clear touch targets and accessible labeling.
+-  Consistent Landmark Structure: Shares the identical sticky header, main content wrapper, and footer structure as the rest of the site to maintain design consistency.
+
 ### 3.2 Competitor review
 
 I wanted to understand how existing independent miniature shops present themselves before I designed my own layout. I chose three shops that sell similar products and examined their homepages on 06/10/2026 using Chrome DevTools.
@@ -746,6 +803,16 @@ paperbag-hobbies/
 | Direct Action Guard | Intercepted click events to bypass lightbox activation when the "Add to Cart" button is clicked directly on a card, avoiding unnecessary modal open states during quick purchase actions (US05). |
 | ARIA Binding | Explicitly bound `aria-labelledby` on the `<dialog>` container to the lightbox title heading (`#lightbox-title`), ensuring screen readers announce the modal context immediately upon opening (US07). |
 
+### 6.8 Robust Dictionary Cart Engine & Popover (`main.js` & `styles.css`)
+
+| Aspect | Decision and reason |
+|---|---|
+| Dictionary-Based State (`cartState`) | Replaced legacy flat arrays with a key-value dictionary map (`{ [productId]: quantity }`). This provides O(1) inventory lookups, robust quantity tracking, and prevents item duplication bugs. |
+| LocalStorage & Cross-Tab Sync | Integrated native `localStorage` for cross-page state persistence (`index.html`, `shop.html`, and `cart.html`), combined with a global `storage` event listener to enable real-time multi-tab synchronization without manual refreshes. |
+| Modular Code Architecture | Grouped all core cart state, persistence handlers (`loadCart`, `saveCart`), and mutation operations into a dedicated block (**Section 2**), cleanly decoupling business logic from render engines (**Section 3**) and event delegation (**Section 4**). |
+| Header Popover Preview | Built an interactive flyout popover preview (triggered via hover/focus) displaying live itemized thumbnails, quantities, unit pricing, and subtotal calculations. |
+| Extended Button Feedback | Tuned interactive button feedback states (changing text to "Added!" with an optimized 1.8-second delay) to deliver tactile, user-friendly purchase confirmation. |
+
 
 
 ---
@@ -767,6 +834,9 @@ For full manual test procedures, accessibility traces, and screen reader verific
 | Hero Slideshow | Fully interactive with manual controls; no un-pausable automated timers. | **PASS** |
 | Responsive Layout | Layout adjusts cleanly across mobile, tablet, and desktop viewports without horizontal overflow. | **PASS** |
 | Accessibility & Keyboard Navigation | Visible focus indicators (`:focus-visible`), skip link (`#main-content`), and screen reader semantics across all viewports. | **PASS** |
+| Dictionary Cart Engine & Mutations | Adding items, adjusting quantities (`+`/`–`), and removing items (`&times;`) instantly recalculate subtotals and update state. | **PASS** |
+| Persistent Storage & Cross-Tab Sync | Cart items persist across page reloads via `localStorage` and sync automatically across multiple open browser tabs. | **PASS** |
+| Header Popover Preview | Hovering or focusing the cart link reveals the drop-down preview with correct item counts, images, and live subtotal totals. | **PASS** |
 ---
 
 ## 8. Version Control
