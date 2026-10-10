@@ -45,14 +45,32 @@
       </ul>
     </nav>
 
-    <!-- Header Actions / Cart Link (Right) -->
+    <!-- Header Actions / Cart Link with Popover Dropdown (Right) -->
     <div class="header-actions">
-      <a href="cart.html" class="cart-link" aria-label="Shopping Cart, 0 items">
-        <span class="cart-icon" aria-hidden="true">🛒</span>
-        <span class="cart-text">Cart</span>
-        <span id="cart-count" class="cart-badge" aria-hidden="true">0</span>
-      </a>
-    </div>
+      <div class="cart-popover-wrapper">
+        <a href="cart.html" id="cart-popover-trigger" class="cart-link" aria-label="Shopping Cart, 0 items">
+          <span class="cart-icon" aria-hidden="true">🛒</span>
+          <span class="cart-text">Cart</span>
+          <span id="cart-count" class="cart-badge" aria-hidden="true">0</span>
+        </a>
+
+        <!-- Floating Cart Popover Dropdown -->
+        <div id="cart-popover" class="cart-popover" aria-hidden="true">
+          <div id="popover-items" class="popover-items">
+            <!-- Dynamically rendered via main.js -->
+          </div>
+          <div class="popover-footer">
+            <div class="popover-subtotal">
+              <span>Subtotal:</span>
+              <strong id="popover-subtotal-price">£0.00</strong>
+            </div>
+            <div class="popover-actions">
+              <a href="cart.html" class="btn btn-secondary btn-sm">Full Cart</a>
+              <button type="button" class="btn btn-primary btn-sm" data-action="checkout">Checkout</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
   </div>
 </header>

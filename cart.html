@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart - Paperbag Hobbies</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+   <!-- Accessible Skip Link -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- Top Announcement / Welcome Bar -->
+<aside class="announcement-bar" aria-label="Announcement">
+  <div class="container announcement-container">
+    <p class="announcement-text">Welcome to the store! Explore our latest custom designs and prints.</p>
+  </div>
+</aside>
+
+<!-- Global Site Header (Single-Row Inline Layout) -->
+<header class="site-header">
+  <div class="header-container">
+    
+    <!-- Brand Identity (Left) -->
+    <div class="header-brand-row">
+      <a class="logo-link" href="index.html" aria-label="Paperbag Hobbies - Home">
+        <img class="header-logo" src="assets/images/logo/pbm-logo.png" alt="Paperbag Hobbies Crest Logo" width="51" height="48">
+        <span class="brand-title">Paperbag Hobbies</span>
+      </a>
+    </div>
+
+    <!-- Mobile Disclosure Button -->
+    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="primary-nav-list" aria-label="Toggle navigation menu">
+      <span class="nav-toggle-icon" aria-hidden="true">≡</span>
+      <span class="nav-toggle-label">Menu</span>
+    </button>
+
+    <!-- Primary Navigation (Center/Inline) -->
+    <nav class="primary-nav" aria-label="Main navigation">
+      <ul id="primary-nav-list" class="nav-list">
+        <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+        <li class="nav-item"><a href="shop.html" class="nav-link nav-link-active" aria-current="page">Shop</a></li>
+        <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
+      </ul>
+    </nav>
+
+    <!-- Header Actions / Cart Link with Popover Dropdown (Right) -->
+    <div class="header-actions">
+      <div class="cart-popover-wrapper">
+        <a href="cart.html" id="cart-popover-trigger" class="cart-link" aria-label="Shopping Cart, 0 items">
+          <span class="cart-icon" aria-hidden="true">🛒</span>
+          <span class="cart-text">Cart</span>
+          <span id="cart-count" class="cart-badge" aria-hidden="true">0</span>
+        </a>
+
+        <!-- Floating Cart Popover Dropdown -->
+        <div id="cart-popover" class="cart-popover" aria-hidden="true">
+          <div id="popover-items" class="popover-items">
+            <!-- Dynamically rendered via main.js -->
+          </div>
+          <div class="popover-footer">
+            <div class="popover-subtotal">
+              <span>Subtotal:</span>
+              <strong id="popover-subtotal-price">£0.00</strong>
+            </div>
+            <div class="popover-actions">
+              <a href="cart.html" class="btn btn-secondary btn-sm">Full Cart</a>
+              <button type="button" class="btn btn-primary btn-sm" data-action="checkout">Checkout</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  </div>
+</header>
+
+  <!-- Cart Content -->
+  <main id="main-content" class="main-container">
+    <section class="cart-section" style="max-width: 800px; margin: 0 auto;">
+      <h1>Your Shopping Cart</h1>
+      <div id="cart-items-container" class="cart-items-container">
+        <!-- Rendered dynamically via JavaScript -->
+      </div>
+      <div id="cart-summary" class="cart-summary" style="margin-top: 2rem; text-align: right;">
+        <!-- Order total and checkout actions rendered dynamically -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>Shipping & Dispatch</h3>
+        <p>Standard dispatch within 3–5 working days.</p>
+      </div>
+      <div class="footer-column">
+        <h3>Support & Contact</h3>
+        <p>Email: workshop@paperbaghobbies.example</p>
+      </div>
+      <div class="footer-column">
+        <h3>Disclaimer</h3>
+        <p>Independent proxy miniature workshop.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Paperbag Hobbies. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

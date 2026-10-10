@@ -54,14 +54,33 @@
       </ul>
     </nav>
 
-    <!-- Header Actions / Cart Link (Right) -->
+   <!-- Header Actions / Cart Link with Popover Dropdown (Right) -->
     <div class="header-actions">
-      <a href="cart.html" class="cart-link" aria-label="Shopping Cart, 0 items">
-        <span class="cart-icon" aria-hidden="true">🛒</span>
-        <span class="cart-text">Cart</span>
-        <span class="cart-badge" aria-hidden="true">0</span>
-      </a>
-    </div>
+      <div class="cart-popover-wrapper">
+        <a href="cart.html" id="cart-popover-trigger" class="cart-link" aria-label="Shopping Cart, 0 items">
+          <span class="cart-icon" aria-hidden="true">🛒</span>
+          <span class="cart-text">Cart</span>
+          <span id="cart-count" class="cart-badge" aria-hidden="true">0</span>
+        </a>
+
+        <!-- Floating Cart Popover Dropdown -->
+        <div id="cart-popover" class="cart-popover" aria-hidden="true">
+          <div id="popover-items" class="popover-items">
+            <!-- Dynamically rendered via main.js -->
+          </div>
+          <div class="popover-footer">
+            <div class="popover-subtotal">
+              <span>Subtotal:</span>
+              <strong id="popover-subtotal-price">£0.00</strong>
+            </div>
+            <div class="popover-actions">
+              <a href="cart.html" class="btn btn-secondary btn-sm">Full Cart</a>
+              <button type="button" class="btn btn-primary btn-sm" data-action="checkout">Checkout</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    
 
   </div>
 </header>
@@ -74,7 +93,7 @@
       
       <div class="product-grid">
         <!-- Product Card 1 -->
-        <article class="product-card">
+        <article class="product-card" data-product-id="prod-1">
           <div class="product-image-wrapper">
             <img src="assets/images/placeholder.png" alt="Custom 3D printed miniature proxy" class="product-image" loading="lazy">
             <span class="product-badge">Resin Print</span>
@@ -84,7 +103,7 @@
             <p class="product-description">High-detail 28mm scale resin miniature. Cleaned, cured, and ready for priming.</p>
             <div class="product-footer">
               <span class="product-price">£12.50</span>
-              <button type="button" class="btn btn-primary add-to-cart-btn" data-id="1" data-name="Grimdark Squad Commander" data-price="12.50">
+              <button type="button" class="btn btn-primary add-to-cart-btn" data-action="add-to-cart" data-product-id="prod-1">
                 Add to Cart
               </button>
             </div>
@@ -92,7 +111,7 @@
         </article>
 
         <!-- Product Card 2 -->
-        <article class="product-card">
+        <article class="product-card" data-product-id="prod-2">
           <div class="product-image-wrapper">
             <img src="assets/images/placeholder.png" alt="Modular terrain scatter piece" class="product-image" loading="lazy">
             <span class="product-badge">PLA Terrain</span>
@@ -102,7 +121,7 @@
             <p class="product-description">Modular 3D printed terrain set designed for 28mm/32mm tabletop wargaming.</p>
             <div class="product-footer">
               <span class="product-price">£24.00</span>
-              <button type="button" class="btn btn-primary add-to-cart-btn" data-id="2" data-name="Gothic Ruins Terrain Set" data-price="24.00">
+              <button type="button" class="btn btn-primary add-to-cart-btn" data-action="add-to-cart" data-product-id="prod-2">
                 Add to Cart
               </button>
             </div>
@@ -110,7 +129,7 @@
         </article>
 
         <!-- Product Card 3 -->
-        <article class="product-card">
+        <article class="product-card" data-product-id="prod-3">
           <div class="product-image-wrapper">
             <img src="assets/images/placeholder.png" alt="Custom dice tower" class="product-image" loading="lazy">
             <span class="product-badge">Custom Order</span>
@@ -120,7 +139,7 @@
             <p class="product-description">Detailed dice tower engineered for smooth rolls with standard D20 and D6 sets.</p>
             <div class="product-footer">
               <span class="product-price">£18.00</span>
-              <button type="button" class="btn btn-primary add-to-cart-btn" data-id="3" data-name="Overgrown Citadel Dice Tower" data-price="18.00">
+              <button type="button" class="btn btn-primary add-to-cart-btn" data-action="add-to-cart" data-product-id="prod-3">
                 Add to Cart
               </button>
             </div>
