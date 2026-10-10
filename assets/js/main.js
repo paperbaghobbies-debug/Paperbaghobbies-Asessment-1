@@ -1,6 +1,5 @@
 /**
  * Paperbag Hobbies - Main JavaScript Architecture
- * Single Source of Truth Store with Dictionary State & Popover Support
  */
 
 /* ==========================================================================
