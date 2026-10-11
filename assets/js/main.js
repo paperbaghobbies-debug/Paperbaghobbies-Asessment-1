@@ -572,16 +572,15 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCartView();
   }
 
-  // Checkout Submission Guardrail Handler
-  const checkoutForm = document.getElementById('checkout-form');
+// Checkout Button Click Guardrail Handler
+  const checkoutBtn = document.getElementById('stripe-checkout-btn');
   const errorMsgEl = document.getElementById('checkout-error-msg');
 
-  if (checkoutForm) {
-    checkoutForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', (e) => {
       // 1. Guardrail: Block checkout if basket is empty
       if (getTotalCount() === 0) {
+        e.preventDefault();
         if (errorMsgEl) {
           errorMsgEl.textContent = 'Your basket is empty. Please add items to your cart before proceeding to checkout.';
           errorMsgEl.style.display = 'block';
@@ -590,12 +589,24 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // 2. Guardrail: Check HTML5 form validity for required inputs
-      if (!checkoutForm.checkValidity()) {
+      const requiredInputs = ['shipping-name', 'shipping-email', 'shipping-address', 'shipping-city', 'shipping-postcode'];
+      let allValid = true;
+
+      for (const inputId of requiredInputs) {
+        const inputEl = document.getElementById(inputId);
+        if (inputEl && !inputEl.checkValidity()) {
+          allValid = false;
+          inputEl.reportValidity(); // Highlights the missing/invalid field
+          break;
+        }
+      }
+
+      if (!allValid) {
+        e.preventDefault();
         if (errorMsgEl) {
           errorMsgEl.textContent = 'Please fill out all required shipping details above before proceeding with payment.';
           errorMsgEl.style.display = 'block';
         }
-        checkoutForm.reportValidity(); // Highlights the first invalid field and shows tooltips
         return;
       }
 
@@ -605,6 +616,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // 3. Successful Prototype Flow
+      e.preventDefault();
       alert('Secure payment gateway integration is planned for Phase 2 (Unit 2 project). No financial data has been collected.');
       clearCart();
       window.location.href = 'index.html';
