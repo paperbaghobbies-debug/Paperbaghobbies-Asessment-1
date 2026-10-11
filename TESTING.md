@@ -13,7 +13,7 @@ I validated my core document markup using the W3C Markup Validation Service by d
 | Date | File | Result | Notes |
 |---|---|---|---|
 | 05/10/2026 | `index.html` | Pass | Verified after completing Step 1.1 (HTML Boilerplate). Zero errors, zero warnings. |
-| 10/10/2026 | `index.html`, `shop.html`, `cart.html` | Pass | Final pre-submission re-validation. Zero errors, zero warnings across all core views. |
+| 11/10/2026 | `index.html`, `shop.html`, `cart.html`, `about.html`, `checkout.html` | Pass | Final pre-submission re-validation. Zero errors, zero warnings across all core views. |
 
 ![W3C HTML validator result for index.html showing no errors or warnings](docs/screenshots/validator-index-html-step-1-1.png)
 
@@ -52,7 +52,6 @@ I audited the homepage (`index.html`) using Google Lighthouse in Chrome DevTools
 
 ---
 
-
 ### 1.4 JavaScript Static Code Analysis
 
 * **Status:** Pass[cite: 3]
@@ -75,7 +74,7 @@ I audited the homepage (`index.html`) using Google Lighthouse in Chrome DevTools
 
 Before building components, I ran an accessibility test on my initial brand color palette. To verify compliance, I piped my proposed hex codes directly into AI contrast checking tools and calculated the contrast ratios using the WCAG 2.1 relative luminance formula. 
 
-The initial results revealed major accessibility failures in my core UI elements:
+The initial results revealed major accessibility failures in my core UI elements (logged as **Bug B1**):
 * **Original Button Styling:** White text (`#ffffff`) rendered on my brand tan accent background (`#c98a4b`) produced a contrast ratio of **2.91:1**, failing the mandatory 4.5:1 minimum for normal body text.
 * **Original Price Labels:** Tan text (`#c98a4b`) rendered directly over white page backgrounds (`#ffffff`) similarly failed at **2.91:1**.
 
@@ -115,16 +114,6 @@ I inspected my rendered typography using Chrome DevTools to verify that custom p
 
 ![DevTools Computed tab showing Inter as the rendered font](docs/screenshots/devtools-rendered-font-step-1-2-c.png)
 
-#### Recorded Computed Values for `h1`
-
-| Property | Computed Value | Source Rule / Token |
-|---|---|---|
-| `font-size` | `32px` | `2rem` |
-| `font-weight` | `700` | Global heading rule |
-| `line-height` | `38.4px` | `32px × 1.2` (`--line-height-heading`) |
-| `color` | `rgb(59, 36, 22)` | `#3b2416` (`--text-main`) |
-| `margin` | `0px` | Targeted CSS reset |
-
 ---
 
 ## 3. Responsive Layout & Device Testing (US06)
@@ -151,12 +140,19 @@ I conducted responsive testing across mobile, tablet, and desktop viewports usin
 | **Mobile (iPhone SE)** | `375px` | Vertical header layout, collapsible navigation drawer (`.nav-toggle`), single-column catalog grid. | **PASS** | ![Mobile Viewport Navigation Drawer on iPhone SE](docs/screenshots/responsive-mobile-375px.png) |
 | **Tablet (iPad)** | `769px` | Single-row inline header navigation, balanced brand logo alignment, 2-column catalog card grid. | **PASS** | ![Tablet Responsive Layout on iPad](docs/screenshots/responsive-tablet-769px.png) |
 | **Desktop** | `1200px+` | Full 3-column CSS product grid layout, inline top navigation, non-wrapping header banner. | **PASS** | Verified via browser DevTools inspection. |
+| **About Us Page (`about.html`)** | `375px` to `1200px+` | Side-by-side flexbox grid (`.about-grid`) scaling fluidly on desktop and collapsing into a single vertical column on mobile with zero horizontal overflow. | **PASS** | Verified across desktop, iPad, and iPhone SE viewports. |
+
+#### About Us Page Viewport Evidence
+
+| Desktop View (Side-by-Side Flex Grid) | Mobile View (Stacked Column) |
+| :---: | :---: |
+| ![Desktop view of about.html showing mascot side-by-side with text](docs/screenshots/responsive-about-desktop.png) | ![Mobile view of about.html showing mascot stacked above text](docs/screenshots/responsive-about-mobile.png) |
 
 ---
 
 ### 3.3 Mobile Defect Diagnostics & Engineering Fixes
 
-#### Mobile Header & Footer Layout Defect Analysis
+#### Mobile Header & Footer Layout Defect Analysis (Bugs B5 & B10)
 
 ##### Visual Evidence (Pre-Fix Layout Defects):
 
@@ -166,11 +162,11 @@ I conducted responsive testing across mobile, tablet, and desktop viewports usin
 
 ##### Issues Identified & Technical Solutions:
 
-1. **Hamburger Button Text Wrapping ("Men u")**
+1. **Hamburger Button Text Wrapping ("Men u") (Bug B5)**
    * **Root Cause:** On viewports under `400px`, flexbox item compression within `.header-container` squeezed the navigation toggle button (`.nav-toggle`), forcing its inner text to wrap across two lines awkwardly ("Men" / "u").
    * **How I Fixed It:** I updated `.nav-toggle` within the `@media (max-width: 768px)` breakpoint block in `styles.css`. I applied `white-space: nowrap` and `flex-shrink: 0` to prevent flexbox from shrinking the container, and adjusted padding to `0.4rem 0.6rem` to lock in a clean, single-line label.
 
-2. **Footer Column Horizontal Compression**
+2. **Footer Column Horizontal Compression (Bug B10)**
    * **Root Cause:** On viewports below `768px`, the multi-column footer layout failed to collapse vertically. As a result, columns (`Shipping & Dispatch`, `Support & Contact`, `Disclaimer`) were forced into narrow horizontal bands.
    * **How I Fixed It:** I updated `.footer-container` inside the `@media (max-width: 768px)` media query to enforce `flex-direction: column !important` and set each `.footer-column` to `width: 100% !important`. This allowed footer content to stack into a readable vertical flow with full-width touch targets.
 
@@ -197,12 +193,12 @@ To test **User Story US04** (enlarging product images in an accessible modal), I
 | **Backdrop Dismissal** | Click dark overlay background outside modal | Modal closes cleanly and resets page state. | **PASS** | Evaluates click event coordinates against the `<dialog>` bounding rectangle. | Verified |
 | **Close Button Dismissal** | Click top-right `✕` button | Modal closes cleanly. | **PASS** | Explicit click event listener triggers native `.close()` method. | Verified |
 | **Direct CTA Isolation** | Click "Add to Cart" directly on product card | Cart action fires without opening lightbox. | **PASS** | Event propagation handled with `e.stopPropagation()` on card CTA buttons. | Verified |
-| **Keyboard Focus Lock** | Press `Tab` continuously while modal is open | Focus stays trapped inside dialog between close button and CTA. | **PASS** | Handled natively by HTML5 `<dialog>` element. | Verified |
+| **Keyboard Focus Lock (Bug B9)** | Press `Tab` continuously while modal is open | Focus stays trapped inside dialog between close button and CTA. | **PASS** | Handled natively by HTML5 `<dialog>` element and explicit focus restoration on `document.activeElement`. | Verified |
 | **Escape Key Dismissal** | Press `Escape` key while modal is active | Modal closes immediately. | **PASS** | Natively captured by browser `<dialog>` `cancel` event. | Verified |
-| **Focus Restoration** | Dismiss modal via `Escape` or close control | Keyboard focus returns directly to triggering card element. | **PASS** | Saved `document.activeElement` prior to opening and re-focused it on close (WCAG SC 2.4.3). | Verified |
-| **Mobile Reflow** | Open modal on `375px × 667px` viewport | Content fits within viewport with internal scroll bar and clear close control. | **PASS** | Refactored dialog height limits and overflow rules. | Verified |
+| **Focus Restoration (Bug B9)** | Dismiss modal via `Escape` or close control | Keyboard focus returns directly to triggering card element. | **PASS** | Saved `document.activeElement` prior to opening and re-focused it on close (WCAG SC 2.4.3). | Verified |
+| **Mobile Reflow (Bug B6)** | Open modal on `375px × 667px` viewport | Content fits within viewport with internal scroll bar and clear close control. | **PASS** | Refactored dialog height limits (`max-height: 85vh`) and overflow rules (`overflow-y: auto`). | Verified |
 
-#### Mobile Lightbox Defect & Engineering Fix
+#### Mobile Lightbox Defect & Engineering Fix (Bug B6)
 
 ##### Pre-Fix Defect vs. Final Resolved Implementation:
 
@@ -214,61 +210,4 @@ To test **User Story US04** (enlarging product images in an accessible modal), I
 
 1. **Vertical Boundary Overflow & Off-Screen CTA Clipping**
    * **Root Cause:** On short viewports (such as the iPhone SE at `667px` height), fixed image dimensions pushed the bottom of the modal content past the viewport fold. This clipped the primary "Add to Cart" button off-screen and prevented users from scrolling within the dialog.
-   * **How I Fixed It:** I updated `.lightbox-dialog` in `styles.css` to enforce `max-height: 85vh` and `overflow-y: auto`. I also constrained `.lightbox-image-container` on mobile viewports to a `max-height` of `200px`, keeping the main modal content above the fold while allowing smooth internal scrolling for longer descriptions.
-
-2. **Hidden Close Button Overlay**
-   * **Root Cause:** Standard absolute positioning placed the close icon (`✕`) behind adjacent element boundaries on narrow screens.
-   * **How I Fixed It:** I styled `.lightbox-close` as an elevated circular button with `position: absolute`, pinned to the top-right corner with a high `z-index: 10` and `36px × 36px` touch dimensions, ensuring quick dismissal across all devices.
-
----
-
-### 4.2 Keyboard Navigation & Screen Reader Traversal (US07)
-
-To satisfy **WCAG 2.1 SC 2.4.1 (Bypass Blocks)** and **SC 2.4.7 (Focus Visible)**, I completed a complete keyboard navigation audit across all primary interactive paths using `Tab`, `Shift+Tab`, and `Enter` keys.
-
-* **Date:** 08/10/2026
-* **User Story:** US07 - Keyboard & Screen Reader Access
-* **Target Compliance:** WCAG 2.1 Level AA
-
-#### Keyboard Traversal & Focus Audit Results
-
-| Focus Traversal Order | Interactive Element | Trigger / Step | Expected Behavior | Result | Visual Evidence |
-|---|---|---|---|---|---|
-| **1 (First Focus)** | Skip Link (`#main-content`) | `Tab` from browser address bar | "Skip to main content" button slides into view at top-left with high-contrast ring (`--accent`). Pressing `Enter` shifts focus directly to `#main-content`. | **PASS** | ![Skip to main content focus state](docs/screenshots/keyboard-skip-link-focus.png) |
-| **2** | Header Brand Logo | `Tab` | Outline container lights up with distinct `:focus-visible` ring. | **PASS** | Verified |
-| **3** | Navigation Links (`Home`, `Shop`, `About Us`) | `Tab` / `Shift+Tab` | Traverses sequentially across links with prominent focus ring around active text. | **PASS** | Verified |
-| **4** | Cart Badge Button | `Tab` | Focus ring surrounds cart button and count badge cleanly. | **PASS** | Verified |
-| **5** | Product Cards & CTAs | `Tab` through catalog grid | Focus highlights image triggers, title links, and "Add to Cart" buttons in natural document order. | **PASS** | Verified |
-
----
-
-## 5. Cart v2.0 Architecture, Flat-Rate Shipping & Postcode Validation
-
-To ensure strict adherence to UK e-commerce financial standards and robust state management, I implemented and tested the Cart v2.0 architecture, featuring live postcode verification via the `postcodes.io` API, exclusive 20% UK Standard VAT, and tiered flat-rate shipping.
-
-### 5.1 Dictionary State Management & Persistence
-
-| Test Objective | Interaction Steps | Expected Outcome | Result | Visual Evidence |
-|---|---|---|---|---|
-| **Quantity Updates** | Click `+` and `-` quantity buttons in `cart.html`. | Item quantity adjusts dynamically, subtotal recalculates instantly, and global cart badge updates. | **PASS** | Verified via DevTools inspection. |
-| **Item Removal** | Click individual remove trigger (`×`) or **Clear Cart**. | Selected item (or entire cart) clears from DOM and `localStorage` state. | **PASS** | Verified via DevTools inspection. |
-| **Cross-Tab Sync** | Open store in two separate tabs, update cart in one. | `storage` event listener synchronizes cart state across tabs without manual page refresh. | **PASS** | Verified via multi-window testing. |
-
----
-
-### 5.2 Live Postcode Validation (`postcodes.io` API)
-
-| Test Objective | Interaction Steps | Expected Outcome | Result | Visual Evidence |
-|---|---|---|---|---|
-| **Valid UK Postcode** | Enter a valid UK postcode (e.g., `OX16 1AA`) into the postcode input and click **Calculate**. | API successfully queries `postcodes.io`, validates the format, and unlocks shipping calculations. | **PASS** | ![Valid UK Postcode Verification](docs/screenshots/postcodes-io-validation-pass.png) |
-| **Invalid / Non-UK Postcode** | Enter an invalid string or non-UK format (e.g., `12345` or `INVALID`) and click **Calculate**. | System catches API error / validation failure and presents clear error feedback to the user. | **PASS** | ![Invalid Postcode Error Handling](docs/screenshots/postcodes-io-validation-error.png) |
-
----
-
-### 5.3 UK Financial Calculations (VAT & Shipping Tiers)
-
-| Test Objective | Interaction Steps | Expected Outcome | Result | Visual Evidence |
-|---|---|---|---|---|
-| **Shipping Tier Toggle** | Switch dropdown selection between Standard UK Delivery (£3.95) and Express UK Delivery (£6.95). | Postage & Packaging line updates immediately, recalculating the final Grand Total. | **PASS** | ![Cart v2.0 Order Summary Breakdown](docs/screenshots/cart-v2-financial-breakdown.png) |
-| **20% UK Standard VAT** | Review cart subtotal calculations with items added. | Exclusive 20% VAT is accurately computed against the taxable subtotal and summed into the Grand Total. | **PASS** | ![Cart v2.0 Order Summary Breakdown](docs/screenshots/cart-v2-financial-breakdown.png) |
-| **Design System Buttons** | Inspect **Calculate** and **Clear Cart** buttons. | Buttons inherit `.btn-secondary` and `.btn-sm` token styles with correct borders, padding, and hover states. | **PASS** | ![Styled Secondary Buttons Inspection](docs/screenshots/cart-v2-secondary-buttons.png) |
+   * **How I Fixed It:** I updated `.lightbox-dialog` in `styles.css` to enforce `max-height: 85vh` and `overflow-y: auto`. I also constrained `.lightbox-image-container` on mobile viewports

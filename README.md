@@ -482,6 +482,53 @@ Strategy and Scope define the project goals. The three lower planes (Structure, 
 -  Live Postcode Validation UI: I added a dedicated input group with a secondary action button (.btn-secondary, .btn-sm) to query the public postcodes.io API in real time for UK postal code verification.
 - Design System Consistency: All form controls, inputs, selects, and action buttons strictly leverage existing CSS design tokens (--bg-card, --border-color, --input-border) to maintain visual harmony with the rest of the storefront.
 
+#### About Us page wireframe (Desktop & Mobile)
+
+#### Desktop (Side-by-Side Flexbox Grid):
+
+```text
++-------------------------------------------------------------------------------------+
+| [Logo] Paperbag Hobbies        Home   Shop   About Us                  [Cart 0]     |
++-------------------------------------------------------------------------------------+
+|                                                                                     |
+|  About Paperbag Hobbies                                                             |
+|                                                                                     |
+|  +-------------------------+  +--------------------------------------------------+  |
+|  |                         |  |  Precision Crafting for Tabletop Wargaming       |  |
+|  |     [ Mascot Image ]    |  |  Based in Banbury, United Kingdom...             |  |
+|  |     (pbm-mascot.png)    |  |                                                  |  |
+|  |                         |  |  Our Production Standards                        |  |
+|  |                         |  |  Every single model and terrain piece...         |  |
+|  +-------------------------+  +--------------------------------------------------+  |
+|                                                                                     |
++-------------------------------------------------------------------------------------+
+```
+
+#### Mobile (Stacked Single Column):
+
+```text
++---------------------------------------------------------------+
+| [Logo] Paperbag Hobbies       [≡ Menu]                 [Cart] |
++---------------------------------------------------------------+
+| About Paperbag Hobbies                                        |
+|                                                               |
+|  +---------------------------------------------------------+  |
+|  |                     [ Mascot Image ]                    |  |
+|  +---------------------------------------------------------+  |
+|  |  Precision Crafting for Tabletop Wargaming              |  |
+|  |  Based in Banbury, United Kingdom...                    |  |
+|  |                                                         |  |
+|  |  Our Production Standards                               |  |
+|  |  Every single model and terrain piece...                |  |
+|  +---------------------------------------------------------+  |
++---------------------------------------------------------------+
+```
+##### Rationale (About Us page)
+
+- Asymmetric Flex Grid: Uses a flexible two-column layout (.about-grid) where the mascot column and text column balance visually without fixed widths.
+- Background Removal: The mascot graphic (pbm-mascot.png) is styled with zero border, padding, or card background (background: none; border: none;) to integrate directly into the page backdrop.
+- Responsive Stacking: On mobile viewports under 768px, flex-wrap triggers a clean vertical stack (mascot centered above the narrative text card) to prevent horizontal overflow
+
 ### 3.2 Competitor review
 
 I wanted to understand how existing independent miniature shops present themselves before I designed my own layout. I chose three shops that sell similar products and examined their homepages on 06/10/2026 using Chrome DevTools.
@@ -800,6 +847,10 @@ This choice is recorded as architecture decision A1 in section 3.4.
 ```text
 paperbag-hobbies/
 ├── index.html
+├── shop.html
+├── about.html
+├── cart.html
+├── checkout.html
 ├── README.md
 ├── TESTING.md
 ├── docs/
@@ -887,23 +938,32 @@ paperbag-hobbies/
 
 | Aspect | Decision and reason |
 |---|---|
-| **Hover & Focus Activation** | Appears seamlessly when hovering over or focusing the header cart link, allowing users to review items without navigating away from their current page[cite: 10]. |
-| **Compact Itemization** | Displays thumbnail images, titles, quantities, and itemized subtotal data for quick visual validation[cite: 10]. |
-| **Direct Navigation** | Provides an immediate path to view the full cart page or proceed to checkout[cite: 10]. |
+| **Hover & Focus Activation** | Appears seamlessly when hovering over or focusing the header cart link, allowing users to review items without navigating away from their current page. |
+| **Compact Itemization** | Displays thumbnail images, titles, quantities, and itemized subtotal data for quick visual validation. |
+| **Direct Navigation** | Provides an immediate path to view the full cart page or proceed to checkout. |
 
 ### 6.12 Cross-Tab State Synchronization (`main.js`)
 
 | Aspect | Decision and reason |
 |---|---|
-| **LocalStorage Persistence** | Integrated native `localStorage` for cross-page state persistence across `index.html`, `shop.html`, and `cart.html`[cite: 10]. |
-| **Multi-Tab Event Binding** | Combined local persistence with a global `storage` event listener to enable real-time multi-tab synchronization without manual page refreshes[cite: 10]. |
+| **LocalStorage Persistence** | Integrated native `localStorage` for cross-page state persistence across `index.html`, `shop.html`, and `cart.html`. |
+| **Multi-Tab Event Binding** | Combined local persistence with a global `storage` event listener to enable real-time multi-tab synchronization without manual page refreshes. |
+
+### 6.13 Responsive About Us Page & Mascot Layout (`about.html` & `styles.css`)
+
+| Aspect | Decision and reason |
+|---|---|
+| **Two-Column Flexbox Grid** | Implemented a clean, side-by-side layout for `about.html` combining a dedicated mascot image column and a styling text container (`.about-grid`, `.about-mascot-column`, `.about-text-column`). |
+| **Pure External CSS Styling** | Completely decoupled layout rules from HTML markup, removing all inline attributes in favor of structured classes inside `styles.css`. |
+| **Responsive Stacking** | Configured flexible min-width properties and flex-wrap behavior so the layout gracefully stacks vertically on smaller mobile and tablet viewports without overflow. |
+| **Transparent Mascot Scaling** | Stripped default card boundaries, padding, and box-shadows from the mascot graphic (`pbm-mascot.png`) allowing it to scale fluidly and blend seamlessly into the page backdrop. |
 
 
 ---
 
 ## 7. Quality Assurance and Testing Summary
 
-For full manual test procedures, accessibility traces, and screen reader verification steps, see [TESTING.md](./TESTING.md)[cite: 5].
+For full manual test procedures, accessibility traces, and screen reader verification steps, see [TESTING.md](./TESTING.md).
 
 ### 7.1 Automated Validation
 * **HTML5 Validator (W3C):** `index.html` passed with 0 errors and 0 warnings.
@@ -928,6 +988,7 @@ For full manual test procedures, accessibility traces, and screen reader verific
 | Persistent Storage & Cross-Tab Sync | Cart items persist across page reloads via `localStorage` and sync automatically across multiple open browser tabs. | **PASS** |
 | Live Postcode Validation (`postcodes.io`) | Entering a valid UK postcode (e.g., `OX16 1AA`) successfully verifies via the API; invalid formats trigger clear error messaging. | **PASS** |
 | UK VAT & Flat-Rate Shipping Tiers | Switching between Standard (£3.95) and Express (£6.95) shipping correctly updates totals alongside the 20% exclusive VAT calculation. | **PASS** |
+| Responsive About Page & Mascot Layout | Two-column flexbox grid scales fluidly on desktop and stacks cleanly into a single vertical column on mobile with zero horizontal overflow. | **PASS** |
 ---
 ### 7.3 Bug Log and Engineering Resolution History
 
