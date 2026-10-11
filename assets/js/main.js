@@ -564,14 +564,54 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Initial Page Mount Execution
+ // Initial Page Mount Execution
   if (document.getElementById('product-grid')) {
     renderProductGrid(PRODUCTS);
   }
   if (document.getElementById('cart-items-container')) {
     renderCartView();
   }
-}); // Closes DOMContentLoaded
+
+  // Checkout Submission Guardrail Handler
+  const checkoutForm = document.getElementById('checkout-form');
+  const errorMsgEl = document.getElementById('checkout-error-msg');
+
+  if (checkoutForm) {
+    checkoutForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // 1. Guardrail: Block checkout if basket is empty
+      if (getTotalCount() === 0) {
+        if (errorMsgEl) {
+          errorMsgEl.textContent = 'Your basket is empty. Please add items to your cart before proceeding to checkout.';
+          errorMsgEl.style.display = 'block';
+        }
+        return;
+      }
+
+      // 2. Guardrail: Check HTML5 form validity for required inputs
+      if (!checkoutForm.checkValidity()) {
+        if (errorMsgEl) {
+          errorMsgEl.textContent = 'Please fill out all required shipping details above before proceeding with payment.';
+          errorMsgEl.style.display = 'block';
+        }
+        checkoutForm.reportValidity(); // Highlights the first invalid field and shows tooltips
+        return;
+      }
+
+      // Clear error message if validation passes
+      if (errorMsgEl) {
+        errorMsgEl.style.display = 'none';
+      }
+
+      // 3. Successful Prototype Flow
+      alert('Secure payment gateway integration is planned for Phase 2 (Unit 2 project). No financial data has been collected.');
+      clearCart();
+      window.location.href = 'index.html';
+    });
+  }
+
+}); // Closes DOMContentLoaded safely
 
 // Live UK Postcode Validation using postcodes.io API
 document.addEventListener('click', async (e) => {
