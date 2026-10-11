@@ -155,10 +155,41 @@ function getCartOrderSummary(shippingMethod = 'standard') {
  */
 function updateCartSummaryUI() {
   const shippingSelect = document.getElementById('shipping-select');
-  if (!shippingSelect) return; // Exit safely if we're not on cart.html
+  if (!shippingSelect) return; 
 
   const selectedMethod = shippingSelect.value;
   const summary = getCartOrderSummary(selectedMethod);
+
+  // --- NEW: Render itemized list inside checkout summary card if container exists ---
+  const checkoutItemsContainer = document.getElementById('checkout-items-summary');
+  if (checkoutItemsContainer) {
+    const entries = Object.entries(cartState).filter(([, qty]) => qty > 0);
+    
+    if (entries.length === 0) {
+      checkoutItemsContainer.innerHTML = '<p style="font-size: 0.9rem; color: var(--text-muted); margin: 0;">Your cart is empty.</p>';
+    } else {
+      checkoutItemsContainer.innerHTML = entries.map(([id, qty]) => {
+        const product = PRODUCTS.find(p => p.id === id);
+        if (!product) return '';
+        const lineTotal = product.price * qty;
+        return `
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.5rem 0; border-bottom: 1px dashed var(--border-color);">
+            <div style="display: flex; align-items: center; gap: 0.5rem; min-width: 0;">
+              <img src="${product.image}" alt="${product.title}" style="width: 32px; height: 32px; object-fit: cover; border-radius: 4px; flex-shrink: 0;">
+              <div style="min-width: 0;">
+                <p style="font-weight: 600; font-size: 0.8rem; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${product.title}">${product.title}</p>
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">Qty: ${qty} &times; ${money(product.price)}</p>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
+              <strong style="font-size: 0.85rem;">${money(lineTotal)}</strong>
+              <button type="button" class="btn remove-btn" data-action="remove-item" data-product-id="${id}" style="background: none; border: none; color: var(--error-color); cursor: pointer; font-size: 1.1rem; padding: 0 0.25rem;" aria-label="Remove item">&times;</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
 
   const elSubtotal = document.getElementById('summary-subtotal');
   const elShipping = document.getElementById('summary-shipping');
@@ -522,7 +553,7 @@ document.addEventListener('DOMContentLoaded', () => {
           clearCart();
           break;
         case 'checkout':
-          alert('Checkout integration coming soon!');
+          window.location.href = 'checkout.html';
           break;
       }
     }

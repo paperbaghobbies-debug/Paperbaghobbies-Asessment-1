@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - Paperbag Hobbies</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <!-- Accessible Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Top Announcement / Welcome Bar -->
+  <aside class="announcement-bar" aria-label="Announcement">
+    <div class="container announcement-container">
+      <p class="announcement-text">Secure Checkout powered by Stripe (Cards &amp; PayPal accepted).</p>
+    </div>
+  </aside>
+
+  <!-- Global Site Header (Single-Row Inline Layout) -->
+  <header class="site-header">
+    <div class="header-container">
+      
+      <!-- Brand Identity (Left) -->
+      <div class="header-brand-row">
+        <a class="logo-link" href="index.html" aria-label="Paperbag Hobbies - Home">
+          <img class="header-logo" src="assets/images/logo/pbm-logo.png" alt="Paperbag Hobbies Crest Logo" width="51" height="48">
+          <span class="brand-title">Paperbag Hobbies</span>
+        </a>
+      </div>
+
+      <!-- Mobile Disclosure Button -->
+      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="primary-nav-list" aria-label="Toggle navigation menu">
+        <span class="nav-toggle-icon" aria-hidden="true">≡</span>
+        <span class="nav-toggle-label">Menu</span>
+      </button>
+
+      <!-- Primary Navigation (Center/Inline) -->
+      <nav class="primary-nav" aria-label="Main navigation">
+        <ul id="primary-nav-list" class="nav-list">
+          <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+          <li class="nav-item"><a href="shop.html" class="nav-link">Shop</a></li>
+          <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
+        </ul>
+      </nav>
+
+      <!-- Header Actions / Cart Link (Right) -->
+      <div class="header-actions">
+        <a href="cart.html" class="cart-link" aria-label="Shopping Cart">
+          <span class="cart-icon" aria-hidden="true">🛒</span>
+          <span class="cart-text">Cart</span>
+          <span id="cart-count" class="cart-badge" aria-hidden="true">0</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Checkout Main Content -->
+  <main id="main-content" class="main-container">
+    <div class="container" style="max-width: 1100px; margin: 2rem auto; padding: 0 1rem;">
+      <h1 style="margin-bottom: 2rem;">Secure Checkout</h1>
+
+      <!-- Two-Column Checkout Grid -->
+      <div class="checkout-grid">
+        
+        <!-- Left Column: Customer & Shipping Details Form -->
+        <section class="checkout-form-section" style="background: var(--bg-card); padding: 2rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+          <h2 style="margin-bottom: 1.5rem; font-size: 1.25rem;">Shipping Information</h2>
+          
+          <form id="checkout-form">
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label for="shipping-name" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Full Name</label>
+              <input type="text" id="shipping-name" class="form-control" required placeholder="John Doe" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label for="shipping-email" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email Address</label>
+              <input type="email" id="shipping-email" class="form-control" required placeholder="john@example.com" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label for="shipping-address" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Street Address</label>
+              <input type="text" id="shipping-address" class="form-control" required placeholder="123 High Street" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+              <div class="form-group">
+                <label for="shipping-city" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">City / Town</label>
+                <input type="text" id="shipping-city" class="form-control" required placeholder="Banbury" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+              </div>
+              <div class="form-group">
+                <label for="shipping-postcode" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">UK Postcode</label>
+                <input type="text" id="shipping-postcode" class="form-control" required placeholder="OX16 1AA" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <!-- Right Column: Order Summary & Payment Trigger -->
+        <!-- Right Column: Order Summary & Itemized Review -->
+<section class="cart-summary">
+  <div class="cart-summary-card">
+    <h2>Order Summary</h2>
+    
+    <!-- Itemized Basket Review -->
+    <div id="checkout-items-summary" class="checkout-items-summary" style="margin-bottom: 1.5rem; max-height: 240px; overflow-y: auto; padding-right: 0.5rem; border-bottom: 1px solid var(--border-color);">
+      <!-- Dynamically populated via JavaScript -->
+    </div>
+
+    <!-- Subtotal -->
+    <div class="summary-row">
+      <span>Subtotal (excl. tax)</span>
+      <span id="summary-subtotal">£0.00</span>
+    </div>
+
+    <!-- Shipping Method Selector -->
+    <div class="summary-row">
+      <label for="shipping-select">Shipping Method:</label>
+      <select id="shipping-select" class="form-control">
+        <option value="standard">Standard UK Delivery (3-5 Days) - £3.95</option>
+        <option value="express">Express UK Delivery (1-2 Days) - £6.95</option>
+      </select>
+    </div>
+
+    <!-- Active Shipping Cost -->
+    <div class="summary-row">
+      <span>Estimated Shipping</span>
+      <span id="summary-shipping">£3.95</span>
+    </div>
+
+    <!-- UK Standard VAT (20%) -->
+    <div class="summary-row">
+      <span>VAT (20% UK Standard)</span>
+      <span id="summary-vat">£0.00</span>
+    </div>
+
+    <hr class="summary-divider" />
+
+    <!-- Grand Total -->
+    <div class="summary-row summary-total">
+      <strong>Grand Total</strong>
+      <strong id="summary-total">£0.00</strong>
+    </div>
+
+    <!-- Centered Secure Stripe Checkout Action Block -->
+    <div class="checkout-actions">
+      <button id="stripe-checkout-btn" class="btn btn-primary">
+        Proceed to Secure Payment
+      </button>
+      <p class="checkout-security-text">
+        🔒 Encrypted card &amp; PayPal checkout via Stripe
+      </p>
+    </div>
+  </div>
+</section>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>Shipping &amp; Dispatch</h3>
+        <p>Standard dispatch within 3–5 working days.</p>
+      </div>
+      <div class="footer-column">
+        <h3>Support &amp; Contact</h3>
+        <p>Email: workshop@paperbaghobbies.example</p>
+      </div>
+      <div class="footer-column">
+        <h3>Disclaimer</h3>
+        <p>Independent proxy miniature workshop.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Paperbag Hobbies. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

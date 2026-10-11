@@ -955,3 +955,50 @@ p, a, span, h1, h2, h3, h4, h5, h6 {
   gap: var(--space-md);
   justify-content: flex-end;
 }
+
+/* ==========================================================================
+   12. Checkout Page Layout Styles
+   ========================================================================== */
+
+/* Default mobile stack */
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+/* Side-by-side layout for tablets and desktops (768px and wider) */
+@media (min-width: 768px) {
+  .checkout-grid {
+    grid-template-columns: 1.1fr 1fr;
+    align-items: start;
+    gap: 2.5rem;
+  }
+}
+
+/* Centered checkout action block */
+.checkout-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+/* Make the secure payment button look prominent and centered */
+.checkout-actions .btn {
+  width: 100%;
+  max-width: 340px;
+}
+
+/* Muted security assurance text underneath */
+.checkout-security-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.75rem;
+}
+
+/* Align top edges of left form and right order summary in checkout grid */
+.checkout-grid .cart-summary-card {
+  margin-top: 0;
+}
