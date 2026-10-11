@@ -172,18 +172,18 @@ function updateCartSummaryUI() {
         const product = PRODUCTS.find(p => p.id === id);
         if (!product) return '';
         const lineTotal = product.price * qty;
-        return `
+       return `
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.5rem 0; border-bottom: 1px dashed var(--border-color);">
-            <div style="display: flex; align-items: center; gap: 0.5rem; min-width: 0;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; min-width: 0; flex: 1; cursor: pointer;" data-action="open-lightbox" data-product-id="${id}" title="Click to view item details">
               <img src="${product.image}" alt="${product.title}" style="width: 32px; height: 32px; object-fit: cover; border-radius: 4px; flex-shrink: 0;">
-              <div style="min-width: 0;">
-                <p style="font-weight: 600; font-size: 0.8rem; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${product.title}">${product.title}</p>
+              <div style="min-width: 0; flex: 1;">
+                <p style="font-weight: 600; font-size: 0.8rem; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--accent-text);" title="${product.title}">${product.title}</p>
                 <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">Qty: ${qty} &times; ${money(product.price)}</p>
               </div>
             </div>
-            <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0;">
               <strong style="font-size: 0.85rem;">${money(lineTotal)}</strong>
-              <button type="button" class="btn remove-btn" data-action="remove-item" data-product-id="${id}" style="background: none; border: none; color: var(--error-color); cursor: pointer; font-size: 1.1rem; padding: 0 0.25rem;" aria-label="Remove item">&times;</button>
+              <button type="button" class="btn remove-btn" data-action="remove-item" data-product-id="${id}" style="background: none; border: none; color: var(--error-color); cursor: pointer; font-size: 1.25rem; line-height: 1; padding: 0.2rem;" aria-label="Remove item">&times;</button>
             </div>
           </div>
         `;
@@ -555,6 +555,11 @@ document.addEventListener('DOMContentLoaded', () => {
         case 'checkout':
           window.location.href = 'checkout.html';
           break;
+        case 'open-lightbox':
+          if (productId) {
+            openProductModal(productId);
+          }
+          break;
       }
     }
   });
@@ -566,34 +571,34 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('cart-items-container')) {
     renderCartView();
   }
-});
+}); // Closes DOMContentLoaded
 
 // Live UK Postcode Validation using postcodes.io API
-  document.addEventListener('click', async (e) => {
-    if (e.target && e.target.id === 'estimate-postage-btn') {
-      const input = document.getElementById('postcode-input');
-      if (!input) return;
+document.addEventListener('click', async (e) => {
+  if (e.target && e.target.id === 'estimate-postage-btn') {
+    const input = document.getElementById('postcode-input');
+    if (!input) return;
 
-      const postcode = input.value.trim().toUpperCase();
+    const postcode = input.value.trim().toUpperCase();
 
-      if (!postcode) {
-        alert('Please enter a UK postcode to calculate postage.');
-        return;
-      }
-
-      try {
-        const response = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode)}/validate`);
-        const data = await response.json();
-
-        if (data.result === true) {
-          alert(`Success! Valid UK postcode verified. Standard shipping rates applied.`);
-          updateCartSummaryUI();
-        } else {
-          alert('That postcode could not be verified. Please check the format (e.g., OX16 1AA).');
-        }
-      } catch (error) {
-        console.error('Postcode verification failed:', error);
-        alert('Network error verifying postcode. Please try again.');
-      }
+    if (!postcode) {
+      alert('Please enter a UK postcode to calculate postage.');
+      return;
     }
-  });
+
+    try {
+      const response = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode)}/validate`);
+      const data = await response.json();
+
+      if (data.result === true) {
+        alert(`Success! Valid UK postcode verified. Standard shipping rates applied.`);
+        updateCartSummaryUI();
+      } else {
+        alert('That postcode could not be verified. Please check the format (e.g., OX16 1AA).');
+      }
+    } catch (error) {
+      console.error('Postcode verification failed:', error);
+      alert('Network error verifying postcode. Please try again.');
+    }
+  }
+});

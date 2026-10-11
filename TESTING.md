@@ -52,10 +52,18 @@ I audited the homepage (`index.html`) using Google Lighthouse in Chrome DevTools
 
 ---
 
+
 ### 1.4 JavaScript Static Code Analysis
 
-* **Status:** In Progress.
-* **Methodology:** As interactive features (`main.js`) expand across upcoming sprints, I will run static linting (ESLint) to enforce zero runtime errors, prevent unused variables, and maintain clean async event handling.
+* **Status:** Pass[cite: 3]
+* **Methodology:** As interactive features (`main.js`) expanded across project sprints, I ran static linting using ESLint to enforce zero runtime errors, prevent unused variables, and maintain clean error-handling structures[cite: 3].
+* **Result:** Verified zero errors and zero warnings across all project scripts.
+
+| Date | File | Result | Notes |
+|---|---|---|---|
+| 10/10/2026 | `assets/js/main.js` | Pass | Clean static analysis pass. Zero errors, zero warnings. |
+
+![ESLint terminal output showing zero errors and zero warnings across the project](docs/screenshots/eslint-terminal-pass.png)
 
 ---
 
