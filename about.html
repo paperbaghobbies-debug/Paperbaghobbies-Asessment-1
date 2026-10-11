@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - Paperbag Hobbies</title>
+  <meta name="description" content="Learn about Paperbag Hobbies, our high-precision resin 3D printing workshop, and our passion for tabletop wargaming terrain and miniatures in Banbury.">
+  <meta name="theme-color" content="#c98a4b">
+  <link rel="icon" type="image/png" href="assets/images/logo/paperbag-logo.png">
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script src="assets/js/main.js"></script>
+</head>
+<body>
+  <!-- Accessible Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Top Announcement / Welcome Bar -->
+  <aside class="announcement-bar" aria-label="Announcement">
+    <div class="container announcement-container">
+      <p class="announcement-text">Welcome to the store! Explore our latest custom designs and prints.</p>
+    </div>
+  </aside>
+
+  <!-- Global Site Header (Single-Row Inline Layout) -->
+  <header class="site-header">
+    <div class="header-container">
+      
+      <!-- Brand Identity (Left) -->
+      <div class="header-brand-row">
+        <a class="logo-link" href="index.html" aria-label="Paperbag Hobbies - Home">
+          <img class="header-logo" src="assets/images/logo/pbm-logo.png" alt="Paperbag Hobbies Crest Logo" width="51" height="48">
+          <span class="brand-title">Paperbag Hobbies</span>
+        </a>
+      </div>
+
+      <!-- Mobile Disclosure Button -->
+      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="primary-nav-list" aria-label="Toggle navigation menu">
+        <span class="nav-toggle-icon" aria-hidden="true">≡</span>
+        <span class="nav-toggle-label">Menu</span>
+      </button>
+
+      <!-- Primary Navigation (Center/Inline) -->
+      <nav class="primary-nav" aria-label="Main navigation">
+        <ul id="primary-nav-list" class="nav-list">
+          <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+          <li class="nav-item"><a href="shop.html" class="nav-link">Shop</a></li>
+          <li class="nav-item"><a href="about.html" class="nav-link nav-link-active" aria-current="page">About Us</a></li>
+        </ul>
+      </nav>
+
+      <!-- Header Actions / Cart Link with Popover Dropdown (Right) -->
+      <div class="header-actions">
+        <div class="cart-popover-wrapper">
+          <a href="cart.html" id="cart-popover-trigger" class="cart-link" aria-label="Shopping Cart, 0 items">
+            <span class="cart-icon" aria-hidden="true">🛒</span>
+            <span class="cart-text">Cart</span>
+            <span id="cart-count" class="cart-badge" aria-hidden="true">0</span>
+          </a>
+
+          <!-- Floating Cart Popover Dropdown -->
+          <div id="cart-popover" class="cart-popover" aria-hidden="true">
+            <div id="popover-items" class="popover-items">
+              <!-- Dynamically rendered via main.js -->
+            </div>
+            <div class="popover-footer">
+              <div class="popover-subtotal">
+                <span>Subtotal:</span>
+                <strong id="popover-subtotal-price">£0.00</strong>
+              </div>
+              <div class="popover-actions">
+                <a href="cart.html" class="btn btn-secondary btn-sm">Full Cart</a>
+                <button type="button" class="btn btn-primary btn-sm" data-action="checkout">Checkout</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT / ABOUT US -->
+  <main id="main-content" class="main-content">
+    <section class="catalog-section about-section">
+      <div class="container about-container">
+        <h1 class="section-title about-page-title">About Paperbag Hobbies</h1>
+        
+        <!-- Two-Column Side-by-Side Layout -->
+        <div class="about-grid">
+          
+          <!-- Mascot Image Column (Left) -->
+          <div class="about-mascot-column">
+            <img src="assets/images/logo/pbm-mascot.png" alt="Paperbag Hobbies Mascot" class="about-mascot-image">
+          </div>
+
+          <!-- Text Container Column (Right) -->
+          <div class="about-text-column">
+            <h2 class="about-heading">Precision Crafting for Tabletop Wargaming</h2>
+            <p class="about-text">
+              Based in Banbury, United Kingdom, <strong>Paperbag Hobbies</strong> is an independent workshop dedicated to producing high-detail resin miniatures, modular terrain sets, and bespoke tabletop gaming accessories. Founded out of a lifelong passion for sci-fi and fantasy wargaming, our mission is to provide hobbyists with crisp, clean prints that elevate your tabletop battlefields.
+            </p>
+
+            <h2 class="about-heading">Our Production Standards</h2>
+            <p class="about-text">
+              Every single model and terrain piece we offer goes through rigorous cleaning, UV-curing, and manual support removal inspection. We utilize high-grade engineering resins and durable PLA plastics to ensure your miniatures withstand transport, painting, and the rigors of weekly skirmishes.
+            </p>
+
+            <h2 class="about-heading">Custom Orders & Community</h2>
+            <p class="about-text-last">
+              Looking for something specific or customized for your narrative campaign? We regularly handle custom print queue requests. Reach out to our workshop team via email or visit our <a href="shop.html" class="about-link">Shop</a> to explore our current catalog of ready-to-prime miniatures and terrain.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Global Site Footer (Refined E-Commerce Style) -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-column footer-shipping">
+        <h3>Shipping & Dispatch</h3>
+        <p>Standard dispatch within 3–5 working days. Securely packaged in protective bubble wrap.</p>
+      </div>
+
+      <div class="footer-column footer-contact">
+        <h3>Support & Contact</h3>
+        <p>Email: workshop@paperbaghobbies.example</p>
+        <p>Based in Banbury, United Kingdom</p>
+      </div>
+
+      <div class="footer-column footer-disclaimer">
+        <h3>Disclaimer</h3>
+        <p>Independent proxy miniature workshop. Not endorsed by or affiliated with Games Workshop.</p>
+      </div>
+    </div>
+    <div class="footer-bottom footer-bottom-text">
+      <p>&copy; 2026 Paperbag Hobbies. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Lightbox / Product Modal -->
+  <dialog id="product-lightbox" class="lightbox-dialog" aria-labelledby="lightbox-title">
+    <div class="lightbox-content">
+      <button type="button" id="lightbox-close" class="lightbox-close" aria-label="Close dialog">&times;</button>
+      <div class="lightbox-body">
+        <div class="lightbox-image-container">
+          <span id="lightbox-badge" class="product-badge lightbox-badge-hidden"></span>
+          <img id="lightbox-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Product preview" class="lightbox-image">
+        </div>
+        <div class="lightbox-details">
+          <h2 id="lightbox-title" class="lightbox-title">&nbsp;</h2>
+          <p id="lightbox-price" class="lightbox-price"></p>
+          <p id="lightbox-description" class="lightbox-description"></p>
+          <button type="button" id="lightbox-add-btn" class="btn btn-primary add-to-cart-btn lightbox-add-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+</body>
+</html>

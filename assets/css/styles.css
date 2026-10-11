@@ -1002,3 +1002,66 @@ p, a, span, h1, h2, h3, h4, h5, h6 {
 .checkout-grid .cart-summary-card {
   margin-top: 0;
 }
+
+/* ==========================================================================
+   13. About Page Layout
+   ========================================================================== */
+.about-container {
+  max-width: 1050px;
+}
+
+.about-grid {
+  display: flex;
+  gap: 2.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.about-mascot-column {
+  flex: 1.2;
+  min-width: 300px;
+  text-align: center;
+}
+
+.about-mascot-image {
+  width: 100%;
+  max-width: 480px; /* Increased size to better match text height */
+  height: 100%;
+  max-height: 480px; /* Increased size to better match text height */
+  border: none;       /* Removes the border/outline */
+  background: none;   /* Removes the card background */
+  padding: 0;         /* Removes the inner padding */
+  box-shadow: none;   /* Removes the box shadow */
+  object-fit: contain;
+}
+
+.about-text-column {
+  flex: 2;
+  min-width: 300px;
+  background: var(--bg-card);
+  padding: 2.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  line-height: 1.7;
+  color: var(--text-main);
+}
+
+.about-heading {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--accent-text);
+}
+
+.about-text {
+  margin-bottom: 1.5rem;
+}
+
+.about-text-last {
+  margin-bottom: 0;
+}
+
+.about-link {
+  color: var(--accent-text);
+  font-weight: 600;
+  text-decoration: underline;
+}
