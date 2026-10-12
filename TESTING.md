@@ -290,14 +290,23 @@ To ensure robust error handling and form integrity on `checkout.html`, I impleme
 | **Summary Item Inspection** | Click any miniature or terrain title/thumbnail inside the secure checkout summary card. | The native `<dialog>` product lightbox opens smoothly over the checkout view, rendering high-resolution imagery and details. | **PASS** | Injected `data-action="open-lightbox"` and `data-product-id` attributes route clicks through global event delegation without wiping form inputs or scroll position. | Verified via interaction testing. |
 | **Modal Dismissal from Checkout** | Close the lightbox via `Escape` or the `✕` button while on `checkout.html`. | Lightbox closes and focus returns instantly to the clicked summary item. | **PASS** | Preserves active element focus states and form data integrity across modal cycles. | Verified via keyboard & mouse testing. |
 
+
 ---
 
-## 7. Multi-Page W3C Re-Validation Summary
+## 7. Custom 404 Error Page & Deployment Verification
 
-To maintain 100% standards compliance across all newly introduced templates (`about.html`, `checkout.html`, `404.html`), I ran final file uploads through the W3C Markup Validation Service.
+To satisfy comprehensive error-handling and resilient routing criteria for GitHub Pages, a custom `404.html` template was implemented, styled with the global design system, and validated against accessibility and markup standards.
 
-| Date | File | Result | Notes |
-|---|---|---|---|
-| 11/10/2026 | `about.html` | Pass | Verified responsive two-column mascot layout markup. Zero errors, zero warnings. |
-| 11/10/2026 | `checkout.html` | Pass | Verified secure form scoping and input guardrail markup. Zero errors, zero warnings. |
-| 11/10/2026 | `404.html` | Pass | Verified custom error page markup, mobile centering, and navigation integrity. Zero errors, zero warnings. |
+### 7.1 Validation & Testing Log
+| Date | Test Case | Expected Result | Actual Result | Status |
+|---|---|---|---|---|
+| 12/10/2026 | W3C HTML Markup Check (`404.html`) | Zero errors/warnings | Passed with 0 errors or warnings | **Pass** |
+| 12/10/2026 | Heading Hierarchy Check (WCAG 2.1 AA) | Sequential order (`<h1>` $\rightarrow$ `<h2>`) | Validated sequential order without skipping levels | **Pass** |
+| 12/10/2026 | Deep Route Asset Resolution on Live Site | CSS, JS, and logos load correctly on invalid nested paths (`/test-404-route`) | Absolute repository root pathing (`/Paperbaghobbies-Asessment-1/`) successfully resolved stylesheets and layout | **Pass** |
+| 12/10/2026 | Responsive Layout Audit (Mobile / Desktop) | Fluid scaling and touch-friendly CTA sizing | Verified across mobile (iPhone SE) and desktop viewports | **Pass** |
+
+### 7.2 Visual Evidence
+
+| W3C Validation | Mobile Responsive Layout | Desktop Layout |
+| :---: | :---: | :---: |
+| ![W3C HTML validator result for 404.html showing no errors or warnings](docs/screenshots/404-w3c-validation.png) | ![Mobile view of 404 error page on iPhone SE viewport](docs/screenshots/404-mobile-responsive.png) | ![Desktop widescreen view of 404 error page](docs/screenshots/404-desktop-layout.png) |

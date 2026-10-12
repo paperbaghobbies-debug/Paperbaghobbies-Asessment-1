@@ -958,6 +958,13 @@ paperbag-hobbies/
 | **Responsive Stacking** | Configured flexible min-width properties and flex-wrap behavior so the layout gracefully stacks vertically on smaller mobile and tablet viewports without overflow. |
 | **Transparent Mascot Scaling** | Stripped default card boundaries, padding, and box-shadows from the mascot graphic (`pbm-mascot.png`) allowing it to scale fluidly and blend seamlessly into the page backdrop. |
 
+### 6.14 Resilient 404 Error Page & GitHub Pages Routing (`404.html`)
+| Aspect | Decision and reason |
+|---|---|
+| **Custom Error Template (`404.html`)** | Designed to match the earthy workshop aesthetic of Paperbag Hobbies, featuring direct quick-action links ("Return Home" and "Browse Shop") to guide users seamlessly back into valid site routes. |
+| **Absolute Repository Pathing** | Utilizes explicit absolute repository pathing (`/Paperbaghobbies-Asessment-1/`) for core stylesheets, scripts, and media. This ensures robust asset resolution even when GitHub Pages dynamically serves the error template on deep, invalid URL paths. |
+| **W3C Standards Compliance** | Fully validated via the W3C Markup Validator (0 errors, 0 warnings) with strict adherence to WCAG 2.1 AA heading hierarchies (`<h1>` to `<h2>`). |
+
 
 ---
 
@@ -989,6 +996,7 @@ For full manual test procedures, accessibility traces, and screen reader verific
 | Live Postcode Validation (`postcodes.io`) | Entering a valid UK postcode (e.g., `OX16 1AA`) successfully verifies via the API; invalid formats trigger clear error messaging. | **PASS** |
 | UK VAT & Flat-Rate Shipping Tiers | Switching between Standard (£3.95) and Express (£6.95) shipping correctly updates totals alongside the 20% exclusive VAT calculation. | **PASS** |
 | Responsive About Page & Mascot Layout | Two-column flexbox grid scales fluidly on desktop and stacks cleanly into a single vertical column on mobile with zero horizontal overflow. | **PASS** |
+| Custom 404 Error Page & Deep Routing | `404.html` passes W3C validation (0 errors, 0 warnings) and successfully resolves stylesheets on deep invalid routes via absolute repository pathing. | **PASS** |
 ---
 ### 7.3 Bug Log and Engineering Resolution History
 
