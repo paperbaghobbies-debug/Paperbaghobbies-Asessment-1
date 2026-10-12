@@ -210,4 +210,94 @@ To test **User Story US04** (enlarging product images in an accessible modal), I
 
 1. **Vertical Boundary Overflow & Off-Screen CTA Clipping**
    * **Root Cause:** On short viewports (such as the iPhone SE at `667px` height), fixed image dimensions pushed the bottom of the modal content past the viewport fold. This clipped the primary "Add to Cart" button off-screen and prevented users from scrolling within the dialog.
-   * **How I Fixed It:** I updated `.lightbox-dialog` in `styles.css` to enforce `max-height: 85vh` and `overflow-y: auto`. I also constrained `.lightbox-image-container` on mobile viewports
+   * **How I Fixed It:** I updated `.lightbox-dialog` in `styles.css` to enforce `max-height: 85vh` and `overflow-y: auto`. I also constrained `.lightbox-image-container` on mobile viewports to a `max-height` of `200px`, keeping the main modal content above the fold while allowing smooth internal scrolling for longer descriptions.
+
+2. **Hidden Close Button Overlay**
+   * **Root Cause:** Standard absolute positioning placed the close icon (`✕`) behind adjacent element boundaries on narrow screens.
+   * **How I Fixed It:** I styled `.lightbox-close` as an elevated circular button with `position: absolute`, pinned to the top-right corner with a high `z-index: 10` and `36px × 36px` touch dimensions, ensuring quick dismissal across all devices.
+
+---
+
+### 4.2 Keyboard Navigation & Screen Reader Traversal (US07)
+
+To satisfy **WCAG 2.1 SC 2.4.1 (Bypass Blocks)** and **SC 2.4.7 (Focus Visible)**, I completed a complete keyboard navigation audit across all primary interactive paths using `Tab`, `Shift+Tab`, and `Enter` keys.
+
+* **Date:** 08/10/2026
+* **User Story:** US07 - Keyboard & Screen Reader Access
+* **Target Compliance:** WCAG 2.1 Level AA
+
+#### Keyboard Traversal & Focus Audit Results
+
+| Focus Traversal Order | Interactive Element | Trigger / Step | Expected Behavior | Result | Visual Evidence |
+|---|---|---|---|---|---|
+| **1 (First Focus)** | Skip Link (`#main-content`) | `Tab` from browser address bar | "Skip to main content" button slides into view at top-left with high-contrast ring (`--accent`). Pressing `Enter` shifts focus directly to `#main-content`. | **PASS** | ![Skip to main content focus state](docs/screenshots/keyboard-skip-link-focus.png) |
+| **2** | Header Brand Logo | `Tab` | Outline container lights up with distinct `:focus-visible` ring. | **PASS** | Verified |
+| **3** | Navigation Links (`Home`, `Shop`, `About Us`) | `Tab` / `Shift+Tab` | Traverses sequentially across links with prominent focus ring around active text. | **PASS** | Verified |
+| **4** | Cart Badge Button | `Tab` | Focus ring surrounds cart button and count badge cleanly. | **PASS** | Verified |
+| **5** | Product Cards & CTAs | `Tab` through catalog grid | Focus highlights image triggers, title links, and "Add to Cart" buttons in natural document order. | **PASS** | Verified |
+
+---
+
+## 5. Cart v2.0 Architecture, Flat-Rate Shipping & Postcode Validation
+
+To ensure strict adherence to UK e-commerce financial standards and robust state management, I implemented and tested the Cart v2.0 architecture, featuring live postcode verification via the `postcodes.io` API, exclusive 20% UK Standard VAT, and tiered flat-rate shipping.
+
+### 5.1 Dictionary State Management & Persistence (Bugs B3 & B8)
+
+| Test Objective | Interaction Steps | Expected Outcome | Result | Technical Explanation / Bug Mitigation | Visual Evidence |
+|---|---|---|---|---|---|
+| **Quantity Updates & Zero Edge-Case (Bug B8)** | Click `+` and `-` quantity buttons in `cart.html`. | Item quantity adjusts dynamically, subtotal recalculates instantly, and global cart badge updates. When quantity drops to zero, the key is cleanly removed from dictionary state. | **PASS** | Prevents corrupted subtotal math or leftover zero-value dictionary keys in `cartState`. | Verified via DevTools inspection. |
+| **Item Removal** | Click individual remove trigger (`×`) or **Clear Cart**. | Selected item (or entire cart) clears from DOM and `localStorage` state. | **PASS** | Immediate state flushing and UI re-rendering. | Verified via DevTools inspection. |
+| **Cross-Tab Sync (Bug B3)** | Open store in two separate tabs, update cart in one. | `storage` event listener synchronizes cart state across tabs without manual page refresh. | **PASS** | Bound global `storage` event listener to `localStorage` mutations for real-time multi-window sync. | Verified via multi-window testing. |
+
+---
+
+### 5.2 Live Postcode Validation (`postcodes.io` API) (Bug B4)
+
+| Test Objective | Interaction Steps | Expected Outcome | Result | Technical Explanation | Visual Evidence |
+|---|---|---|---|---|---|
+| **Valid UK Postcode** | Enter a valid UK postcode (e.g., `OX16 1AA`) into the postcode input and click **Calculate**. | API successfully queries `postcodes.io`, validates the format, and unlocks shipping calculations. | **PASS** | Asynchronous `fetch` request parses JSON response and validates postal validity. | ![Valid UK Postcode Verification](docs/screenshots/postcodes-io-validation-pass.png) |
+| **Invalid / Non-UK Postcode (Bug B4)** | Enter an invalid string or non-UK format (e.g., `12345` or `INVALID`) and click **Calculate**. | System catches API error / validation failure and presents clear error feedback to the user. | **PASS** | Defensive input validation and `try/catch` error boundaries handle failed or malformed responses gracefully. | ![Invalid Postcode Error Handling](docs/screenshots/postcodes-io-validation-error.png) |
+
+---
+
+### 5.3 UK Financial Calculations (VAT & Shipping Tiers)
+
+| Test Objective | Interaction Steps | Expected Outcome | Result | Technical Explanation | Visual Evidence |
+|---|---|---|---|---|---|
+| **Shipping Tier Toggle** | Switch dropdown selection between Standard UK Delivery (£3.95) and Express UK Delivery (£6.95). | Postage & Packaging line updates immediately, recalculating the final Grand Total. | **PASS** | Dynamic event listener updates delivery cost state and triggers UI recalculation. | ![Cart v2.0 Order Summary Breakdown](docs/screenshots/cart-v2-financial-breakdown.png) |
+| **20% UK Standard VAT** | Review cart subtotal calculations with items added. | Exclusive 20% VAT is accurately computed against the taxable subtotal and summed into the Grand Total. | **PASS** | Strict mathematical separation of subtotal, tiered shipping, and 20% tax additions. | ![Cart v2.0 Order Summary Breakdown](docs/screenshots/cart-v2-financial-breakdown.png) |
+| **Design System Buttons** | Inspect **Calculate** and **Clear Cart** buttons. | Buttons inherit `.btn-secondary` and `.btn-sm` token styles with correct borders, padding, and hover states. | **PASS** | Styled using established design tokens (`--bg-card`, `--border-color`, `--input-border`). | ![Styled Secondary Buttons Inspection](docs/screenshots/cart-v2-secondary-buttons.png) |
+
+---
+
+## 6. Secure Checkout Form Architecture & Guardrail Validation
+
+To ensure robust error handling and form integrity on `checkout.html`, I implemented a comprehensive checkout validation flow backed by native HTML5 form constraints and dedicated inline guardrails.
+
+### 6.1 HTML5 Form Grid Wrapping & Validation Architecture
+
+| Test Objective | Interaction Steps | Expected Outcome | Result | Technical Explanation | Visual Evidence |
+|---|---|---|---|---|---|
+| **Form Element Scoping** | Inspect DOM structure of `checkout.html`. | The entire secure checkout grid and input fields are wrapped inside a single parent `<form>` element. | **PASS** | Ensures native HTML5 validation events, submit handling, and field focus work correctly without event-target bubbling gaps. | Verified via DevTools inspection. |
+| **Empty Basket Guardrail** | Attempt to access or submit checkout with an empty `cartState`. | System catches empty state, preventing invalid order placement and displaying a clear notice. | **PASS** | Client-side logic intercepts order submissions if item counts evaluate to zero. | Verified via interaction testing. |
+| **Required Shipping Inputs** | Leave mandatory shipping fields (address, postcode, contact) blank and trigger submission. | Native browser validation tooltips prompt the user, and custom inline guardrail error styling highlights missing inputs. | **PASS** | Enforced via HTML5 `required` attributes coupled with script-level error messaging guards. | Verified via interaction testing. |
+
+### 6.2 Checkout Summary Lightbox Integration (`checkout.html`)
+
+| Test Objective | Interaction Steps | Expected Outcome | Result | Technical Explanation | Visual Evidence |
+|---|---|---|---|---|---|
+| **Summary Item Inspection** | Click any miniature or terrain title/thumbnail inside the secure checkout summary card. | The native `<dialog>` product lightbox opens smoothly over the checkout view, rendering high-resolution imagery and details. | **PASS** | Injected `data-action="open-lightbox"` and `data-product-id` attributes route clicks through global event delegation without wiping form inputs or scroll position. | Verified via interaction testing. |
+| **Modal Dismissal from Checkout** | Close the lightbox via `Escape` or the `✕` button while on `checkout.html`. | Lightbox closes and focus returns instantly to the clicked summary item. | **PASS** | Preserves active element focus states and form data integrity across modal cycles. | Verified via keyboard & mouse testing. |
+
+---
+
+## 7. Multi-Page W3C Re-Validation Summary
+
+To maintain 100% standards compliance across all newly introduced templates (`about.html`, `checkout.html`, `404.html`), I ran final file uploads through the W3C Markup Validation Service.
+
+| Date | File | Result | Notes |
+|---|---|---|---|
+| 11/10/2026 | `about.html` | Pass | Verified responsive two-column mascot layout markup. Zero errors, zero warnings. |
+| 11/10/2026 | `checkout.html` | Pass | Verified secure form scoping and input guardrail markup. Zero errors, zero warnings. |
+| 11/10/2026 | `404.html` | Pass | Verified custom error page markup, mobile centering, and navigation integrity. Zero errors, zero warnings. |
