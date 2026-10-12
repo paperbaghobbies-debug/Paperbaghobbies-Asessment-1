@@ -1065,3 +1065,67 @@ p, a, span, h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   text-decoration: underline;
 }
+
+/* =================================================================fl
+   404 Error Page Styles
+   ================================================================ */
+.error-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    padding: var(--space-xl) var(--space-md);
+}
+
+.error-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.error-content-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--space-xl);
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(59, 36, 22, 0.05);
+}
+
+.error-code {
+    display: block;
+    font-size: 5rem;
+    font-weight: 700;
+    color: var(--accent-text);
+    line-height: 1;
+    margin-bottom: var(--space-sm);
+}
+
+.error-content-card h1 {
+    font-size: 2rem;
+    color: var(--text-main);
+    margin-bottom: var(--space-md);
+}
+
+.error-description {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: var(--space-xl);
+}
+
+.error-actions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+    .error-actions {
+        flex-direction: column;
+    }
+    .error-actions .btn {
+        width: 100%;
+    }
+}
