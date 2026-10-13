@@ -572,15 +572,18 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCartView();
   }
 
-// Checkout Button Click Guardrail Handler
+// Checkout Button Click Guardrail & Order Completion Handler
   const checkoutBtn = document.getElementById('stripe-checkout-btn');
   const errorMsgEl = document.getElementById('checkout-error-msg');
+  const checkoutGrid = document.querySelector('.checkout-grid');
+  const successContainer = document.getElementById('checkout-success-container');
 
   if (checkoutBtn) {
     checkoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+
       // 1. Guardrail: Block checkout if basket is empty
       if (getTotalCount() === 0) {
-        e.preventDefault();
         if (errorMsgEl) {
           errorMsgEl.textContent = 'Your basket is empty. Please add items to your cart before proceeding to checkout.';
           errorMsgEl.style.display = 'block';
@@ -602,7 +605,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (!allValid) {
-        e.preventDefault();
         if (errorMsgEl) {
           errorMsgEl.textContent = 'Please fill out all required shipping details above before proceeding with payment.';
           errorMsgEl.style.display = 'block';
@@ -615,11 +617,32 @@ document.addEventListener('DOMContentLoaded', () => {
         errorMsgEl.style.display = 'none';
       }
 
-      // 3. Successful Prototype Flow
-      e.preventDefault();
-      alert('Secure payment gateway integration is planned for Phase 2 (Unit 2 project). No financial data has been collected.');
+      // 3. Extract Order Data & Generate Reference
+      const orderId = 'PBH-' + Math.floor(100000 + Math.random() * 900000);
+      const name = document.getElementById('shipping-name')?.value || 'Valued Customer';
+      const address = document.getElementById('shipping-address')?.value || '';
+      const city = document.getElementById('shipping-city')?.value || '';
+      const postcode = document.getElementById('shipping-postcode')?.value || '';
+      const shippingMethod = document.getElementById('shipping-select')?.value || 'standard';
+      const summary = getCartOrderSummary(shippingMethod);
+
+      // 4. Populate On-Screen Receipt
+      const receiptIdEl = document.getElementById('receipt-order-id');
+      const receiptNameEl = document.getElementById('receipt-customer-name');
+      const receiptAddrEl = document.getElementById('receipt-customer-address');
+      const receiptTotalEl = document.getElementById('receipt-grand-total');
+
+      if (receiptIdEl) receiptIdEl.textContent = orderId;
+      if (receiptNameEl) receiptNameEl.textContent = name;
+      if (receiptAddrEl) receiptAddrEl.textContent = `${address}, ${city} (${postcode})`;
+      if (receiptTotalEl) receiptTotalEl.textContent = money(summary.grandTotal);
+
+      // 5. Dynamic UI Transition (Hide Form Grid, Reveal Success Receipt)
+      if (checkoutGrid) checkoutGrid.style.display = 'none';
+      if (successContainer) successContainer.style.display = 'block';
+
+      // 6. Reset Cart State
       clearCart();
-      window.location.href = 'index.html';
     });
   }
 

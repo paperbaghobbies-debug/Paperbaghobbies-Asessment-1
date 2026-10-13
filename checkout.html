@@ -63,7 +63,6 @@
 
       <!-- Two-Column Checkout Grid -->
       <div class="checkout-grid">
-        
         <!-- Left Column: Customer & Shipping Details Form -->
         <section class="checkout-form-section" style="background: var(--bg-card); padding: 2rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
           <h2 style="margin-bottom: 1.5rem; font-size: 1.25rem;">Shipping Information</h2>
@@ -96,6 +95,8 @@
             </div>
           </form>
         </section>
+
+
 
         <!-- Right Column: Order Summary & Payment Trigger -->
         <!-- Right Column: Order Summary & Itemized Review -->
@@ -156,6 +157,24 @@
   </div>
 </section>
 
+      </div>
+      <!-- 2. ADD YOUR SUCCESS CONTAINER HERE, OUTSIDE THE GRID -->
+      <div id="checkout-success-container" class="checkout-success-container">
+        <div class="checkout-success-icon" aria-hidden="true">✓</div>
+        <h1 class="checkout-success-title">Order Successfully Placed!</h1>
+        <p class="checkout-success-description">A dispatch confirmation and itemized receipt have been sent to your email.</p>
+        
+        <div class="receipt-box">
+          <p class="receipt-row"><strong>Order Reference:</strong> <span id="receipt-order-id" class="receipt-order-id">PBH-000000</span></p>
+          <p class="receipt-row"><strong>Recipient:</strong> <span id="receipt-customer-name"></span></p>
+          <p class="receipt-row"><strong>Delivery Address:</strong> <span id="receipt-customer-address"></span></p>
+          <p class="receipt-row"><strong>Total Paid:</strong> <span id="receipt-grand-total"></span> (Includes 20% VAT)</p>
+        </div>
+
+        <div class="receipt-actions">
+          <button type="button" onclick="window.print()" class="btn btn-secondary">Print Receipt</button>
+          <a href="index.html" class="btn btn-primary">Return to Shop</a>
+        </div>
       </div>
     </div>
   </main>

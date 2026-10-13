@@ -1067,7 +1067,7 @@ p, a, span, h1, h2, h3, h4, h5, h6 {
 }
 
 /* =================================================================fl
-   404 Error Page Styles
+   14. 404 Error Page Styles
    ================================================================ */
 .error-main {
     display: flex;
@@ -1128,4 +1128,76 @@ p, a, span, h1, h2, h3, h4, h5, h6 {
     .error-actions .btn {
         width: 100%;
     }
+}
+
+/* ==========================================================================
+   15. Checkout Success & Receipt Card Styles
+   ========================================================================== */
+.checkout-success-container {
+  display: none;
+  max-width: 700px;
+  margin: 0 auto;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 2.5rem;
+  text-align: center;
+}
+
+.checkout-success-icon {
+  font-size: 3rem;
+  color: var(--success-color);
+  margin-bottom: 1rem;
+  line-height: 1;
+}
+
+.checkout-success-title {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: var(--text-main);
+  font-size: 1.75rem;
+}
+
+.checkout-success-description {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.receipt-box {
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 1.5rem;
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.receipt-row {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-main);
+  font-size: 0.95rem;
+}
+
+.receipt-row:last-child {
+  margin-bottom: 0;
+}
+
+.receipt-order-id {
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
+.receipt-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+@media (max-width: 480px) {
+  .receipt-actions {
+    flex-direction: column;
+  }
+  .receipt-actions .btn {
+    width: 100%;
+  }
 }

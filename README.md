@@ -43,7 +43,7 @@ The owner supplied the colour palette, the visual style and the requirements bel
 | Featured promotional models in a homepage hero slideshow | Owner brief | Hero slideshow with user-controlled navigation |
 | Lightbox for viewing images | Owner brief | Accessible lightbox for enlarged product images |
 | Responsive across devices | Owner brief | Mobile-first layout tested from 320px to 1440px |
-| PayPal payments | Owner brief | Planned for a later project, so out of scope here (section 1.5) |
+| Secure E-Commerce Checkout | Owner brief | Integration stub / payment gateway redirection planned for an upcoming release (Stripe/PayPal). |
 
 ### 1.3 Target audience
 
@@ -66,7 +66,7 @@ The age ranges are working estimates based on general tabletop hobby demographic
 
 ### 1.5 Scope
 
-This project delivers the front end: HTML, CSS and light JavaScript for the navigation, slideshow and lightbox. PayPal payment, accounts and order handling need a back end and are planned for later projects. No data is sent anywhere at this stage, and the site says so wherever a form or checkout appears. Delivery, returns, privacy and contact pages are planned for a later sprint (see the product backlog in section 2.2), and links to them are added only once the pages exist.
+This project delivers the front end: HTML, CSS and JavaScript for the interactive elements. Payment processing via Stripe or PayPal is planned for an upcoming release, so checkout features currently operate as a front-end interface or stub. No data is sent anywhere at this stage, and the site notes this wherever a form or checkout action appears. Additional support and policy pages are scheduled for subsequent sprints as outlined in the product backlog.
 
 ### 1.6 Development approach
 
@@ -93,7 +93,7 @@ To solve this, I built Paperbag Hobbies to serve as a streamlined, centralized s
 | US06 | As a mobile user, I want a layout that fits my screen, so I can browse comfortably. | No horizontal scrolling from 320px to 1440px. Links and buttons are at least 44px tall. |
 | US07 | As a keyboard or screen reader user, I want to navigate every page independently, so I can use the site without a mouse. | A skip link is the first focusable item. Focus is always visible. Images have meaningful alt text. Text meets WCAG AA contrast. |
 | US08 | As a customer, I want to find delivery, returns, privacy and contact information, so I can get help and understand how my data is used. | Dedicated support and policy pages are accessible from the site footer with clear headings and navigation. |
-| US09 | As a customer, I want to pay securely with PayPal, so I can complete my purchase. | Integration stub or checkout flow redirects securely to payment gateway (scoped for later release). |
+| US09 | As a customer, I want to pay securely with PayPal, so I can complete my purchase. | Must | Planned soon | Integration stub / checkout flow scheduled for an upcoming release. |
 | US10 | As a shopper, I want to search by name or keyword, so I can find a specific model quickly. | Real-time filter input matches product titles and descriptions accurately. |
 | US11 | As a shopper, I want to see which creator made each model, so I can follow and credit them. | Product cards and detail views explicitly display third-party creator attribution badges or text. |
 | US12 | As the shop owner, I want to test the site with real gamers, so I can fix usability problems. | Usability feedback logs and iterative fixes are documented following testing sessions. |
@@ -161,7 +161,7 @@ The project follows a lightweight Scrum-style process, adapted for a single deve
 | US06 | Responsive layout on all devices | Must | Every sprint | Complete | Fluid grid and media query breakpoints (375px, 768px, 1024px). |
 | US07 | Keyboard and screen reader access | Must | Sprint 1 | Complete | Skip link, focus rings (`:focus-visible`), and WCAG contrast compliance. |
 | US08 | As a customer, I want to find delivery, returns, privacy and contact information, so I can get help and understand how my data is used. | Should | Next release | Backlog |
-| US09 | As a customer, I want to pay securely with PayPal, so I can complete my purchase. | Won't (this release) | Later project | Backlog |
+| US09 | As a customer, I want to review my order total with UK VAT and shipping, and initiate a secure payment via Stripe/PayPal, so I can complete my purchase safely. | Must | Sprint 2 | In progress (Front-End UI & Stubs) — Interactive checkout summary on checkout.html, live postcodes.io verification, 20% UK VAT, and flat-rate shipping implemented; live backend Stripe/PayPal payment gateway settlement is scheduled for an upcoming release. |
 | US10 | As a shopper, I want to search by name or keyword, so I can find a specific model quickly. | Could | Next release | Backlog |
 | US11 | As a shopper, I want to see which creator made each model, so I can follow and credit them. | Should | TBC | Backlog |
 | US12 | As the shop owner, I want to test the site with real gamers, so I can fix usability problems. | Should | After Sprint 3 | Backlog |
@@ -1045,5 +1045,6 @@ The application is deployed live on GitHub Pages:
 
 * **Typography:** [Inter](https://fonts.google.com/specimen/Inter) provided via Google Fonts.
 * **Icons & UI Symbols:** Custom SVG icons for cart, navigation toggle, and modal close triggers.
+* **External APIs & Services:** [postcodes.io](https://postcodes.io/) utilized via public REST API for real-time UK postal code validation.
 * **Media Assets:** Photos and product graphics produced internally for Paperbag Hobbies.
 * **Standards Reference:** [WCAG 2.1 AA Guidelines](https://www.w3.org/TR/WCAG21/) and MDN Web Docs modal dialog patterns.
