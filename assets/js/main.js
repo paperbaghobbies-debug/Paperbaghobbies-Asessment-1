@@ -579,7 +579,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const successContainer = document.getElementById('checkout-success-container');
 
   if (checkoutBtn) {
-    checkoutBtn.addEventListener('click', (e) => {
+    checkoutBtn.addEventListener('click', async (e) => { 
       e.preventDefault();
 
       // 1. Guardrail: Block checkout if basket is empty
@@ -599,7 +599,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const inputEl = document.getElementById(inputId);
         if (inputEl && !inputEl.checkValidity()) {
           allValid = false;
-          inputEl.reportValidity(); // Highlights the missing/invalid field
+          inputEl.reportValidity();
           break;
         }
       }
@@ -617,16 +617,51 @@ document.addEventListener('DOMContentLoaded', () => {
         errorMsgEl.style.display = 'none';
       }
 
-      // 3. Extract Order Data & Generate Reference
-      const orderId = 'PBH-' + Math.floor(100000 + Math.random() * 900000);
-      const name = document.getElementById('shipping-name')?.value || 'Valued Customer';
-      const address = document.getElementById('shipping-address')?.value || '';
-      const city = document.getElementById('shipping-city')?.value || '';
-      const postcode = document.getElementById('shipping-postcode')?.value || '';
-      const shippingMethod = document.getElementById('shipping-select')?.value || 'standard';
+      // Call the Cloudflare serverless function to generate a Stripe PaymentIntent
+      const shippingSelectEl = document.getElementById('shipping-select');
+      const shippingMethod = shippingSelectEl ? shippingSelectEl.value : 'standard';
       const summary = getCartOrderSummary(shippingMethod);
 
-      // 4. Populate On-Screen Receipt
+      try {
+        const response = await fetch('/api/create-payment-intent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount: summary.grandTotal })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to initialize payment intent.');
+        }
+
+        console.log('PaymentIntent created successfully! Client Secret:', data.clientSecret);
+
+      } catch (err) {
+        console.error('Payment error:', err);
+        if (errorMsgEl) {
+          errorMsgEl.textContent = 'Payment Error: ' + err.message;
+          errorMsgEl.style.display = 'block';
+        }
+        return; // Stops execution if payment setup fails
+      }
+
+      // 3. Extract Order Data & Generate Reference
+      const orderId = 'PBH-' + Math.floor(100000 + Math.random() * 900000);
+      
+      const nameEl = document.getElementById('shipping-name');
+      const name = nameEl ? nameEl.value : 'Valued Customer';
+      
+      const addressEl = document.getElementById('shipping-address');
+      const address = addressEl ? addressEl.value : '';
+      
+      const cityEl = document.getElementById('shipping-city');
+      const city = cityEl ? cityEl.value : '';
+      
+      const postcodeEl = document.getElementById('shipping-postcode');
+      const postcode = postcodeEl ? postcodeEl.value : '';
+
+      // 4. Populate On-Screen Receipt (reusing the 'summary' object calculated above)
       const receiptIdEl = document.getElementById('receipt-order-id');
       const receiptNameEl = document.getElementById('receipt-customer-name');
       const receiptAddrEl = document.getElementById('receipt-customer-address');
