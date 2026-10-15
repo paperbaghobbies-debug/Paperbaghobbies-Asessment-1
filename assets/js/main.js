@@ -572,11 +572,24 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCartView();
   }
 
-// Checkout Button Click Guardrail & Order Completion Handler
+// Check if returning from a successful Stripe payment redirect
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('success') === 'true') {
+    const checkoutGrid = document.querySelector('.checkout-grid');
+    const successContainer = document.getElementById('checkout-success-container');
+    
+    if (checkoutGrid) checkoutGrid.style.display = 'none';
+    if (successContainer) successContainer.style.display = 'block';
+    
+    clearCart();
+    return;
+  }
+
+  // Checkout Button Click Guardrail & Order Completion Handler
   const checkoutBtn = document.getElementById('stripe-checkout-btn');
   const errorMsgEl = document.getElementById('checkout-error-msg');
-  const checkoutGrid = document.querySelector('.checkout-grid');
-  const successContainer = document.getElementById('checkout-success-container');
+  // ... rest of your code ...
+
 
   if (checkoutBtn) {
     checkoutBtn.addEventListener('click', async (e) => { 
@@ -672,9 +685,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (receiptAddrEl) receiptAddrEl.textContent = `${address}, ${city} (${postcode})`;
       if (receiptTotalEl) receiptTotalEl.textContent = money(summary.grandTotal);
 
-      // 5. Dynamic UI Transition (Hide Form Grid, Reveal Success Receipt)
-      if (checkoutGrid) checkoutGrid.style.display = 'none';
-      if (successContainer) successContainer.style.display = 'block';
+
 
       // 6. Reset Cart State
       clearCart();
