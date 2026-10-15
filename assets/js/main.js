@@ -630,7 +630,7 @@ document.addEventListener('DOMContentLoaded', () => {
         errorMsgEl.style.display = 'none';
       }
 
-      // Call the Cloudflare serverless function to generate a Stripe PaymentIntent
+      // Call the Cloudflare serverless function to generate a Stripe Checkout Session
       const shippingSelectEl = document.getElementById('shipping-select');
       const shippingMethod = shippingSelectEl ? shippingSelectEl.value : 'standard';
       const summary = getCartOrderSummary(shippingMethod);
@@ -645,10 +645,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.error || 'Failed to initialize payment intent.');
+          throw new Error(data.error || 'Failed to initialize payment session.');
         }
 
-        console.log('PaymentIntent created successfully! Client Secret:', data.clientSecret);
+        // 3. Redirect user directly to Stripe's secure hosted payment window
+        if (data.url) {
+          window.location.href = data.url;
+          return;
+        } else {
+          throw new Error('No redirect URL received from payment server.');
+        }
 
       } catch (err) {
         console.error('Payment error:', err);
@@ -656,43 +662,12 @@ document.addEventListener('DOMContentLoaded', () => {
           errorMsgEl.textContent = 'Payment Error: ' + err.message;
           errorMsgEl.style.display = 'block';
         }
-        return; // Stops execution if payment setup fails
+        return;
       }
-
-      // 3. Extract Order Data & Generate Reference
-      const orderId = 'PBH-' + Math.floor(100000 + Math.random() * 900000);
-      
-      const nameEl = document.getElementById('shipping-name');
-      const name = nameEl ? nameEl.value : 'Valued Customer';
-      
-      const addressEl = document.getElementById('shipping-address');
-      const address = addressEl ? addressEl.value : '';
-      
-      const cityEl = document.getElementById('shipping-city');
-      const city = cityEl ? cityEl.value : '';
-      
-      const postcodeEl = document.getElementById('shipping-postcode');
-      const postcode = postcodeEl ? postcodeEl.value : '';
-
-      // 4. Populate On-Screen Receipt (reusing the 'summary' object calculated above)
-      const receiptIdEl = document.getElementById('receipt-order-id');
-      const receiptNameEl = document.getElementById('receipt-customer-name');
-      const receiptAddrEl = document.getElementById('receipt-customer-address');
-      const receiptTotalEl = document.getElementById('receipt-grand-total');
-
-      if (receiptIdEl) receiptIdEl.textContent = orderId;
-      if (receiptNameEl) receiptNameEl.textContent = name;
-      if (receiptAddrEl) receiptAddrEl.textContent = `${address}, ${city} (${postcode})`;
-      if (receiptTotalEl) receiptTotalEl.textContent = money(summary.grandTotal);
-
-
-
-      // 6. Reset Cart State
-      clearCart();
     });
   }
 
-}); // Closes DOMContentLoaded safely
+});
 
 // Live UK Postcode Validation using postcodes.io API
 document.addEventListener('click', async (e) => {
