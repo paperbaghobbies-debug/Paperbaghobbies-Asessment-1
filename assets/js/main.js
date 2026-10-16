@@ -139,8 +139,9 @@ function getCartOrderSummary(shippingMethod = 'standard') {
   }
 
   const selectedShippingCost = CONFIG.SHIPPING_RATES[shippingMethod] || CONFIG.SHIPPING_RATES.standard;
-  const vatAmount = subtotal * CONFIG.VAT_RATE;
-  const grandTotal = subtotal + selectedShippingCost + vatAmount;
+  // Prices are VAT-inclusive: VAT is the portion already inside goods + shipping.
+  const grandTotal = subtotal + selectedShippingCost;
+  const vatAmount = grandTotal * CONFIG.VAT_RATE / (1 + CONFIG.VAT_RATE);
 
   return {
     subtotal: subtotal,
@@ -305,7 +306,7 @@ function renderCartView() {
       <h2>Order Summary</h2>
       
       <div class="summary-row">
-        <span>Subtotal (excl. tax)</span>
+        <span>Subtotal</span>
         <span id="summary-subtotal">£0.00</span>
       </div>
 
@@ -335,7 +336,7 @@ function renderCartView() {
 
       <!-- VAT Line -->
       <div class="summary-row">
-        <span>VAT (20% UK Standard)</span>
+        <span>Includes VAT (20%)</span>
         <span id="summary-vat">£0.00</span>
       </div>
 
@@ -573,17 +574,10 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCartView();
   }
 
-// Check if returning from a successful Stripe payment redirect
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('success') === 'true') {
-    const checkoutGrid = document.querySelector('.checkout-grid');
-    const successContainer = document.getElementById('checkout-success-container');
-    
-    if (checkoutGrid) checkoutGrid.style.display = 'none';
-    if (successContainer) successContainer.style.display = 'block';
-    
-    clearCart();
-    return;
+  // Returning from Stripe: never trust the URL alone. Ask the server whether the session was really paid.
+  const sessionId = new URLSearchParams(window.location.search).get('session_id');
+  if (sessionId) {
+    showOrderConfirmation(sessionId);
   }
 
   // Checkout Button Click Guardrail & Order Completion Handler
@@ -631,16 +625,27 @@ document.addEventListener('DOMContentLoaded', () => {
         errorMsgEl.style.display = 'none';
       }
 
-      // Call the Cloudflare serverless function to generate a Stripe Checkout Session
+      // Send IDs and quantities only. The server looks up prices and recomputes the total.
       const shippingSelectEl = document.getElementById('shipping-select');
-      const shippingMethod = shippingSelectEl ? shippingSelectEl.value : 'standard';
-      const summary = getCartOrderSummary(shippingMethod);
+      const field = id => document.getElementById(id).value.trim();
+
+      checkoutBtn.disabled = true; // prevent double-clicks creating duplicate sessions
 
       try {
-        const response = await fetch('/api/create-payment-intent', {
+        const response = await fetch('/api/create-checkout-session', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount: summary.grandTotal })
+          body: JSON.stringify({
+            items: { ...cartState },
+            shipping: shippingSelectEl ? shippingSelectEl.value : 'standard',
+            customer: {
+              name: field('shipping-name'),
+              email: field('shipping-email'),
+              address: field('shipping-address'),
+              city: field('shipping-city'),
+              postcode: field('shipping-postcode')
+            }
+          })
         });
 
         const data = await response.json();
@@ -659,6 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       } catch (err) {
         console.error('Payment error:', err);
+        checkoutBtn.disabled = false;
         if (errorMsgEl) {
           errorMsgEl.textContent = 'Payment Error: ' + err.message;
           errorMsgEl.style.display = 'block';
@@ -669,6 +675,38 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
+
+// Confirms payment with the server before showing the receipt or clearing the cart.
+async function showOrderConfirmation(sessionId) {
+  const errorEl = document.getElementById('checkout-error-msg');
+  try {
+    const response = await fetch(`/api/order-status?session_id=${encodeURIComponent(sessionId)}`);
+    const order = await response.json();
+    if (!response.ok || !order.paid) throw new Error('Payment not confirmed');
+
+    // textContent (not innerHTML): these values originated from the customer's form.
+    const setText = (id, text) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    };
+    setText('receipt-order-id', order.orderRef);
+    setText('receipt-customer-name', order.name);
+    setText('receipt-customer-address', order.address);
+    setText('receipt-grand-total', money(order.totalPence / 100));
+
+    const grid = document.querySelector('.checkout-grid');
+    const success = document.getElementById('checkout-success-container');
+    if (grid) grid.style.display = 'none';
+    if (success) success.style.display = 'block';
+    clearCart();
+  } catch (err) {
+    console.error('Order confirmation failed:', err);
+    if (errorEl) {
+      errorEl.textContent = 'We could not confirm your payment. If you were charged, email workshop@paperbaghobbies.example with your Stripe receipt.';
+      errorEl.style.display = 'block';
+    }
+  }
+}
 
 // Live UK Postcode Validation using postcodes.io API
 document.addEventListener('click', async (e) => {

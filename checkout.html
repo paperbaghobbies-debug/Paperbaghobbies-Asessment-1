@@ -13,7 +13,7 @@
   <!-- Top Announcement / Welcome Bar -->
   <aside class="announcement-bar" aria-label="Announcement">
     <div class="container announcement-container">
-      <p class="announcement-text">Secure Checkout powered by Stripe (Cards &amp; PayPal accepted).</p>
+      <p class="announcement-text">Secure checkout powered by Stripe.</p>
     </div>
   </aside>
 
@@ -146,7 +146,7 @@
 
     <!-- Centered Secure Stripe Checkout Action Block -->
     <div class="checkout-actions">
-     <button type="submit" id="stripe-checkout-btn" class="btn btn-primary">
+     <button type="button" id="stripe-checkout-btn" class="btn btn-primary">
         Proceed to Secure Payment
       </button>
       <div id="checkout-error-msg" style="color: var(--error-color); font-size: 0.85rem; margin-top: 0.75rem; font-weight: 600; display: none;"></div>
@@ -162,7 +162,7 @@
       <div id="checkout-success-container" class="checkout-success-container">
         <div class="checkout-success-icon" aria-hidden="true">✓</div>
         <h1 class="checkout-success-title">Order Successfully Placed!</h1>
-        <p class="checkout-success-description">A dispatch confirmation and itemized receipt have been sent to your email.</p>
+        <p class="checkout-success-description">Stripe will email your payment receipt to the address you provided.</p>
         
         <div class="receipt-box">
           <p class="receipt-row"><strong>Order Reference:</strong> <span id="receipt-order-id" class="receipt-order-id">PBH-000000</span></p>

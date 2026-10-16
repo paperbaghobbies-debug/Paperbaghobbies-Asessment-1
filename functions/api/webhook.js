@@ -1,4 +1,5 @@
 import Stripe from 'stripe';
+import { orderRef } from '../_lib/pricing.js';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -24,10 +25,33 @@ export async function onRequestPost(context) {
     return new Response(`Webhook Error: ${err.message}`, { status: 400 });
   }
 
-  if (event.type === 'checkout.session.completed') {
+  if (
+    event.type === 'checkout.session.completed' ||
+    event.type === 'checkout.session.async_payment_succeeded'
+  ) {
     const session = event.data.object;
-    console.log(`Checkout completed: ${session.id}`);
-    // TODO: save order to KV / D1
+    if (session.payment_status === 'paid') {
+      const m = session.metadata || {};
+      const order = {
+        ref: orderRef(session.id),
+        sessionId: session.id,
+        email: session.customer_details?.email ?? session.customer_email ?? null,
+        totalPence: session.amount_total,
+        currency: session.currency,
+        customer: { name: m.name, address: m.address, city: m.city, postcode: m.postcode },
+        shipping: m.shipping,
+        basket: m.basket, // JSON string, e.g. {"prod-1":2}
+        paidAt: new Date().toISOString(),
+      };
+      if (env.ORDERS) {
+        // Same key on every retry, so Stripe re-delivering the event is harmless.
+        // If this throws, the Worker returns 500 and Stripe retries automatically.
+        await env.ORDERS.put(`order:${session.id}`, JSON.stringify(order));
+        console.log(`Order stored: ${order.ref}`);
+      } else {
+        console.warn(`ORDERS KV binding missing - order ${order.ref} was NOT stored`);
+      }
+    }
   }
 
   return new Response(JSON.stringify({ received: true }), {
