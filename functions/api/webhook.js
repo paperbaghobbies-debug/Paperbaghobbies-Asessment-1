@@ -4,8 +4,18 @@ import { orderRef } from '../_lib/pricing.js';
 export async function onRequest(context) {
   const { request, env } = context;
   
+  // Diagnostic log to verify if secrets are loaded correctly
+  console.log('--- WEBHOOK DEBUG ---');
+  console.log('Available env keys:', Object.keys(env || {}));
+  console.log('Secret Key exists:', !!env.STRIPE_SECRET_KEY);
+  console.log('Webhook Secret exists:', !!env.STRIPE_WEBHOOK_SECRET);
+
   if (request.method !== 'POST') {
     return new Response('Method Not Allowed', { status: 405 });
+  }
+
+  if (!env.STRIPE_SECRET_KEY) {
+    return new Response('Server Error: STRIPE_SECRET_KEY is missing from environment', { status: 500 });
   }
 
   const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
@@ -44,13 +54,11 @@ export async function onRequest(context) {
         currency: session.currency,
         customer: { name: m.name, address: m.address, city: m.city, postcode: m.postcode },
         shipping: m.shipping,
-        basket: m.basket, // JSON string, e.g. {"prod-1":2}
+        basket: m.basket,
         paidAt: new Date().toISOString(),
       };
       
       if (env.ORDERS) {
-        // Same key on every retry, so Stripe re-delivering the event is harmless.
-        // If this throws, the Worker returns 500 and Stripe retries automatically.
         await env.ORDERS.put(`order:${session.id}`, JSON.stringify(order));
         console.log(`Order stored: ${order.ref}`);
       } else {
