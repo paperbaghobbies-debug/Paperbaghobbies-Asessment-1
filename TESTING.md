@@ -54,8 +54,8 @@ I audited the homepage (`index.html`) using Google Lighthouse in Chrome DevTools
 
 ### 1.4 JavaScript Static Code Analysis
 
-* **Status:** Pass[cite: 3]
-* **Methodology:** As interactive features (`main.js`) expanded across project sprints, I ran static linting using ESLint to enforce zero runtime errors, prevent unused variables, and maintain clean error-handling structures[cite: 3].
+* **Status:** Pass
+* **Methodology:** As interactive features (`main.js`) expanded across project sprints, I ran static linting using ESLint to enforce zero runtime errors, prevent unused variables, and maintain clean error-handling structures.
 * **Result:** Verified zero errors and zero warnings across all project scripts.
 
 | Date | File | Result | Notes |
@@ -279,7 +279,7 @@ To ensure robust error handling and form integrity on `checkout.html`, I impleme
 
 | Test Objective | Interaction Steps | Expected Outcome | Result | Technical Explanation | Visual Evidence |
 |---|---|---|---|---|---|
-| **Form Element Scoping** | Inspect DOM structure of `checkout.html`. | The entire secure checkout grid and input fields are wrapped inside a single parent `<form>` element. | **PASS** | Ensures native HTML5 validation events, submit handling, and field focus work correctly without event-target bubbling gaps. | Verified via DevTools inspection. |
+| **Form Element Scoping** | Inspect DOM structure of `checkout.html`. | The shipping inputs are wrapped in `<form id="checkout-form">`. The payment button sits in the order summary column, outside the form, so `main.js` validates each required input with `checkValidity()` / `reportValidity()` before calling the payment function. | **PASS** | Validation is script-driven because the button is not inside the form, so it does not rely on native form submission. | Verified via DevTools inspection. |
 | **Empty Basket Guardrail** | Attempt to access or submit checkout with an empty `cartState`. | System catches empty state, preventing invalid order placement and displaying a clear notice. | **PASS** | Client-side logic intercepts order submissions if item counts evaluate to zero. | Verified via interaction testing. |
 | **Required Shipping Inputs** | Leave mandatory shipping fields (address, postcode, contact) blank and trigger submission. | Native browser validation tooltips prompt the user, and custom inline guardrail error styling highlights missing inputs. | **PASS** | Enforced via HTML5 `required` attributes coupled with script-level error messaging guards. | Verified via interaction testing. |
 
@@ -310,3 +310,57 @@ To satisfy comprehensive error-handling and resilient routing criteria for GitHu
 | W3C Validation | Mobile Responsive Layout | Desktop Layout |
 | :---: | :---: | :---: |
 | ![W3C HTML validator result for 404.html showing no errors or warnings](docs/screenshots/404-w3c-validation.png) | ![Mobile view of 404 error page on iPhone SE viewport](docs/screenshots/404-mobile-responsive.png) | ![Desktop widescreen view of 404 error page](docs/screenshots/404-desktop-layout.png) |
+
+---
+
+## 8. Stripe Checkout & Webhook Integration (US09)
+
+The payment flow was tested in Stripe **test mode** on the Cloudflare Pages deployment (https://paperbaghobbies-asessment-1.pages.dev). No real card was used and no real money moved. Items not yet run are marked **TO VERIFY** instead of Pass so the log stays honest.
+
+### 8.1 Checkout Session creation and payment
+
+| Test Objective | Interaction Steps | Expected Outcome | Result | Technical Explanation / Evidence |
+|---|---|---|---|---|
+| **Empty basket and missing fields** | Click **Proceed to Secure Payment** with an empty cart, then with a basket but blank shipping fields. | Error message appears in `#checkout-error-msg` and no request is sent to `/api/create-payment-intent`. | **PASS** | Same guardrails as section 6.1. |
+| **Session creation and redirect** | Add items, complete the shipping fields and click **Proceed to Secure Payment**. | Browser is redirected to Stripe's hosted payment page showing the order in GBP. | **PASS** | `POST /api/create-payment-intent` returned `{ url }` and `main.js` redirected to it. The Stripe event for the payment references the Checkout Session `cs_test_a1ZtSqg5...`. |
+| **Test payment completes** | Pay on the Stripe page with a Stripe test card. | Payment succeeds. | **PASS** | PaymentIntent `pi_3UQwBnQIylJQMLa11lUxT2Xj`: `status: succeeded`, `currency: gbp`, `livemode: false`, card payment method. |
+| **Amount matches order summary** | Compare the Stripe amount with the Grand Total on `checkout.html`. | Both show the same figure. | **PASS** | Stripe received 6935 pence (£69.35), which equals subtotal £54.50 + £3.95 standard shipping + £10.90 VAT (20% of the subtotal). |
+| **Success redirect** | Complete a test payment. | Browser returns to `/checkout.html?success=true`, the form is hidden, the confirmation panel is shown, the cart is emptied and the badge reads 0. | **TO VERIFY** | Logic is in the `?success=true` handler in `main.js` (hide `.checkout-grid`, show `#checkout-success-container`, `clearCart()`). Capture a screenshot when run. |
+| **Cancel redirect** | Click the back/cancel link on Stripe's page. | Browser returns to `/checkout.html` with the basket and entered details intact. | **TO VERIFY** | `cancel_url` is `/checkout.html`. |
+
+### 8.2 Webhook delivery and signature verification (Bugs B12, B13)
+
+Stripe dashboard, endpoint `vibrant-glow`, Event deliveries:
+
+| Date | Time (UTC) | Event | Delivery status | Notes |
+|---|---|---|---|---|
+| 15/10/2026 | 10:58 PM to 11:57 PM (five attempts shown) | `payment_intent.succeeded` | `400 ERR` | Original handler used synchronous `constructEvent`, which does not work in the Workers runtime (B12). The corrected code was then found to be in an untracked file (B13). |
+| 16/10/2026 | 12:14 AM | `payment_intent.succeeded` (resend) | `200 OK` | After commit `d7bf371` was deployed. Signature verification now passes. |
+
+| Test Objective | Interaction Steps | Expected Outcome | Result | Technical Explanation |
+|---|---|---|---|---|
+| **Signed event accepted** | Resend a delivered event from the Stripe dashboard. | Endpoint returns `200` with `{"received":true}`. | **PASS** | `constructEventAsync` with `Stripe.createSubtleCryptoProvider()` verifies the signature using the Web Crypto API. |
+| **Unsigned request rejected** | `curl -i -X POST https://paperbaghobbies-asessment-1.pages.dev/api/webhook -d "{}"` | `400` with a `Webhook Error` message. | **TO VERIFY** | No `stripe-signature` header, so verification must fail. |
+| **Wrong method rejected** | `curl -i https://paperbaghobbies-asessment-1.pages.dev/api/webhook` | `405 Method Not Allowed`. | **TO VERIFY** | Handler is exported as `onRequestPost`. |
+
+### 8.3 Open defects found during payment testing
+
+| Bug | Summary | Status |
+|---|---|---|
+| **B14** | The charged amount is taken from the browser, so it can be tampered with. | **Open** (must fix before live payments) |
+| **B15** | Shipping details are not sent to Stripe or stored, and the receipt fields are never populated (shows `PBH-000000`). | **Open** |
+| **B16** | `?success=true` shows the confirmation and clears the cart without verifying payment. | **Open** |
+| **B17** | PayPal is advertised on the checkout page but only card payments are enabled. | **Open** |
+
+Full descriptions and planned fixes are in the README bug log, section 7.3.
+
+### 8.4 Re-validation required after the payment changes
+
+| Check | Why it is needed | Status |
+|---|---|---|
+| W3C HTML validation of `checkout.html`, `cart.html` and the other pages | The 11/10/2026 pass predates the Stripe changes. | **TO VERIFY** |
+| ESLint on `assets/js/main.js` | The 10/10/2026 pass predates the Stripe checkout handler. | **TO VERIFY** |
+| `404.html` asset loading on Cloudflare Pages | The page uses `<base href="/Paperbaghobbies-Asessment-1/">` for GitHub Pages. On the Pages domain the site is served from `/`, so check that styles and logo still load on a deep invalid route. | **TO VERIFY** |
+| Keyboard and screen reader check of the checkout error message and success panel | New dynamic content on `checkout.html`. | **TO VERIFY** |
+
+**Screenshots to capture and add to `docs/screenshots/`:** the Stripe hosted payment page, the success view, the Stripe webhook deliveries showing `400` then `200 OK`, and the PaymentIntent in the Stripe dashboard.

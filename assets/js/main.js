@@ -9,12 +9,12 @@
 const PRODUCTS = [
   {
     id: "prod-1",
-    title: "Grimdark Sci-Fi Squad Commander",
+    title: "Stationforge Ork Titan Miniature",
     badge: "RESIN PRINT",
     category: "models",
-    price: 12.50,
-    image: "assets/images/placeholder.png",
-    alt: "High-detail 28mm scale resin miniature",
+    price: 45.50,
+    image: "assets/images/stationforge/teststationforge.png",
+    alt: "Placeholder StationForge resin miniature",
     description: "High-detail 28mm scale resin miniature. Cleaned, cured, and ready for priming."
   },
   {
@@ -443,6 +443,7 @@ function openProductModal(productId) {
 
 document.addEventListener('DOMContentLoaded', () => {
   loadCart();
+  initHeroSlideshow();
   updateCartUI();
 
   // Cross-Tab Storage Sync
@@ -698,3 +699,147 @@ document.addEventListener('click', async (e) => {
     }
   }
 });
+
+/* ==========================================================================
+   HERO SLIDESHOW (US02) - auto-cycles, manual controls, reduced-motion, pause
+   ========================================================================== */
+function initHeroSlideshow() {
+  const carousel = document.getElementById('hero-carousel');
+  const slidesWrap = document.getElementById('hero-slides');
+  if (!carousel || !slidesWrap || PRODUCTS.length === 0) return;
+
+  const hero = carousel.closest('.hero');
+  const prevBtn = carousel.querySelector('[data-hero="prev"]');
+  const nextBtn = carousel.querySelector('[data-hero="next"]');
+  const toggleBtn = carousel.querySelector('[data-hero="toggle"]');
+  const status = carousel.querySelector('.hero-status');
+  const dotsWrap = carousel.querySelector('.hero-dots');
+
+  const INTERVAL_MS = 5000;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let current = 0;
+  let timerId = null;
+  let userPaused = prefersReducedMotion; // start paused if visitor requested less motion
+  let hoverOrFocus = false;
+
+  // Build simple, clickable image slides from the PRODUCTS array
+  slidesWrap.innerHTML = PRODUCTS.map((p, i) => `
+    <a href="shop.html?item=${encodeURIComponent(p.id)}" class="hero-slide" role="group" aria-roledescription="slide" aria-label="Slide ${i + 1} of ${PRODUCTS.length}: ${p.title}">
+      <img class="hero-slide-image" src="${p.image}" alt="${p.alt}" width="800" height="400"${i === 0 ? '' : ' loading="lazy"'}>
+      <div class="hero-slide-caption">
+        <span class="hero-slide-title">${p.title}</span>
+        <span class="hero-slide-price">${money(p.price)}</span>
+      </div>
+    </a>
+  `).join('');
+
+  const slides = Array.from(slidesWrap.querySelectorAll('.hero-slide'));
+
+  function showSlide(index) {
+    current = (index + slides.length) % slides.length;
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('is-active', i === current);
+    });
+    dots.forEach((dot, i) => {
+      if (i === current) {
+        dot.setAttribute('aria-current', 'true');
+      } else {
+        dot.removeAttribute('aria-current');
+      }
+    });
+    if (status) status.textContent = `Slide ${current + 1} of ${slides.length}`;
+  }
+
+  function stopTimer() {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+  }
+
+  function updateToggle() {
+    if (toggleBtn) {
+      toggleBtn.textContent = userPaused ? 'Play' : 'Pause';
+      toggleBtn.setAttribute('aria-label', userPaused ? 'Play slideshow' : 'Pause slideshow');
+    }
+    slidesWrap.setAttribute('aria-live', userPaused || hoverOrFocus ? 'polite' : 'off');
+  }
+
+  function startTimer() {
+    stopTimer();
+    updateToggle();
+    if (!userPaused && !hoverOrFocus && slides.length > 1) {
+      timerId = setInterval(() => showSlide(current + 1), INTERVAL_MS);
+    }
+  }
+
+  // Clear and rebuild dots to ensure clean state
+  if (dotsWrap) dotsWrap.innerHTML = '';
+  const dots = slides.map((_, i) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'hero-dot';
+    dot.setAttribute('aria-label', `Show slide ${i + 1}`);
+    dot.addEventListener('click', () => {
+      showSlide(i);
+      startTimer();
+    });
+    dotsWrap.appendChild(dot);
+    return dot;
+  });
+
+  prevBtn?.addEventListener('click', () => {
+    showSlide(current - 1);
+    startTimer();
+  });
+  nextBtn?.addEventListener('click', () => {
+    showSlide(current + 1);
+    startTimer();
+  });
+  toggleBtn?.addEventListener('click', () => {
+    userPaused = !userPaused;
+    startTimer();
+  });
+
+  // Keyboard navigation (Arrow keys)
+  carousel.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      showSlide(current - 1);
+      startTimer();
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      showSlide(current + 1);
+      startTimer();
+    }
+  });
+
+  // Pause on hover or focus
+  carousel.addEventListener('pointerenter', (e) => {
+    if (e.pointerType === 'mouse') {
+      hoverOrFocus = true;
+      startTimer();
+    }
+  });
+  carousel.addEventListener('pointerleave', (e) => {
+    if (e.pointerType === 'mouse') {
+      hoverOrFocus = false;
+      startTimer();
+    }
+  });
+  carousel.addEventListener('focusin', (e) => {
+    if (e.target.matches(':focus-visible')) {
+      hoverOrFocus = true;
+      startTimer();
+    }
+  });
+  carousel.addEventListener('focusout', () => {
+    hoverOrFocus = false;
+    startTimer();
+  });
+
+  hero.classList.add('hero-js');
+  showSlide(0);
+  startTimer();
+}

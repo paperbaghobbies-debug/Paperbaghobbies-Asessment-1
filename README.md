@@ -16,10 +16,10 @@ Built for the Gateway Qualifications Level 5 Diploma in Web Application Developm
 4. [Design System](#4-design-system)
 5. [Technology Stack](#5-technology-stack)
 6. [Development Decisions](#6-development-decisions)
-7. [Testing](#7-testing)
+7. [Quality Assurance and Testing Summary](#7-quality-assurance-and-testing-summary)
 8. [Version Control](#8-version-control)
-9. [Deployment](#9-deployment)
-10. [Attribution](#10-attribution)
+9. [Live Deployment](#9-live-deployment)
+10. [Attributions & Acknowledgments](#10-attributions--acknowledgments)
 
 ---
 
@@ -43,7 +43,7 @@ The owner supplied the colour palette, the visual style and the requirements bel
 | Featured promotional models in a homepage hero slideshow | Owner brief | Hero slideshow with user-controlled navigation |
 | Lightbox for viewing images | Owner brief | Accessible lightbox for enlarged product images |
 | Responsive across devices | Owner brief | Mobile-first layout tested from 320px to 1440px |
-| Secure E-Commerce Checkout | Owner brief | Integration stub / payment gateway redirection planned for an upcoming release (Stripe/PayPal). |
+| Secure E-Commerce Checkout | Owner brief | Stripe Checkout in test mode: a Cloudflare Pages Function creates the Checkout Session and the customer pays on Stripe's hosted page. A signed webhook confirms payment. PayPal, server-side price validation and order storage are outstanding (section 6.15, bugs B14 to B17). |
 
 ### 1.3 Target audience
 
@@ -66,8 +66,9 @@ The age ranges are working estimates based on general tabletop hobby demographic
 
 ### 1.5 Scope
 
-This project delivers the front end: HTML, CSS and JavaScript for the interactive elements. Payment processing via Stripe or PayPal is planned for an upcoming release, so checkout features currently operate as a front-end interface or stub. No data is sent anywhere at this stage, and the site notes this wherever a form or checkout action appears. Additional support and policy pages are scheduled for subsequent sprints as outlined in the product backlog.
+This project delivers the front end (HTML, CSS and JavaScript) plus a small serverless back end for payments. Two Cloudflare Pages Functions in `functions/api/` create a Stripe Checkout Session and receive Stripe's webhook. Payments currently run in Stripe **test mode**, so no real money moves. Card details are entered on Stripe's hosted page and never touch this site.
 
+The shipping form on `checkout.html` is validated in the browser but is not yet sent to Stripe or stored, and no orders are persisted. PayPal, server-side price validation, order storage and an order confirmation with real order details are outstanding (bug log, section 7.3). Additional support and policy pages are scheduled for subsequent sprints as outlined in the product backlog.
 ### 1.6 Development approach
 
 The site is built as separate, semantic HTML pages first, validated page by page. CSS is written mobile-first with design tokens. JavaScript is added only for interactive features. I looked at a dynamic `<template>` approach early on, but chose separate semantic HTML pages as the foundation (see section 6.3). Each step is tested before the next begins, and each feature is committed separately.
@@ -89,11 +90,11 @@ To solve this, I built Paperbag Hobbies to serve as a streamlined, centralized s
 | US02 | As a returning customer, I want to see current promotions on the homepage, so I can spot deals. | A hero slideshow shows featured models. Previous and next controls work by mouse, touch and keyboard. Nothing moves unless the user acts. |
 | US03 | As a wargamer, I want to browse by setting and category, so I can find models for my army. | Models are grouped by grimdark future and fantasy medieval. A filter shows only matching products. |
 | US04 | As a shopper, I want to enlarge product images, so I can check the detail before buying. | A lightbox opens from a product image. `Escape` closes it, focus stays inside while open, and focus returns to the image on close. |
-| US05 | As a shopper, I want a clear purchase action on each product, so I know how to buy it. | Each product shows its price and a clear buy button. Until PayPal is added, the button explains that online checkout is coming soon. |
+| US05 | As a shopper, I want a clear purchase action on each product, so I know how to buy it. | Each product shows its price and an Add to Cart button that updates the cart and gives visible confirmation ("Added!"). |
 | US06 | As a mobile user, I want a layout that fits my screen, so I can browse comfortably. | No horizontal scrolling from 320px to 1440px. Links and buttons are at least 44px tall. |
 | US07 | As a keyboard or screen reader user, I want to navigate every page independently, so I can use the site without a mouse. | A skip link is the first focusable item. Focus is always visible. Images have meaningful alt text. Text meets WCAG AA contrast. |
 | US08 | As a customer, I want to find delivery, returns, privacy and contact information, so I can get help and understand how my data is used. | Dedicated support and policy pages are accessible from the site footer with clear headings and navigation. |
-| US09 | As a customer, I want to pay securely with PayPal, so I can complete my purchase. | Must | Planned soon | Integration stub / checkout flow scheduled for an upcoming release. |
+| US09 | As a customer, I want to pay securely online, so I can complete my purchase. | Pressing "Proceed to Secure Payment" checks the basket and shipping fields, creates a Stripe Checkout Session server-side and redirects to Stripe's hosted payment page. A successful test payment returns to the checkout success view, and Stripe's webhook receives `200 OK`. Card is live in test mode; PayPal is planned. || US10 | As a shopper, I want to search by name or keyword, so I can find a specific model quickly. | Real-time filter input matches product titles and descriptions accurately. |
 | US10 | As a shopper, I want to search by name or keyword, so I can find a specific model quickly. | Real-time filter input matches product titles and descriptions accurately. |
 | US11 | As a shopper, I want to see which creator made each model, so I can follow and credit them. | Product cards and detail views explicitly display third-party creator attribution badges or text. |
 | US12 | As the shop owner, I want to test the site with real gamers, so I can fix usability problems. | Usability feedback logs and iterative fixes are documented following testing sessions. |
@@ -102,6 +103,9 @@ To solve this, I built Paperbag Hobbies to serve as a streamlined, centralized s
 | US15 | As a customer, I want to enter my UK postcode and click a calculate button to verify its format in real-time, so that I can confirm my delivery location validity before checkout. | Entering a valid UK postcode queries the `postcodes.io` API successfully; invalid or malformed strings trigger clear error feedback. |
 | US16 | As a shopper, I want to select flat-rate shipping tiers and view an itemized 20% UK VAT calculation, so that my final order totals are transparent and tax-compliant. | Switching shipping tiers (Standard vs. Express) instantly updates grand totals alongside an explicit 20% UK Standard VAT calculation. |
 | US17 | As a user browsing the site across multiple open tabs, I want my shopping cart state to synchronize automatically, so that my item counts and totals stay consistent everywhere. | Modifying cart quantities in one tab updates item counts and subtotals across all other open browser tabs in real-time via `localStorage` and storage events. |
+| US18 | As the shop owner, I want order totals calculated on the server from trusted prices, so that customers cannot change what they pay. | The payment function receives product IDs and quantities, looks prices up server-side, and rejects unknown products or invalid quantities. A browser-edited total has no effect on the amount charged. |
+| US19 | As a customer, I want an order confirmation with my order reference and delivery details after paying, so I know my order was received. | The success view shows a real order reference, recipient, delivery address and amount paid, and appears only after Stripe confirms payment. |
+| US20 | As the shop owner, I want every paid order recorded, so that I can fulfil it. | The webhook stores the verified order (items, amounts, customer and delivery details) and returns `200` only after it is saved. |
 
 
 ### 2.1 Agile approach
@@ -132,6 +136,7 @@ The project follows a lightweight Scrum-style process, adapted for a single deve
 * **Sprint 1 Goal (Foundations, Design Tokens & Research - Oct 5–6):** Establish project scaffolding, lowercase/hyphenated directory conventions, HTML5 boilerplate, W3C CSS validation logs, CSS custom properties (design tokens), WCAG contrast corrective tokens (Bug B1), targeted CSS reset, Google Fonts typography (Inter), and the empirical competitor review.
 * **Sprint 2 Goal (Core Layout, Navigation & Accessibility - Oct 7–8):** Implement baseline HTML frames, UX principles mapping, wireframes, design rationale, semantic layout structure, accessible skip links, sticky single-row header architecture, mobile hamburger navigation toggles, responsive 3-column CSS grid rules, native `<dialog>` image lightbox (`US04`), full responsive device testing (`US06`), and keyboard accessibility verification (`US07`).
 * **Sprint 3 Goal (Shop Markup, Dictionary Cart Engine & UK Compliance - Oct 9–10):** Publish live GitHub Pages deployment URL, standardize shop page and product card markup, build the robust dictionary-based `cartState` engine with `localStorage` persistence and cross-tab synchronization, header cart popover previews, automated 20% UK Standard VAT calculations, flat-rate shipping tiers (Standard/Express), live `postcodes.io` REST API postcode validation, checkout summary lightbox inspection, ESLint code cleanliness checks, and 100% W3C compliance finalization.
+* **Sprint 4 Goal (Error Handling, Cloud Deployment & Payments - Oct 11–16):** Custom `404.html` page, W3C re-validation of all core views, hosting on Cloudflare Pages so serverless Functions can run, Stripe Checkout Session creation (`functions/api/create-payment-intent.js`), a signed Stripe webhook receiver (`functions/api/webhook.js`), and documentation of the outstanding payment security and order-handling gaps (Bugs B12 to B17).
 
 ---
 
@@ -149,6 +154,10 @@ The project follows a lightweight Scrum-style process, adapted for a single deve
 - *Worked:* Transitioning from flat arrays to a key-value dictionary pattern (`cartState`) on Oct 10 eliminated item duplication bugs while supporting O(1) lookups, zero-quantity edge-case handling (**Bug B8**), and `localStorage` persistence with real-time multi-tab synchronization (**Bug B3**). Integrating the public `postcodes.io` API with robust `try/catch` error boundaries (**Bug B4**) added real-world UK postcode verification with minimal footprint. Resolving ESLint violations in `main.js` alongside script refactoring (**Bug B7**, **Bug B11**) secured production-grade code cleanliness.
 - *Changed:* I replaced complex conditional free-shipping tiers with explicit flat-rate delivery tiers (Standard vs. Express) alongside an exclusive 20% UK Standard VAT calculation, streamlining my financial logic and UI transparency.
 
+**Sprint 4 retrospective (Payments & Cloud Deployment - Oct 11–16)**
+- *Worked:* Using Stripe's hosted Checkout page keeps card data off my site. Stripe's dashboard delivery log made the webhook failure easy to isolate: every `payment_intent.succeeded` delivery returned `400` while the payment itself had succeeded, which pointed at my handler and not the payment flow (**Bug B12**). Switching to asynchronous signature verification produced a `200 OK` on resend.
+- *Changed:* Cloudflare Functions run on the Workers runtime, not Node, so Node-style code from Stripe examples can fail there. I also lost time because the corrected webhook sat in an untracked file while the tracked copy still held the old code (**Bug B13**); checking `git status` and `git ls-files` before pushing would have caught it. Reviewing the payment code also showed that the charged amount is taken from the browser (**Bug B14**). That is logged as open and is the first priority for the next sprint, because it must be fixed before the shop takes real payments.
+
 ### 2.2 Product backlog
 
 | ID | Story | Priority | Sprint | Status |
@@ -161,7 +170,7 @@ The project follows a lightweight Scrum-style process, adapted for a single deve
 | US06 | Responsive layout on all devices | Must | Every sprint | Complete | Fluid grid and media query breakpoints (375px, 768px, 1024px). |
 | US07 | Keyboard and screen reader access | Must | Sprint 1 | Complete | Skip link, focus rings (`:focus-visible`), and WCAG contrast compliance. |
 | US08 | As a customer, I want to find delivery, returns, privacy and contact information, so I can get help and understand how my data is used. | Should | Next release | Backlog |
-| US09 | As a customer, I want to review my order total with UK VAT and shipping, and initiate a secure payment via Stripe/PayPal, so I can complete my purchase safely. | Must | Sprint 2 | In progress (Front-End UI & Stubs) — Interactive checkout summary on checkout.html, live postcodes.io verification, 20% UK VAT, and flat-rate shipping implemented; live backend Stripe/PayPal payment gateway settlement is scheduled for an upcoming release. |
+| US09 | As a customer, I want to review my order total with UK VAT and shipping, and pay securely online, so I can complete my purchase safely. | Must | Sprint 4 | In progress (Stripe test mode live) — Stripe Checkout Session creation, hosted payment, redirect and signed webhook (`200 OK`) work in test mode. Server-side price validation (B14), order details and confirmation (B15, B16), order storage and PayPal (B17) are outstanding. |
 | US10 | As a shopper, I want to search by name or keyword, so I can find a specific model quickly. | Could | Next release | Backlog |
 | US11 | As a shopper, I want to see which creator made each model, so I can follow and credit them. | Should | TBC | Backlog |
 | US12 | As the shop owner, I want to test the site with real gamers, so I can fix usability problems. | Should | After Sprint 3 | Backlog |
@@ -170,6 +179,9 @@ The project follows a lightweight Scrum-style process, adapted for a single deve
 | US15 | As a customer, I want to enter my UK postcode and click a calculate button to verify its format in real-time, so that I can confirm my delivery location validity before checkout. | Should | Sprint 2 | Complete | Live validation using the public `postcodes.io` REST API integrated into the order summary card. |
 | US16 | As a shopper, I want to select flat-rate shipping tiers and view an itemized 20% UK VAT calculation, so that my final order totals are transparent and tax-compliant. | Should | Sprint 2 | Complete | Automated exclusive 20% UK Standard VAT calculation and selectable flat-rate shipping tiers (Standard / Express). |
 | US17 | As a user browsing the site across multiple open tabs, I want my shopping cart state to synchronize automatically, so that my item counts and totals stay consistent everywhere. | Should | Sprint 2 | Complete | Native `localStorage` persistence combined with global `storage` event listeners for real-time multi-tab synchronization. |
+| US18 | As the shop owner, I want order totals calculated on the server from trusted prices, so that customers cannot change what they pay. | Must | Next sprint | Backlog (Bug B14) |
+| US19 | As a customer, I want an order confirmation with my order reference and delivery details after paying, so I know my order was received. | Should | Next sprint | Backlog (Bugs B15, B16) |
+| US20 | As the shop owner, I want every paid order recorded, so that I can fulfil it. | Should | Next sprint | Backlog (Bug B15) |
 
 Further user stories are added after each sprint review and after user testing, with the date added.
 
@@ -662,7 +674,7 @@ The structure of the site follows from the client requirements (section 1.2), th
 | A11 | JavaScript only for the interactions the client asked for: a manual hero slideshow, a lightbox and a mobile menu toggle. | The site stays usable without scripts, and every interaction is user-initiated (criterion 1.6, WCAG 2.2.2). | Piper Makes' hero is static, and no competitor capture showed a controllable slideshow. | The slideshow and lightbox need extra keyboard, focus and reduced-motion testing. |
 | A12 | Hero text sits on a solid or overlay panel, with contrast checked. | Foreground information is not distracted by backgrounds (criterion 1.4). | Archie's Forge hero headline over busy imagery. | Less of the artwork is visible. |
 | A13 | A footer with shipping, contact and non-affiliation wording, and payment icons once PayPal is live. | Trust, user story US08 and intellectual property protection. | Gear Guts' footer lists shipping, contact and payment icons. | Links are added only when the pages exist, to avoid broken internal links (criterion 5.5). |
-| A14 | GitHub Pages hosting. | A static site needs no server, and cloud deployment is required (criterion 5.3). | Assessment criteria. | No back end until later projects. |
+| A14 | Cloudflare Pages hosting with Pages Functions (earlier static builds were on GitHub Pages). | Static pages are served from the edge, and two small serverless functions keep the Stripe secret key out of browser code. Cloud deployment is required (criterion 5.3). | The Stripe secret key must never ship in front-end code, and GitHub Pages cannot run server code, so `/api/*` requests would not work there. | Functions run on the Workers runtime, not Node, so some libraries need async or fetch-based variants (bug B12). |
 
 **Performance budget (targets, not yet measured)**
 
@@ -766,9 +778,12 @@ The brand colour itself (`#c98a4b`) is unchanged. It is now used for backgrounds
 
 - HTML5 (semantic markup)
 - CSS3 (custom properties, Flexbox, Grid, media queries)
-- JavaScript (vanilla, no frameworks)
+- JavaScript (vanilla, no frameworks) in the browser
+- Cloudflare Pages Functions (serverless JavaScript on the Workers runtime) for the `/api/*` endpoints
+- Stripe Checkout (hosted payment page, test mode) and Stripe webhooks, using the `stripe` npm package in the webhook function
+- postcodes.io public REST API for UK postcode validation
 - Git and GitHub for version control
-- GitHub Pages for hosting
+- Cloudflare Pages for hosting (GitHub Pages was used for earlier static builds)
 - Google Fonts for typography
 
 ---
@@ -851,8 +866,14 @@ paperbag-hobbies/
 ├── about.html
 ├── cart.html
 ├── checkout.html
+├── 404.html
+├── package.json            (declares the `stripe` dependency used by the webhook)
 ├── README.md
 ├── TESTING.md
+├── functions/
+│   └── api/
+│       ├── create-payment-intent.js   (POST /api/create-payment-intent: creates a Stripe Checkout Session)
+│       └── webhook.js                 (POST /api/webhook: verifies the Stripe signature)
 ├── docs/
 │   └── screenshots/
 └── assets/
@@ -861,9 +882,12 @@ paperbag-hobbies/
     ├── js/
     │   └── main.js
     └── images/
-        ├── logo/
-        └── mascot/
+        ├── placeholder.png
+        └── logo/
+            ├── pbm-logo.png
+            └── pbm-mascot.png
 ```
+
 
 `TODO:` update as pages are added. All file and folder names are lowercase with hyphens and no spaces for cross-platform compatibility.
 
@@ -965,6 +989,49 @@ paperbag-hobbies/
 | **Absolute Repository Pathing** | Utilizes explicit absolute repository pathing (`/Paperbaghobbies-Asessment-1/`) for core stylesheets, scripts, and media. This ensures robust asset resolution even when GitHub Pages dynamically serves the error template on deep, invalid URL paths. |
 | **W3C Standards Compliance** | Fully validated via the W3C Markup Validator (0 errors, 0 warnings) with strict adherence to WCAG 2.1 AA heading hierarchies (`<h1>` to `<h2>`). |
 
+### 6.15 Stripe Checkout Integration (`main.js` & `functions/api/create-payment-intent.js`)
+
+| Aspect | Decision and reason |
+|---|---|
+| **Hosted Stripe Checkout** | The customer is redirected to Stripe's hosted payment page, so card details never touch this site and PCI scope stays minimal. |
+| **Serverless payment function** | `POST /api/create-payment-intent` is a Cloudflare Pages Function (`onRequestPost`). It reads `STRIPE_SECRET_KEY` from an encrypted environment variable, so the key never appears in browser code, and calls Stripe's REST API with `fetch`. It returns `{ url }`. The file name is historical: it creates a Checkout Session, not a PaymentIntent. |
+| **Client guardrails** | Before calling the function, `main.js` blocks an empty basket and runs `checkValidity()` / `reportValidity()` on each required shipping field, showing any problem in `#checkout-error-msg`. |
+| **Amount and currency** | The grand total (subtotal + shipping + 20% VAT) is converted to pence with `Math.round(amount * 100)` and sent as a single GBP line item named "Paperbag Hobbies Order". **Known gap:** the amount comes from the browser (Bug B14). |
+| **Redirect URLs** | Success returns to `/checkout.html?success=true` and cancel returns to `/checkout.html`. Both are built from the request origin, so the same code works on preview and production deployments. |
+| **Success view** | On `?success=true`, `main.js` hides `.checkout-grid`, shows `#checkout-success-container` and calls `clearCart()`. **Known gaps:** the panel is not tied to a verified payment (Bug B16) and its receipt fields are not populated (Bug B15). |
+| **Payment methods** | Only `card` is enabled. The checkout page text mentions PayPal, which is not yet enabled (Bug B17). |
+
+```mermaid
+sequenceDiagram
+    participant B as Browser (checkout.html)
+    participant F as /api/create-payment-intent
+    participant S as Stripe
+    participant W as /api/webhook
+    B->>B: Validate basket and shipping fields
+    B->>F: POST grand total (GBP)
+    F->>S: Create Checkout Session
+    S-->>F: Session URL
+    F-->>B: { url }
+    B->>S: Redirect to hosted payment page
+    S-->>B: Redirect to /checkout.html?success=true
+    S->>W: POST signed event
+    W->>W: Verify Stripe-Signature
+    W-->>S: 200 { received: true }
+```
+**Figure 2 – Checkout and webhook flow.** The browser and Stripe's webhook deliveries are independent paths. The redirect decides what the customer sees, while the signed webhook is the trustworthy record that payment happened.
+
+### 6.16 Stripe Webhook Receiver (`functions/api/webhook.js`)
+
+| Aspect | Decision and reason |
+|---|---|
+| **Endpoint** | `https://paperbaghobbies-asessment-1.pages.dev/api/webhook`, registered in the Stripe dashboard as the `vibrant-glow` event destination. |
+| **POST only** | Exported as `onRequestPost`, so Cloudflare answers other methods with `405` automatically. |
+| **Raw body** | The handler reads `request.text()` before any parsing, because Stripe signs the exact raw payload. |
+| **Async signature verification** | Uses `stripe.webhooks.constructEventAsync(...)` with `Stripe.createSubtleCryptoProvider()` and `Stripe.createFetchHttpClient()`. The Workers runtime provides Web Crypto, not Node crypto, so the synchronous `constructEvent` fails there (Bug B12). |
+| **Secrets** | `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` are set as Cloudflare environment variables for Production and are never committed. Changing one requires a new deployment. |
+| **Responses** | A failed signature check returns `400`. A verified event returns `200` with `{ "received": true }`. |
+| **Current behaviour** | The completed Checkout Session is logged only. Saving orders to Cloudflare KV or D1 is not yet built (US20). |
+
 
 ---
 
@@ -991,12 +1058,13 @@ For full manual test procedures, accessibility traces, and screen reader verific
 | Live Postcode Validation (`postcodes.io`) | Entering a valid UK postcode (e.g., `OX16 1AA`) successfully verifies via the API; invalid formats trigger clear error messaging. | **PASS** |
 | UK VAT & Flat-Rate Shipping Tiers | Switching between Standard (£3.95) and Express (£6.95) shipping correctly updates totals alongside the 20% exclusive VAT calculation. | **PASS** |
 | Checkout Summary Lightbox Inspection | Clicking an item image or title within the checkout summary successfully launches the product modal to inspect details without disrupting form inputs. | **PASS** |
-| Header Popover Preview | Hovering or focusing the cart link reveals the drop-down preview with correct item counts, images, and live subtotal totals. | **PASS** |
-| Persistent Storage & Cross-Tab Sync | Cart items persist across page reloads via `localStorage` and sync automatically across multiple open browser tabs. | **PASS** |
-| Live Postcode Validation (`postcodes.io`) | Entering a valid UK postcode (e.g., `OX16 1AA`) successfully verifies via the API; invalid formats trigger clear error messaging. | **PASS** |
-| UK VAT & Flat-Rate Shipping Tiers | Switching between Standard (£3.95) and Express (£6.95) shipping correctly updates totals alongside the 20% exclusive VAT calculation. | **PASS** |
 | Responsive About Page & Mascot Layout | Two-column flexbox grid scales fluidly on desktop and stacks cleanly into a single vertical column on mobile with zero horizontal overflow. | **PASS** |
 | Custom 404 Error Page & Deep Routing | `404.html` passes W3C validation (0 errors, 0 warnings) and successfully resolves stylesheets on deep invalid routes via absolute repository pathing. | **PASS** |
+| Stripe Checkout Session & Redirect | A valid basket and shipping details create a Checkout Session and redirect to Stripe's hosted page; an empty basket or missing fields show an error and make no API call. | **PASS** (test mode) |
+| Stripe Webhook Signature Verification | Signed events from Stripe are verified and acknowledged with `200 OK` (Bugs B12, B13). | **PASS** (resend returned `200 OK`, 16/10/2026) |
+| Payment Success View | Returning from Stripe with `?success=true` hides the form, shows the confirmation panel and empties the cart. | **TO VERIFY** |
+| Server-Side Price Validation | The amount charged cannot be altered from the browser. | **OPEN** (Bug B14) |
+| Order Confirmation Details | The receipt shows a real order reference, recipient, address and total. | **OPEN** (Bug B15) |
 ---
 ### 7.3 Bug Log and Engineering Resolution History
 
@@ -1015,6 +1083,12 @@ The following log tracks all significant bugs, layout issues, API boundary cases
 | **B9** | **Modal Focus Trapping & Restoration:** Risk of keyboard focus resetting to the top of the DOM upon closing the lightbox. | Keyboard-only accessibility verification. | **Resolved:** Captured `document.activeElement` on trigger and explicitly restored focus to the originating element upon dialog closure. |
 | **B10** | **Footer Column Collapse:** Uneven column stacking and minor overflow in the footer area on mobile screens. | Responsive testing during Oct 8 CSS refactoring. | **Resolved:** Adjusted footer flex/grid rules to ensure clean, stacked vertical alignment on viewports under 768px. |
 | **B11** | **Script Redundancies:** Unoptimized event bindings and minor code duplication remaining from Cart v1 development. | Code review prior to Oct 10 script refactoring. | **Resolved:** Streamlined function structures and removed redundant logic blocks during the `refactor(js)` maintenance pass. |
+| **B12** | **Stripe Webhook Returning `400`:** Every `payment_intent.succeeded` delivery to `/api/webhook` failed with `400 ERR` in the Stripe dashboard, although the test payment itself succeeded (£69.35, `status: succeeded`). | Stripe dashboard, Event deliveries (repeated failures on 15/10/2026). | **Resolved:** Diagnosed as the handler using synchronous `constructEvent`, which depends on Node crypto and does not work in the Cloudflare Workers runtime. Replaced with `constructEventAsync` using `Stripe.createSubtleCryptoProvider()` and `Stripe.createFetchHttpClient()`, and switched to `onRequestPost`. Resending the event then returned `200 OK` (commit `d7bf371`). |
+| **B13** | **Webhook Fix Not Deployed (Wrong File Path):** The live endpoint kept returning `400` because the corrected code was in an untracked `functions/webhook.js`, while the tracked `functions/api/webhook.js` still held the old code. | `git status` (untracked file), `git ls-files functions` and a `Select-String` search for `constructEventAsync`. | **Resolved:** Moved the corrected file over `functions/api/webhook.js`, committed and pushed (`d7bf371`). Lesson: confirm `git status` and `git ls-files` before pushing a fix. |
+| **B14** | **Client-Trusted Payment Amount:** `create-payment-intent.js` charges `body.amount` exactly as the browser sends it, so a customer could edit the request and pay a lower total. | Code review of `main.js` and the payment function. | **Open (must fix before live payments):** Send product IDs and quantities, recompute the total on the server from a trusted price list, and reject unknown IDs or invalid quantities (US18). |
+| **B15** | **Order Details Not Carried Through:** Shipping name, email and address are validated but never sent to Stripe or stored, and the success view's receipt fields (`#receipt-order-id`, recipient, address, total) are never populated, so it shows the placeholder `PBH-000000`. | Code review of `main.js` and `checkout.html`. | **Open:** Pass the customer email and delivery details to the Checkout Session (for example `customer_email` and metadata), retrieve the session on return, and populate the receipt from Stripe's data (US19, US20). |
+| **B16** | **Success View Not Tied to Payment:** Visiting `checkout.html?success=true` directly shows the confirmation panel and clears the cart without any payment. | Code review of the redirect handler in `main.js`. | **Open:** Add `{CHECKOUT_SESSION_ID}` to the success URL and verify the session's `payment_status` server-side before showing the confirmation. |
+| **B17** | **PayPal Advertised but Not Enabled:** The checkout announcement bar says "Cards & PayPal accepted", but the Checkout Session only enables `card`. | Review of `checkout.html` against `create-payment-intent.js`. | **Open:** Either enable PayPal in the Stripe dashboard and remove the `payment_method_types` restriction, or change the wording to cards only. |
 ---
 ## 8. Version Control
 
@@ -1029,15 +1103,33 @@ Commits follow the Conventional Commits format and are kept small, with one feat
 | `docs:` | Documentation |
 | `chore:` | Setup and housekeeping |
 
-Example: `feat: add HTML5 boilerplate shell with head metadata and linked assets`
+Examples:
+
+- `feat: add HTML5 boilerplate shell with head metadata and linked assets`
+- `fix(webhook): use onRequestPost and constructEventAsync for Cloudflare Workers`
 
 ---
 
 ## 9. Live Deployment
 
-The application is deployed live on GitHub Pages:
-- **Live Site:** https://paperbaghobbies-debug.github.io/Paperbaghobbies-Asessment-1/
+The site is deployed on **Cloudflare Pages**, which serves the static pages and runs the Pages Functions in `functions/api/`.
+
+- **Live Site:** https://paperbaghobbies-asessment-1.pages.dev
 - **Repository:** https://github.com/paperbaghobbies-debug/Paperbaghobbies-Asessment-1
+- **Deployments:** each push to `main` triggers a new Cloudflare Pages build.
+- **Earlier static deployment:** the project was first published on GitHub Pages (https://paperbaghobbies-debug.github.io/Paperbaghobbies-Asessment-1/). GitHub Pages cannot run server code, so checkout and the webhook only work on Cloudflare Pages.
+
+| Setting | Where | Notes |
+|---|---|---|
+| `STRIPE_SECRET_KEY` | Cloudflare Pages, Settings, Variables and Secrets (Production) | Stripe test-mode secret key. Never committed to the repository. |
+| `STRIPE_WEBHOOK_SECRET` | Cloudflare Pages, Settings, Variables and Secrets (Production) | The `whsec_...` signing secret of the webhook endpoint. Variables only apply to new deployments, so redeploy after changing one. |
+| Webhook endpoint | Stripe dashboard, event destination `vibrant-glow` | Points to `/api/webhook` on the Pages domain. |
+
+**Before taking real payments:**
+
+1. Fix Bugs B14 to B17 (section 7.3).
+2. Switch to Stripe live keys and create a live-mode webhook endpoint with its own signing secret.
+3. Re-run the payment and webhook tests in [TESTING.md](./TESTING.md), section 8, using live-mode settings.
 
 ---
 
@@ -1048,3 +1140,5 @@ The application is deployed live on GitHub Pages:
 * **External APIs & Services:** [postcodes.io](https://postcodes.io/) utilized via public REST API for real-time UK postal code validation.
 * **Media Assets:** Photos and product graphics produced internally for Paperbag Hobbies.
 * **Standards Reference:** [WCAG 2.1 AA Guidelines](https://www.w3.org/TR/WCAG21/) and MDN Web Docs modal dialog patterns.
+* **Payments:** [Stripe Checkout](https://stripe.com/docs/payments/checkout) (hosted payment page) and [Stripe webhooks](https://stripe.com/docs/webhooks), using the official `stripe` npm package.
+* **Hosting:** [Cloudflare Pages](https://pages.cloudflare.com/) and Pages Functions.
