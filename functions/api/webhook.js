@@ -1,8 +1,12 @@
 import Stripe from 'stripe';
 import { orderRef } from '../_lib/pricing.js';
 
-export async function onRequestPost(context) {
+export async function onRequest(context) {
   const { request, env } = context;
+  
+  if (request.method !== 'POST') {
+    return new Response('Method Not Allowed', { status: 405 });
+  }
 
   const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
     httpClient: Stripe.createFetchHttpClient(),
@@ -43,6 +47,7 @@ export async function onRequestPost(context) {
         basket: m.basket, // JSON string, e.g. {"prod-1":2}
         paidAt: new Date().toISOString(),
       };
+      
       if (env.ORDERS) {
         // Same key on every retry, so Stripe re-delivering the event is harmless.
         // If this throws, the Worker returns 500 and Stripe retries automatically.
