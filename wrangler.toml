@@ -1,0 +1,7 @@
+name = "paperbaghobbies"
+compatibility_date = "2026-10-12"
+
+[[kv_namespaces]]
+binding = "ORDERS"
+id = "dummy_id_for_local_dev"
+preview_id = "dummy_preview_id_for_local_dev"
